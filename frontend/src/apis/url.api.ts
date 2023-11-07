@@ -1,0 +1,1 @@
+export const path = "http://localhost:8000"; // to be changed to production url
