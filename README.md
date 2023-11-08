@@ -33,3 +33,17 @@ Run
 npm start // under frontend folder
 ```
 Then you'll see the website in [http://localhost:3000](http://localhost:3000). If not, just open the link.
+
+## Backend
+Create the server on the port 4000
+```bash=
+cd backend
+yarn server
+```
+
+Use curl command to test our server.
+Ex:
+```bash=
+curl http://127.0.0.1:4000
+```
+You will get "hello world" from the server.
