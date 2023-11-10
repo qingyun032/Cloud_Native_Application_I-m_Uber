@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+// import bcrypt from "bcryptjs";
 
 interface UserData {
     username: string;
@@ -42,6 +43,22 @@ export const SignUp = (props: SignUpProps) => {
         passwordConfirm: "",
     });
 
+    const fieldLabels: { [key: string]: string } = {
+        username: 'User Name',
+        email: 'Email',
+        phone: 'Phone Number',
+        password: 'Password',
+        gender: 'Gender',
+        home: 'Home Address',
+        company: 'Company Address',
+        passwordConfirm: 'Password Confirmation',
+    };
+
+    const toSignIn = () => {
+        setErrorMessage('None');
+        setIsSignIn(true);
+    };
+
     const handleInputChange = (field: keyof UserData, value: string | boolean) => {
         setUserData((prevUserData) => ({
             ...prevUserData,
@@ -49,19 +66,37 @@ export const SignUp = (props: SignUpProps) => {
         }));
     };
     
+    // TODO: password hashing package can't be installed
     const handleRegister = async () => {
+        const missingFields = Object.keys(userData).filter((field) => userData[field as keyof typeof userData] === '');
+        if (missingFields.length > 0) {
+            const missingFieldLabels = missingFields.map((field) => fieldLabels[field]).join(', ');
+            setErrorMessage(`Please fill in the following required fields: ${missingFieldLabels}`);
+            return;
+        }
+        
+        if (userData.password !== userData.passwordConfirm) {
+            setErrorMessage('Password and Confirm Password do not match');
+            return;
+        }
+        // const salt = bcrypt.genSaltSync(10);
+        // const passwordHashed = await create(password, salt);
+        
+        const passwordHashed = "123";
+        const userDataWithHashedPassword = {
+            ...userData,
+            password: passwordHashed,
+        };
+        const { passwordConfirm, ...userDataForApi } = userDataWithHashedPassword;
+
         try {
-            // TODO: Error handling
-            // TODO: password hashing
-            console.log(userData)
-            if (userData.password !== userData.passwordConfirm) {
-                setErrorMessage('Password and Confirm Password do not match');
-                return;
-            }
-            // await userSignUp(userData);
-        } catch (error) {
-            console.error('Registration failed', error);
-            setErrorMessage('Registration failed');
+            const signUpRes = await userSignUp(userDataForApi);
+            setErrorMessage('None');
+            setIsSignIn(true);
+        }
+        catch (error) {
+            console.error(error);
+            return;
         }
     };
 
@@ -83,7 +118,7 @@ export const SignUp = (props: SignUpProps) => {
                             name="username"
                             autoComplete="username"
                             value={userData.username}
-                            onChange={(e) => handleInputChange('username', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('username', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                             autoFocus
                         />
@@ -97,7 +132,7 @@ export const SignUp = (props: SignUpProps) => {
                             name="email"
                             autoComplete="email"
                             value={userData.email}
-                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         Phone Number
@@ -110,7 +145,7 @@ export const SignUp = (props: SignUpProps) => {
                             name="phone"
                             autoComplete="phone"
                             value={userData.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('phone', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         Gender
@@ -118,7 +153,7 @@ export const SignUp = (props: SignUpProps) => {
                             row
                             name="gender"
                             value={userData.gender}
-                            onChange={(e) => handleInputChange('gender', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('gender', e.target.value)}
                         >
                             <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
                             <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
@@ -146,7 +181,7 @@ export const SignUp = (props: SignUpProps) => {
                             name="home"
                             autoComplete="home"
                             value={userData.home}
-                            onChange={(e) => handleInputChange('home', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('home', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                             autoFocus
                         />
@@ -160,7 +195,7 @@ export const SignUp = (props: SignUpProps) => {
                             name="company"
                             autoComplete="company"
                             value={userData.company}
-                            onChange={(e) => handleInputChange('company', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('company', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         Password
@@ -169,11 +204,11 @@ export const SignUp = (props: SignUpProps) => {
                             required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="Password Confirmation"
                             type="password"
                             id="password"
                             value={userData.password}
-                            onChange={(e) => handleInputChange('password', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         Confirm your Password
@@ -183,10 +218,10 @@ export const SignUp = (props: SignUpProps) => {
                             fullWidth
                             name="passwordConfirm"
                             label="Password"
-                            type="passwordConfirm"
+                            type="password"
                             id="passwordConfirm"
                             value={userData.passwordConfirm}
-                            onChange={(e) => handleInputChange('passwordConfirm', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('passwordConfirm', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         <Button
@@ -213,7 +248,7 @@ export const SignUp = (props: SignUpProps) => {
                     <Grid item>
                         <p>
                             {"Already have an Account? "}
-                            <b onClick={()=>setIsSignIn(true)}>Login</b>
+                            <b onClick={toSignIn}>Login</b>
                         </p>
                     </Grid>
                 </Grid>

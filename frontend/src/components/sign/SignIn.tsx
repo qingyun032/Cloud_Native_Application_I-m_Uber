@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { userSignIn } from "../../apis/sign.api";
 import Button from '@mui/material/Button';
@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+// import bcrypt from "bcryptjs";
 
 type SignInProps = {
     errorMessage: string;
@@ -19,22 +20,85 @@ type SignInProps = {
 
 export const SignIn = (props: SignInProps) => {
     const { setIsSignIn, errorMessage, setErrorMessage } = props;
+    // const [rememberMe, setRememberMe] = useState(false);
+    // useEffect(() => {
+    //     const storedToken = localStorage.getItem('authToken');
+    //     if (storedToken) {
+    //         // Navigate to the authenticated page
+    //         navigate('/home', { state: { isDriver: false, name: 'Joey' } });
+    //     }
+    // }, []);
+
     const navigate = useNavigate()
-    const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
+
+    const toSignUp = () => {
+        setErrorMessage("None");
+        setIsSignIn(false);
+    }
+
+    const validate = (async(passwordInput: string, hashedPasswordFromBackend: string) => {
+        try {
+            // const passwordMatches = await bcrypt.compare(passwordInput, hashedPasswordFromBackend);
+            const passwordMatches = true;
+            if (passwordMatches) {
+                console.log('password correct');
+                return true;
+            } else {
+                console.log('password incorrect');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error during password validation:', error);
+            return false;
+        }
+    })
+
+    // TODO: password hashing package can't be installed
+    // TODO: Remember me function if needed
+    // TODO: No need to relogin when refresh if needed
+    const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            username: data.get('username'),
-            password: data.get('password'),
-        });
-        try {
-            // TODO: Error handling
-            // TODO: password hashing
-            // await userSignIn(data);
-            navigate('/home', { state: { isDriver: false, name: 'Joey' }})
+        const username = data.get('username') as string;
+        const password = data.get('password') as string;
+
+        if (username === "") {
+            setErrorMessage("User Name field required.");
+            return;
+        } else if (password === "") {
+            setErrorMessage("Password field required.");
+            return;
         }
+
+        try {
+            const hashedPasswordFromBackend = await userSignIn(username);
+
+            if (!hashedPasswordFromBackend) {
+                setErrorMessage('User name not found.');
+                return;
+            }
+
+            const passwordMatches = await validate(password, hashedPasswordFromBackend)
+            if (passwordMatches) {
+                setErrorMessage('None');
+
+                // if (rememberMe) {
+                //     // Store authentication state in local storage
+                //     localStorage.setItem('authToken', 'yourAuthTokenHere');
+                // } else {
+                //     // Clear any previous authentication state
+                //     localStorage.removeItem('authToken');
+                // }
+
+                navigate('/home', { state: { isDriver: false, name: 'Joey' } });
+            } 
+            else {
+                setErrorMessage('Incorrect password.');
+            }
+        } 
         catch (error) {
-            console.log(error);
+            console.error(error);
+            return;
         }
     };
 
@@ -69,7 +133,15 @@ export const SignIn = (props: SignInProps) => {
                     sx={{ mb: 1.5, mt: 1 }}
                 />
                 <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" size="small" />}
+                    control={
+                        <Checkbox
+                            value="remember"
+                            color="primary"
+                            size="small"
+                            // checked={rememberMe}
+                            // onChange={(e) => setRememberMe(e.target.checked)}
+                        />
+                    }
                     label="Remember me"
                 />
                 <Button
@@ -85,7 +157,7 @@ export const SignIn = (props: SignInProps) => {
                     <Grid item>
                         <p>
                             {"Don't have an account? "}
-                            <b onClick={()=>setIsSignIn(false)}>Register</b>
+                            <b onClick={toSignUp}>Register</b>
                         </p>
                     </Grid>
                 </Grid>
