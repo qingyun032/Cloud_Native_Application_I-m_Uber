@@ -61,12 +61,18 @@ export const SignIn = (props: SignInProps) => {
         const data = new FormData(event.currentTarget);
         const username = data.get('username') as string;
         const password = data.get('password') as string;
+        const requiredFields = [
+            { field: 'User Name', value: username },
+            { field: 'Password', value: password },
+        ];
 
-        if (username === "") {
-            setErrorMessage("User Name field required.");
-            return;
-        } else if (password === "") {
-            setErrorMessage("Password field required.");
+        const missingFields = requiredFields.filter(({ value }) => value === '');
+        if (missingFields.length > 0) {
+            const missingFieldLabels = missingFields.map(({ field }) => field).join(', ');
+            if (missingFields.length === 1)
+                setErrorMessage(`Please fill in the following required field: ${missingFieldLabels}`);
+            else
+                setErrorMessage(`Please fill in the following required fields: ${missingFieldLabels}`);
             return;
         }
 

@@ -71,7 +71,10 @@ export const SignUp = (props: SignUpProps) => {
         const missingFields = Object.keys(userData).filter((field) => userData[field as keyof typeof userData] === '');
         if (missingFields.length > 0) {
             const missingFieldLabels = missingFields.map((field) => fieldLabels[field]).join(', ');
-            setErrorMessage(`Please fill in the following required fields: ${missingFieldLabels}`);
+            if (missingFields.length === 1)
+                setErrorMessage(`Please fill in the following required field: ${missingFieldLabels}`);
+            else
+                setErrorMessage(`Please fill in the following required fields: ${missingFieldLabels}`);
             return;
         }
         
