@@ -33,9 +33,6 @@ export const SignInPage = () => {
   const [isSignIn, setIsSignIn] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState("None")
   const navigate = useNavigate()
-  const onClick = () => {
-      navigate('/home', { state: { isDriver: false, name: 'Joey' }})
-  }
 
   return (
     <>
