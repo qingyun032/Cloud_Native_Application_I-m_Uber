@@ -24,6 +24,20 @@ enum ProfileStatus {
   CarInfo = "carInfo",
 }
 
+const user = {
+  name: "example",
+  email: "123@gmail.com",
+  phone: "0900000000",
+  gender: "Male",
+  home: "台北市中正區思源街16-3號",
+  company: "桃園市龍潭區龍園六路101號",
+  wallet: "$100",
+  start: "台北市中正區思源街16-3號",
+  destination: "桃園市龍潭區龍園六路101號",
+  time: "9:00 a.m.",
+  people: 2
+}
+
 export const ProfilePage = () => {
   // const {state} = useLocation();
   // const { isDriver, name } = state;
@@ -56,9 +70,9 @@ export const ProfilePage = () => {
                 minHeight: "70vh"
               }}
             >
-              {status === "home" && <ProfileSelection setStatus = {setStatus} />}
-              {status === "userInfo" && <UserInfo setStatus={setStatus} />}
-              {status === "favRoute" && <FavRoute setStatus={setStatus} />}
+              {status === "home" && <ProfileSelection setStatus={setStatus} />}
+              {status === "userInfo" && <UserInfo setStatus={setStatus} User={user}/>}
+              {status === "favRoute" && <FavRoute setStatus={setStatus} User={user}/>}
             </Box>
           </Container>
         </div>

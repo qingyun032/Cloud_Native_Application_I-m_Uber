@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import styles from "./ProfileSelection.module.scss";
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
