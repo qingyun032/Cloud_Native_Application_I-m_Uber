@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useRef, RefObject } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -18,26 +18,60 @@ const Text = styled(TextField)({
   width: "275px"
 })
 
+type user = {
+  name: string;
+  email: string;
+  phone: string;
+  gender: string;
+  home: string;
+  company: string;
+  wallet: string;
+  start: string;
+  destination: string;
+  time: string;
+  people: string;
+}
+
 type FavRouteProps = {
   setStatus: (status: string) => void;
-  User: {
-    name: string;
-    email: string;
-    phone: string;
-    gender: string;
-    home: string;
-    company: string;
-    wallet: string;
-    start: string;
-    destination: string;
-    time: string;
-    people: number;
-  };
+  user: user;
+  setUser: (user: user) => void;
 }
 
 export const FavRoute = (props: FavRouteProps) => {
-  const { setStatus, User } = props;
+  const { setStatus, user, setUser } = props;
   const [ readonly, setReadonly ] = useState<boolean>(true);
+  const [ buttonText, setButtonText ] = useState<string>("Edit");
+  const refs: { [key:string]: RefObject<HTMLDivElement> } = {
+    start: useRef<HTMLDivElement>(null),
+    destination: useRef<HTMLDivElement>(null),
+    time: useRef<HTMLDivElement>(null),
+    people: useRef<HTMLDivElement>(null),
+  }
+
+  const buttonClick = () => {
+    if(buttonText === "Edit"){
+      setButtonText("Update");
+      setReadonly(false);
+    }else{
+      setButtonText("Edit");
+      setReadonly(true);
+      setUser({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        home: user.home,
+        company: user.company,
+        wallet: user.wallet,
+        start: refs["start"].current?.getElementsByTagName("input")[0].value ?? user.start,
+        destination: refs["destination"].current?.getElementsByTagName("input")[0].value ?? user.destination,
+        time: refs["time"].current?.getElementsByTagName("input")[0].value ?? user.time,
+        people: refs["people"].current?.getElementsByTagName("input")[0].value ?? user.people
+      });
+    }
+  }
+
   return (
     <>
       <Typography component="h1" variant="h5" color="primary">
@@ -49,9 +83,6 @@ export const FavRoute = (props: FavRouteProps) => {
           alignItems: "center",
           flexDirection: "column",
           justifyContent: 'space-evenly',
-          // border: "solid",
-          // borderColor: "#e0e0e0",
-          // borderRadius: "10px",
           pt: "20px",
           pb: "20px",
           minHeight: "75vh"
@@ -60,7 +91,8 @@ export const FavRoute = (props: FavRouteProps) => {
         <Text
           id="start"
           label="Start"
-          defaultValue={User.start}
+          defaultValue={user.start}
+          ref={refs["start"]}
           variant="standard"
           InputProps={{
             readOnly: readonly,
@@ -72,7 +104,8 @@ export const FavRoute = (props: FavRouteProps) => {
         <Text
           id="destination"
           label="Destination"
-          defaultValue={User.destination}
+          defaultValue={user.destination}
+          ref={refs["destination"]}
           variant="standard"
           InputProps={{
             readOnly: readonly,
@@ -84,7 +117,9 @@ export const FavRoute = (props: FavRouteProps) => {
         <Text
           id="time"
           label="Time"
-          defaultValue={User.time}
+          type="time"
+          defaultValue={user.time}
+          ref={refs["time"]}
           variant="standard"
           InputProps={{
             readOnly: readonly,
@@ -96,7 +131,9 @@ export const FavRoute = (props: FavRouteProps) => {
         <Text
           id="people"
           label="Number of people"
-          defaultValue={User.people}
+          type="number"
+          defaultValue={user.people}
+          ref={refs["people"]}
           variant="standard"
           InputProps={{
             readOnly: readonly,
@@ -105,7 +142,7 @@ export const FavRoute = (props: FavRouteProps) => {
             }
           }}
         />
-        <MidButton variant="contained" >Edit</MidButton>
+        <MidButton variant="contained" onClick={() => buttonClick()} >{buttonText}</MidButton>
         <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
       </Box>
     </>

@@ -24,24 +24,23 @@ enum ProfileStatus {
   CarInfo = "carInfo",
 }
 
-const user = {
-  name: "example",
-  email: "123@gmail.com",
-  phone: "0900000000",
-  gender: "Male",
-  home: "台北市中正區思源街16-3號",
-  company: "桃園市龍潭區龍園六路101號",
-  wallet: "$100",
-  start: "台北市中正區思源街16-3號",
-  destination: "桃園市龍潭區龍園六路101號",
-  time: "9:00 a.m.",
-  people: 2
-}
-
 export const ProfilePage = () => {
   // const {state} = useLocation();
   // const { isDriver, name } = state;
-  const [status, setStatus] = useState<string>(ProfileStatus.Home);
+  const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
+  const [ user, setUser ] = useState({
+    name: "example",
+    email: "123@gmail.com",
+    phone: "0900000000",
+    gender: "Male",
+    home: "台北市中正區思源街16-3號",
+    company: "桃園市龍潭區龍園六路101號",
+    wallet: "100",
+    start: "台北市中正區思源街16-3號",
+    destination: "桃園市龍潭區龍園六路101號",
+    time: "09:00",
+    people: "2"
+  });
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -71,8 +70,8 @@ export const ProfilePage = () => {
               }}
             >
               {status === "home" && <ProfileSelection setStatus={setStatus} />}
-              {status === "userInfo" && <UserInfo setStatus={setStatus} User={user}/>}
-              {status === "favRoute" && <FavRoute setStatus={setStatus} User={user}/>}
+              {status === "userInfo" && <UserInfo setStatus={setStatus} user={user} setUser={setUser}/>}
+              {status === "favRoute" && <FavRoute setStatus={setStatus} user={user} setUser={setUser}/>}
             </Box>
           </Container>
         </div>

@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import InputAdornment from '@mui/material/InputAdornment';
 import { styled } from '@mui/material/styles';
 
 
@@ -23,28 +24,30 @@ const SelectItem = styled(MenuItem)({
   fontSize: "14px"
 })
 
+type user = {
+  name: string;
+  email: string;
+  phone: string;
+  gender: string;
+  home: string;
+  company: string;
+  wallet: string;
+  start: string;
+  destination: string;
+  time: string;
+  people: string;
+}
+
 type UserInfoProps = {
   setStatus: (status: string) => void;
-  User: {
-    name: string;
-    email: string;
-    phone: string;
-    gender: string;
-    home: string;
-    company: string;
-    wallet: string;
-    start: string;
-    destination: string;
-    time: string;
-    people: number;
-  };
+  user: user;
+  setUser: (user: user) => void;
 }
 
 export const UserInfo = (props: UserInfoProps) => {
-  const { setStatus, User } = props;
+  const { setStatus, user, setUser } = props;
   const [ readonly, setReadonly ] = useState<boolean>(true);
   const [ buttonText, setButtonText ] = useState<string>("Edit");
-  const [ user, setUser ] = useState(User);
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     name: useRef<HTMLDivElement>(null),
     email: useRef<HTMLDivElement>(null),
@@ -125,6 +128,18 @@ export const UserInfo = (props: UserInfoProps) => {
             <SelectItem value={"Female"}>Female</SelectItem>
             <SelectItem value={"Other"}>Other</SelectItem>
           </Text>
+          :
+          (id === "wallet")?
+          <Text
+            key={id}
+            id={id}
+            label={label}
+            type="number"
+            defaultValue={user}
+            ref={refs[id]}
+            variant="standard"
+            InputProps={{...inputProps, startAdornment: <InputAdornment position="start">$</InputAdornment>}}
+          />
           :
           <Text
             key={id}
