@@ -3,35 +3,31 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
 const dotenv = require('dotenv');
+dotenv.config();
+
 const sequelize = require('./config/database');
 const carInfoRouter = require('./routes/carInfo');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
-dotenv.config();
-
 const app = express()
 
 app.use(cors())
 app.use(bodyParser.json());
-
 // Session configuration
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false
 }));
-
-
-
+// Set Router
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/carInfo', carInfoRouter);
 app.use('/api/v1/users', userRouter);
-
+// Connect to the database and create the server
 sequelize.sync()
     .then(() => {
         console.log('Database and tables have been created!');
-        
-        const port = process.env.PORT || 4000;
+        const port = process.env.PORT;
         app.listen(port, () => {
             console.log(`Server is running on port ${port}`);
         });
