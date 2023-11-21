@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
 import { styled } from '@mui/material/styles';
-
+import { NavigationBar } from '../navigation/NavigationBar';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -99,6 +99,7 @@ export const UserInfo = (props: UserInfoProps) => {
 
   return (
     <>
+      <NavigationBar></NavigationBar>
       <Typography component="h1" variant="h5" color="primary">
         User Info
       </Typography>

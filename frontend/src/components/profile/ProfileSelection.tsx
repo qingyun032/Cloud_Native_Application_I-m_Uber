@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { NavigationBar } from '../navigation/NavigationBar';
 
 type ProfileSelectionProps = {
   setStatus: (status: string) => void;
@@ -25,6 +26,7 @@ export const ProfileSelection = (props: ProfileSelectionProps) => {
   }
   return (
     <>
+      <NavigationBar></NavigationBar>
       <Typography component="h1" variant="h5" color="primary">
         User Profile
       </Typography>

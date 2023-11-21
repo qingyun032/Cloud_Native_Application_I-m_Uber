@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
+import { NavigationBar } from '../navigation/NavigationBar';
 
 
 const MidButton = styled(Button)({
@@ -74,6 +75,7 @@ export const FavRoute = (props: FavRouteProps) => {
 
   return (
     <>
+      <NavigationBar></NavigationBar>
       <Typography component="h1" variant="h5" color="primary">
         Favorite Route
       </Typography>
