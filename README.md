@@ -64,3 +64,65 @@ You will get "hello world" from the server.
 
 ### set .env
 You can define your own environment variables in backend/.env (Note that .env should not be pushed to the remote github)
+
+
+### API
+1. POST /api/v1/auth/signup
+```json
+{
+    "userName": "Leo",
+    "email": "leo@gamil.com",
+    "password": "Leopassword",
+    "isDriver": "YES",
+    "gender": "M",
+    "phone": "0912-345-678",
+    "carPlate": "ABCD-8349",
+    "walletID": "ESA9345XRW2WRT",
+    "address": "No. 1, Sec. 4, Roosevelt Rd., Daan Dist., Taipei City 106319, Taiwan (R.O.C.)",
+    "seat": 4,
+    "brand": "BMW 320i",
+    "color": 1,
+    "electric": "YES"
+}
+```
+2. POST /api/v1/auth/signin
+```json
+{
+    "email": "leo@gamil.com",
+    "password": "Leopassword"
+}
+```
+3. GET /api/v1/users/myInfo
+```json
+{
+    "userID": 32,
+    "userName": "Leo",
+    "email": "leo@gamil.com",
+    "isDriver": "YES",
+    "gender": "M",
+    "phone": "0912-345-678",
+    "address": "No. 1, Sec. 4, Roosevelt Rd., Daan Dist., Taipei City 106319, Taiwan (R.O.C.)",
+    "nCancel": 0,
+    "walletID": "ESA9345XRW2WRT",
+    "rating": null,
+    "carPlate": "ABCD-8349",
+    "CarInfo": {
+        "carPlate": "ABCD-8349",
+        "seat": 4,
+        "brand": "BMW 320i",
+        "color": 1,
+        "electric": "YES"
+    },
+    "Wallet": {
+        "walletID": "ESA9345XRW2WRT",
+        "balance": 0
+    }
+}
+```
+4. POST /api/v1/users/rating
+```json
+{
+    "driverID": 32,
+    "rating": 4.5
+}
+```

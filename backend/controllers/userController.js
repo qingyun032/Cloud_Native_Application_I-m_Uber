@@ -68,10 +68,25 @@ async function deleteUser(req, res) {
     }
 }
 
+async function updateRating(req, res) {
+    const driverID = req.body.driverID;
+    const userData = req.body;
+    
+    try {
+        await userService.updateUser(driverID, userData);
+        res.status(200).json({ "message": "Rating successfully"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     updateUser,
     deleteUser,
+    updateRating,
 };

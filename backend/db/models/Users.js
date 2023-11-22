@@ -1,28 +1,31 @@
 const DataTypes = require('sequelize');
 const sequelize = require('../../config/database');
-
+const CarInfo = require('./CarInfo')
+const Wallet = require('./Wallet')
 module.exports = ((sequelize, DataTypes) => {
     const User = sequelize.define('Users', {
-        id: {
+        userID: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        username: DataTypes.STRING,
+        userName: DataTypes.STRING,
         email: DataTypes.STRING,
         password: DataTypes.STRING,
         isDriver: DataTypes.ENUM('YES', 'NO'),
         gender: DataTypes.ENUM('M', 'F'),
         phone: DataTypes.STRING,
         address: DataTypes.STRING,
-        cancel_t: DataTypes.INTEGER
+        nCancel: DataTypes.INTEGER,
+        walletID: DataTypes.STRING,
+        rating: DataTypes.DECIMAL,
+        carPlate: DataTypes.STRING
     }, {
         timestamps: false,
         createdAt: false,
         updatedAt: false,
     });
-
-    // User.hasOne(sequelize.models.CarInfo, { foreignKey: 'driver_id' });
-    // User.hasOne(sequelize.models.Wallet, { foreignKey: 'user_id' });
+    User.belongsTo(CarInfo, { foreignKey: 'carPlate' });
+    User.belongsTo(Wallet, { foreignKey: 'walletID' });
     return User;
 })(sequelize, DataTypes);

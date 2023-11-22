@@ -13,25 +13,38 @@ async function signup(userData, req) {
 
         // Create the user and hash the password
         const hashedPassword = await bcrypt.hash(userData.password, 10);
-        console.log(userData);
         const user = await User.create({
-            id: userData.id,
-            username: userData.username,
+            userName: userData.userName,
             email: userData.email,
             password: hashedPassword,
             isDriver: userData.isDriver,
             gender: userData.gender,
             phone: userData.phone,
             address: userData.address,
-            cancel_t: 0
+            rating: userData.rating,
+            carPlate: userData.carPlate,
+            walletID: userData.walletID,
+            nCancel: 0
         });
-
+        await Wallet.create({
+            walletID: userData.walletID,
+            balance: 0
+        })
+        if(userData.isDriver == 'YES'){
+            await CarInfo.create({
+                carPlate: userData.carPlate,
+                seat: userData.seat,
+                brand: userData.brand,
+                color: userData.color,
+                electric: userData.electric
+            });
+        }
         // Set the user's session variable
-        req.session.userId = user.id;
+        req.session.userId = user.userID;
 
-        return user;
+        return "Sign up successfully";
     } catch (error) {
-        throw new Error('Error occurred while registering the user');
+        throw error;
     }
 }
 
@@ -43,8 +56,12 @@ async function signin(credentials, req) {
         // Return the generated token
         // This is a simplified example; actual business logic may be more complex
 
-        const { id, password } = credentials;
-        const user = await User.findByPk(id);
+        const { email, password } = credentials;
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        });
         if (!user) {
             throw new Error('User does not exist');
         }
@@ -56,11 +73,11 @@ async function signin(credentials, req) {
         }
 
         // Set the user's session variable
-        req.session.userId = user.id;
+        req.session.userId = user.userID;
 
         return 'Login successful';
     } catch (error) {
-        throw new Error('Error occurred while logging in');
+        throw error;
     }
 }
 

@@ -6,10 +6,9 @@ async function signup(req, res) {
 
     try {
         // Call the signup service function to register the user
-        const user = await authService.signup(userData, req);
+        const message = await authService.signup(userData, req);
 
-        // Respond with the registered user's information
-        res.status(201).json(user);
+        res.status(201).json( {message} );
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

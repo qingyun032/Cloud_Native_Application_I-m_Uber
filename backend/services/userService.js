@@ -1,10 +1,14 @@
 const User = require('../db/models/Users');
-// const CarInfo = require('../db/models/carInfo')
-
-
+const CarInfo = require('../db/models/CarInfo');
+const Wallet = require('../db/models/Wallet');
 async function getAllUsers() {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({
+            include: [
+                CarInfo,
+                Wallet
+            ]
+        });
         return users;
     } catch (error) {
         throw new Error('An error occurred while acquiring the user');
@@ -14,7 +18,13 @@ async function getAllUsers() {
 
 async function getUserById(userId) {
     try {
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId, {
+            include: [
+                CarInfo,
+                Wallet
+            ],
+            attributes: { exclude: ['password'] }
+        });
         if (!user) {
             throw new Error('User not found');
         }
@@ -41,9 +51,13 @@ async function updateUser(userId, userData) {
         if (!user) {
             throw new Error('User not found');
         }
-        
-        user.username = userData.username;
-        user.password = userData.password;
+        for (const property in user["dataValues"]) {            
+            if(userData[property]){
+                user[property] = userData[property];
+            }
+                
+        }
+       
         await user.save();
         return user;
     } catch (error) {
