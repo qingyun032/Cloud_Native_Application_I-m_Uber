@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
@@ -36,9 +35,6 @@ export const ProfileSelection = (props: ProfileSelectionProps) => {
           alignItems: "center",
           flexDirection: "column",
           justifyContent: 'space-evenly',
-          // border: "solid",
-          // borderColor: "#e0e0e0",
-          // borderRadius: "10px",
           pt: "20px",
           pb: "20px",
           minHeight: "50vh"
@@ -47,13 +43,6 @@ export const ProfileSelection = (props: ProfileSelectionProps) => {
         <BigButton variant='contained' onClick={() => setStatus("userInfo")}>User Info</BigButton>
         <BigButton variant='contained' onClick={() => setStatus("favRoute")}>Favorite Route</BigButton>
       </Box>
-      {/* Profile Selection
-      <div>
-        <Button variant="contained" onClick={()=>setStatus("userInfo")}>User Info</Button>
-      </div>
-      <div className={styles["test"]}>
-        <Button variant="contained" onClick={onClick}>Home</Button>
-      </div> */}
     </>
   );
 }

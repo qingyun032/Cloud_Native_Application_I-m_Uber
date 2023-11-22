@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState } from 'react';
 import { useLocation } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -28,6 +27,7 @@ export const ProfilePage = () => {
   // const {state} = useLocation();
   // const { isDriver, name } = state;
   const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
+  // TODO: use context or parent page pass user information
   const [ user, setUser ] = useState({
     name: "example",
     email: "123@gmail.com",
@@ -76,8 +76,6 @@ export const ProfilePage = () => {
           </Container>
         </div>
       </ThemeProvider>
-      {/* {status === "home" && <ProfileSelection setStatus={setStatus} />}
-      {status === "userInfo" && <UserInfo setStatus={setStatus} />} */}
     </>
   );
 }

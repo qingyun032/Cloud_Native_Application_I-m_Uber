@@ -57,6 +57,7 @@ export const NavigationBar = () => {
   const location = useLocation();
   console.log(location);
   const [open, setOpen] = useState(false);
+  // TODO: get isDriver from user infomation
   const [isDriver, setIsDriver] = useState(false);
   const navigate = useNavigate();
 
@@ -146,15 +147,16 @@ export const NavigationBar = () => {
           <ListItem key="Switch" disablePadding>
             <ListItemButton
               sx={{ borderRadius: "5px" }}
-              onClick={() => setIsDriver(!isDriver)}
+              onClick={() => setIsDriver(!isDriver)}    // TODO: need to modify user infomation
             >
+              {/* TODO: need to check location to decide visibility */}
               <ListItemText sx={{ textAlign: 'center' }} primary={(isDriver)? "Switch to passenger" : "Switch to Driver"} />
             </ListItemButton>
           </ListItem>
           <ListItem key="LogOut" disablePadding>
             <ListItemButton
               sx={{ borderRadius: "5px" }}
-              onClick={() => onClick("/", {})}
+              onClick={() => onClick("/", {})}          // TODO: pass args if any
             >
               <ListItemText primaryTypographyProps={{ textAlign: 'center', color: '#86744C', fontWeight: 'bold' }} primary="Log out" />
             </ListItemButton>

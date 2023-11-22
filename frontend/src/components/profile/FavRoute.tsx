@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useRef, RefObject } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -15,10 +14,7 @@ const MidButton = styled(Button)({
   width: "275px"
 });
 
-const Text = styled(TextField)({
-  width: "275px"
-})
-
+// TODO: use global define user type
 type user = {
   name: string;
   email: string;
@@ -41,8 +37,7 @@ type FavRouteProps = {
 
 export const FavRoute = (props: FavRouteProps) => {
   const { setStatus, user, setUser } = props;
-  const [ readonly, setReadonly ] = useState<boolean>(true);
-  const [ buttonText, setButtonText ] = useState<string>("Edit");
+  const [ edit, setEdit ] = useState<boolean>(false);
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
     destination: useRef<HTMLDivElement>(null),
@@ -50,13 +45,23 @@ export const FavRoute = (props: FavRouteProps) => {
     people: useRef<HTMLDivElement>(null),
   }
 
-  const buttonClick = () => {
-    if(buttonText === "Edit"){
-      setButtonText("Update");
-      setReadonly(false);
-    }else{
-      setButtonText("Edit");
-      setReadonly(true);
+  const Text = styled(TextField)({
+    width: "275px",
+    label: {
+      color: (edit)? "#313944" : "darkgrey",
+      fontWeight: "bold",
+    },
+  })
+
+  const inputProps = {
+    disabled: !edit,
+    style: {
+      fontSize: "14px",
+    },
+  }
+
+  const editClick = () => {
+    if(edit){
       setUser({
         name: user.name,
         email: user.email,
@@ -71,6 +76,7 @@ export const FavRoute = (props: FavRouteProps) => {
         people: refs["people"].current?.getElementsByTagName("input")[0].value ?? user.people
       });
     }
+    setEdit(!edit);
   }
 
   return (
@@ -96,12 +102,7 @@ export const FavRoute = (props: FavRouteProps) => {
           defaultValue={user.start}
           ref={refs["start"]}
           variant="standard"
-          InputProps={{
-            readOnly: readonly,
-            style: {
-              fontSize: "14px"
-            }
-          }}
+          InputProps={inputProps}
         />
         <Text
           id="destination"
@@ -109,12 +110,7 @@ export const FavRoute = (props: FavRouteProps) => {
           defaultValue={user.destination}
           ref={refs["destination"]}
           variant="standard"
-          InputProps={{
-            readOnly: readonly,
-            style: {
-              fontSize: "14px"
-            }
-          }}
+          InputProps={inputProps}
         />
         <Text
           id="time"
@@ -123,12 +119,7 @@ export const FavRoute = (props: FavRouteProps) => {
           defaultValue={user.time}
           ref={refs["time"]}
           variant="standard"
-          InputProps={{
-            readOnly: readonly,
-            style: {
-              fontSize: "14px"
-            }
-          }}
+          InputProps={inputProps}
         />
         <Text
           id="people"
@@ -137,21 +128,11 @@ export const FavRoute = (props: FavRouteProps) => {
           defaultValue={user.people}
           ref={refs["people"]}
           variant="standard"
-          InputProps={{
-            readOnly: readonly,
-            style: {
-              fontSize: "14px"
-            }
-          }}
+          InputProps={inputProps}
         />
-        <MidButton variant="contained" onClick={() => buttonClick()} >{buttonText}</MidButton>
-        <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+        <MidButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</MidButton>
+        <MidButton variant="contained" onClick={() => setStatus("home")} style={{background: "#9C694C"}}>Back</MidButton>
       </Box>
     </>
-    // <div>
-    //   Favorite route
-    //   <Button variant="contained">Update</Button>
-    //   <Button variant="contained" onClick={()=>setStatus("home")}>Back</Button>
-    // </div>
   );
 }
