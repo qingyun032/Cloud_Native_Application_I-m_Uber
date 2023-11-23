@@ -10,6 +10,21 @@ import { PassengerRoute } from './PassengerRoute';
 import { DriverRoute } from './DriverRoute';
 
 // TODO: use global define user type
+type favRoute = {
+  passenger: {
+    start: string,
+    destination: string,
+    time: string,
+    people: string,
+  },
+  driver: {
+    start: string,
+    destination: string,
+    time: string,
+    stops: Array<string>,
+  }
+}
+
 type car = {
   brand: string,
   type: string,
@@ -18,18 +33,15 @@ type car = {
 }
 
 type user = {
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  home: string;
-  company: string;
-  wallet: string;
-  start: string;
-  destination: string;
-  time: string;
-  people: string;
+  name: string,
+  email: string,
+  phone: string,
+  gender: string,
+  home: string,
+  company: string,
+  wallet: string,
   driver: boolean,
+  favRoute: favRoute,
   car: car
 }
 

@@ -13,6 +13,21 @@ const MidButton = styled(Button)({
 });
 
 // TODO: use global define user type
+type favRoute = {
+  passenger: {
+    start: string,
+    destination: string,
+    time: string,
+    people: string,
+  },
+  driver: {
+    start: string,
+    destination: string,
+    time: string,
+    stops: Array<string>,
+  }
+}
+
 type car = {
   brand: string,
   type: string,
@@ -21,18 +36,15 @@ type car = {
 }
 
 type user = {
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  home: string;
-  company: string;
-  wallet: string;
-  start: string;
-  destination: string;
-  time: string;
-  people: string;
+  name: string,
+  email: string,
+  phone: string,
+  gender: string,
+  home: string,
+  company: string,
+  wallet: string,
   driver: boolean,
+  favRoute: favRoute,
   car: car
 }
 
@@ -79,10 +91,15 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
     if(edit){
       setUser({
         ...user,
-        start: refs["start"].current?.getElementsByTagName("input")[0].value ?? user.start,
-        destination: refs["destination"].current?.getElementsByTagName("input")[0].value ?? user.destination,
-        time: refs["time"].current?.getElementsByTagName("input")[0].value ?? user.time,
-        people: refs["people"].current?.getElementsByTagName("input")[0].value ?? user.people
+        favRoute: {
+          passenger: {
+            start: refs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.start,
+            destination: refs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.destination,
+            time: refs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.time,
+            people: refs["people"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.people
+          },
+          driver: {...user.favRoute.driver}
+        },
       });
     }
     setEdit(!edit);
@@ -93,7 +110,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
       <Text
         id="start"
         label="Start"
-        defaultValue={user.start}
+        defaultValue={user.favRoute.passenger.start}
         ref={refs["start"]}
         variant="standard"
         InputProps={inputProps}
@@ -101,7 +118,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
       <Text
         id="destination"
         label="Destination"
-        defaultValue={user.destination}
+        defaultValue={user.favRoute.passenger.destination}
         ref={refs["destination"]}
         variant="standard"
         InputProps={inputProps}
@@ -110,7 +127,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={user.time}
+        defaultValue={user.favRoute.passenger.time}
         ref={refs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -119,7 +136,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="people"
         label="Number of people"
         type="number"
-        defaultValue={user.people}
+        defaultValue={user.favRoute.passenger.people}
         ref={refs["people"]}
         variant="standard"
         InputProps={inputProps}

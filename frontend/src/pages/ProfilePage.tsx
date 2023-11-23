@@ -36,11 +36,21 @@ export const ProfilePage = () => {
     home: "台北市中正區思源街16-3號",
     company: "桃園市龍潭區龍園六路101號",
     wallet: "100",
-    start: "台北市中正區思源街16-3號",
-    destination: "桃園市龍潭區龍園六路101號",
-    time: "09:00",
-    people: "2",
     driver: true,
+    favRoute: {
+      passenger: {
+        start: "台北市中正區思源街16-3號",
+        destination: "桃園市龍潭區龍園六路101號",
+        time: "09:00",
+        people: "2",
+      },
+      driver: {
+        start: "台北市中正區思源街16-3號",
+        destination: "桃園市龍潭區龍園六路101號",
+        time: "10:00",
+        stops: ["1", "2", "3"],
+      }
+    },
     car: {brand: "Mercedes-Benz", type: "Sedan", seat: "4", license: "ABC-9999"},
   });
   return (

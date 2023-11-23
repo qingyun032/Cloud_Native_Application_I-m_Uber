@@ -1,6 +1,7 @@
 import { useState, useRef, RefObject } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
 
 
@@ -13,6 +14,21 @@ const MidButton = styled(Button)({
 });
 
 // TODO: use global define user type
+type favRoute = {
+  passenger: {
+    start: string,
+    destination: string,
+    time: string,
+    people: string,
+  },
+  driver: {
+    start: string,
+    destination: string,
+    time: string,
+    stops: Array<string>,
+  }
+}
+
 type car = {
   brand: string,
   type: string,
@@ -21,21 +37,17 @@ type car = {
 }
 
 type user = {
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  home: string;
-  company: string;
-  wallet: string;
-  start: string;
-  destination: string;
-  time: string;
-  people: string;
+  name: string,
+  email: string,
+  phone: string,
+  gender: string,
+  home: string,
+  company: string,
+  wallet: string,
   driver: boolean,
+  favRoute: favRoute,
   car: car
 }
-
 
 type DriverRouteProps = {
   setStatus: (status: string) => void;
@@ -52,6 +64,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
     time: useRef<HTMLDivElement>(null),
     people: useRef<HTMLDivElement>(null),
   }
+
+  const stopList = ["台灣大學", "家樂福新店店", "家樂福北大店", "1", "2", "3"];
 
   const Text = styled(TextField)({
     width: "275px",
@@ -79,10 +93,15 @@ export const DriverRoute = (props: DriverRouteProps) => {
     if(edit){
       setUser({
         ...user,
-        start: refs["start"].current?.getElementsByTagName("input")[0].value ?? user.start,
-        destination: refs["destination"].current?.getElementsByTagName("input")[0].value ?? user.destination,
-        time: refs["time"].current?.getElementsByTagName("input")[0].value ?? user.time,
-        people: refs["people"].current?.getElementsByTagName("input")[0].value ?? user.people
+        favRoute:{
+          driver: {
+            start: refs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.start,
+            destination: refs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.destination,
+            time: refs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.time,
+            stops: user.favRoute.driver.stops,
+          },
+          passenger: {...user.favRoute.passenger},
+        },
       });
     }
     setEdit(!edit);
@@ -93,7 +112,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="start"
         label="Start"
-        defaultValue={user.start}
+        defaultValue={user.favRoute.driver.start}
         ref={refs["start"]}
         variant="standard"
         InputProps={inputProps}
@@ -101,7 +120,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="destination"
         label="Destination"
-        defaultValue={user.destination}
+        defaultValue={user.favRoute.driver.destination}
         ref={refs["destination"]}
         variant="standard"
         InputProps={inputProps}
@@ -110,19 +129,24 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={user.time}
+        defaultValue={user.favRoute.driver.time}
         ref={refs["time"]}
         variant="standard"
         InputProps={inputProps}
       />
-      <Text
-        id="people"
-        label="Number of people"
-        type="number"
-        defaultValue={user.people}
-        ref={refs["people"]}
-        variant="standard"
-        InputProps={inputProps}
+      <Autocomplete
+        multiple
+        id="stops"
+        options={stopList}
+        defaultValue={user.favRoute.driver.stops}
+        disabled={!edit}
+        renderInput={(params) => (
+          <Text
+            {...params}
+            variant="standard"
+            label="Stops"
+          />
+        )}
       />
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
       <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
