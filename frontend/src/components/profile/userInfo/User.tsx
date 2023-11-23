@@ -1,12 +1,9 @@
 import { useState, useRef, RefObject } from 'react';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
-import { styled } from '@mui/material/styles';
-import { NavigationBar } from '../navigation/NavigationBar';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -28,6 +25,13 @@ const SelectItem = styled(MenuItem)({
 })
 
 // TODO: use global define user type
+type car = {
+  brand: string,
+  type: string,
+  seat: string,
+  license: string
+}
+
 type user = {
   name: string;
   email: string;
@@ -40,15 +44,17 @@ type user = {
   destination: string;
   time: string;
   people: string;
+  driver: boolean,
+  car: car
 }
 
-type UserInfoProps = {
+type UserProps = {
   setStatus: (status: string) => void;
   user: user;
   setUser: (user: user) => void;
 }
 
-export const UserInfo = (props: UserInfoProps) => {
+export const User = (props: UserProps) => {
   const { setStatus, user, setUser } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
@@ -73,6 +79,7 @@ export const UserInfo = (props: UserInfoProps) => {
 
   const Text = styled(TextField)({
     width: "275px",
+    paddingBottom: "10px",
     input: {
       color: "#000000",
     },
@@ -106,18 +113,13 @@ export const UserInfo = (props: UserInfoProps) => {
   const editClick = () => {
     if(edit){
       setUser({
+        ...user,
         name: refs["name"].current?.getElementsByTagName("input")[0].value ?? user.name,
         email: refs["email"].current?.getElementsByTagName("input")[0].value ?? user.email,
         phone: refs["phone"].current?.getElementsByTagName("input")[0].value ?? user.phone,
         gender: refs["gender"].current?.getElementsByTagName("input")[0].value ?? user.gender,
         home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
         company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
-        // wallet: refs["wallet"].current?.getElementsByTagName("input")[0].value ?? user.wallet,
-        wallet: user.wallet,
-        start: user.start,
-        destination: user.destination,
-        time: user.time,
-        people: user.people
       })
     }
     setEdit(!edit);
@@ -131,65 +133,49 @@ export const UserInfo = (props: UserInfoProps) => {
 
   return (
     <>
-      <NavigationBar></NavigationBar>
-      <Typography component="h1" variant="h5" color="primary">
-        User Info
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          justifyContent: 'space-evenly',
-          pt: "20px",
-          pb: "20px",
-          minHeight: "75vh"
-        }}
-      >
-        {textMap.map(({ id, label, user }) => (
-          (id === "gender")? 
-          <Text
-            select
-            id={id}
-            label={label}
-            defaultValue={user}
-            ref={refs[id]}
-            variant="standard"
-            InputProps={inputProps}
-          >
-            <SelectItem value={"Male"}>Male</SelectItem>
-            <SelectItem value={"Female"}>Female</SelectItem>
-            <SelectItem value={"Other"}>Other</SelectItem>
-          </Text>
-          :
-          (id === "wallet")?
-          <Text
-            key={id}
-            id={id}
-            label={label}
-            type="number"
-            defaultValue={user}
-            ref={refs[id]}
-            variant="standard"
-            InputProps={{...walletProps, startAdornment: <InputAdornment position="start">$</InputAdornment>}}
-          />
-          :
-          <Text
-            key={id}
-            id={id}
-            label={label}
-            defaultValue={user}
-            ref={refs[id]}
-            variant="standard"
-            InputProps={inputProps}
-          />
-        ))}
-        <div style={{ width: "275px", display: 'flex', justifyContent: 'space-between', marginTop: '10px', marginBottom: '5px' }}>
-          <HalfButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</HalfButton>
-          <HalfButton variant="contained" onClick={() => topUpClick()}>{(topUp)? "Comfirm" : "Top up"}</HalfButton>
-        </div>
-        <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
-      </Box>
+      {textMap.map(({ id, label, user }) => (
+        (id === "gender")? 
+        <Text
+          select
+          id={id}
+          label={label}
+          defaultValue={user}
+          ref={refs[id]}
+          variant="standard"
+          InputProps={inputProps}
+        >
+          <SelectItem value={"Male"}>Male</SelectItem>
+          <SelectItem value={"Female"}>Female</SelectItem>
+          <SelectItem value={"Other"}>Other</SelectItem>
+        </Text>
+        :
+        (id === "wallet")?
+        <Text
+          key={id}
+          id={id}
+          label={label}
+          type="number"
+          defaultValue={user}
+          ref={refs[id]}
+          variant="standard"
+          InputProps={{...walletProps, startAdornment: <InputAdornment position="start">$</InputAdornment>}}
+        />
+        :
+        <Text
+          key={id}
+          id={id}
+          label={label}
+          defaultValue={user}
+          ref={refs[id]}
+          variant="standard"
+          InputProps={inputProps}
+        />
+      ))}
+      <div style={{ width: "275px", display: 'flex', justifyContent: 'space-between', marginTop: '10px', marginBottom: '5px' }}>
+        <HalfButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</HalfButton>
+        <HalfButton variant="contained" onClick={() => topUpClick()}>{(topUp)? "Comfirm" : "Top up"}</HalfButton>
+      </div>
+      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
     </>
   );
 }

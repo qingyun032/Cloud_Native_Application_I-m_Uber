@@ -5,8 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { ProfileSelection } from "../components/profile/ProfileSelection";
-import { UserInfo } from "../components/profile/UserInfo";
-import { FavRoute } from '../components/profile/FavRoute';
+import { UserInfo } from "../components/profile/userInfo/UserInfo";
+import { FavRoute } from '../components/profile/favRoute/FavRoute';
 
 const theme = createTheme({
   palette: {
@@ -39,7 +39,9 @@ export const ProfilePage = () => {
     start: "台北市中正區思源街16-3號",
     destination: "桃園市龍潭區龍園六路101號",
     time: "09:00",
-    people: "2"
+    people: "2",
+    driver: true,
+    car: {brand: "Mercedes-Benz", type: "Sedan", seat: "4", license: "ABC-9999"},
   });
   return (
     <>
@@ -49,7 +51,6 @@ export const ProfilePage = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
             minHeight: '95vh',
           }}
         >
@@ -60,10 +61,9 @@ export const ProfilePage = () => {
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
-                justifyContent: "center",
                 ml: 3,
                 mr: 3,
-                pt: "10px",
+                pt: "30px",
                 pl: "20px",
                 pr: "20px",
                 minHeight: "70vh"
