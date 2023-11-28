@@ -5,15 +5,15 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { user } from '../../../models/user.model';
+import { userInfo } from '../../../models/user.model';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { PassengerRoute } from './PassengerRoute';
 import { DriverRoute } from './DriverRoute';
 
 type FavRouteProps = {
   setStatus: (status: string) => void;
-  user: user;
-  setUser: (user: user) => void;
+  user: userInfo;
+  setUser: (user: userInfo) => void;
 }
 
 export const FavRoute = (props: FavRouteProps) => {

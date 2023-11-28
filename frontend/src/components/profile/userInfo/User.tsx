@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
-import { user } from '../../../models/user.model';
+import { userInfo } from '../../../models/user.model';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -27,8 +27,8 @@ const SelectItem = styled(MenuItem)({
 
 type UserProps = {
   setStatus: (status: string) => void;
-  user: user;
-  setUser: (user: user) => void;
+  user: userInfo;
+  setUser: (user: userInfo) => void;
 }
 
 export const User = (props: UserProps) => {

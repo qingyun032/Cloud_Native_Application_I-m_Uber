@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { user, userMode } from '../models/user.model';
+import { userInfo, userMode } from '../models/user.model';
 import { ProfileSelection } from "../components/profile/ProfileSelection";
 import { UserInfo } from "../components/profile/userInfo/UserInfo";
 import { FavRoute } from '../components/profile/favRoute/FavRoute';
@@ -29,7 +29,7 @@ export const ProfilePage = () => {
   // const { isDriver, name } = state;
   const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
   // TODO: use context or parent page pass user information
-  const [ user, setUser ] = useState<user>({
+  const [ user, setUser ] = useState<userInfo>({
     name: "example",
     email: "123@gmail.com",
     phone: "0900000000",

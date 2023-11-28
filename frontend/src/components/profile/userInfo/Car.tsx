@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
-import { user } from '../../../models/user.model';
+import { userInfo } from '../../../models/user.model';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -15,8 +15,8 @@ const MidButton = styled(Button)({
 
 type CarProps = {
   setStatus: (status: string) => void;
-  user: user;
-  setUser: (user: user) => void;
+  user: userInfo;
+  setUser: (user: userInfo) => void;
 }
 
 export const Car = (props: CarProps) => {

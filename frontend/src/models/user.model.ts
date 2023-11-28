@@ -37,7 +37,7 @@ export enum userMode {
     Driver = "driver"
 }
   
-export type user = {
+export type userInfo = {
     name: string,
     email: string,
     phone: string,
@@ -46,8 +46,18 @@ export type user = {
     company: string,
     wallet: string,
     driver: boolean,        // Whether driver is verified
-    mode: userMode,           // Which mode is this user use ("driver"/"passenger")
+    mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
     favRoute: favRoute,
     car: car
 };
+
+export type user = {
+    password: string;
+    username: string;
+    email: string;
+    phone: string;
+    gender: string;
+    home: string;
+    company: string;
+}
   

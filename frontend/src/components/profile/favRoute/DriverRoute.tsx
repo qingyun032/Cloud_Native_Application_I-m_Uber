@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
 
-import { user } from '../../../models/user.model';
+import { userInfo } from '../../../models/user.model';
 
 
 const MidButton = styled(Button)({
@@ -17,8 +17,8 @@ const MidButton = styled(Button)({
 
 type DriverRouteProps = {
   setStatus: (status: string) => void;
-  user: user;
-  setUser: (user: user) => void;
+  user: userInfo;
+  setUser: (user: userInfo) => void;
 }
 
 export const DriverRoute = (props: DriverRouteProps) => {
