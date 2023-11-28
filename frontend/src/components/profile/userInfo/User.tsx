@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
+import { user } from '../../../models/user.model';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -23,42 +24,6 @@ const HalfButton = styled(Button)({
 const SelectItem = styled(MenuItem)({
   fontSize: "14px"
 })
-
-// TODO: use global define user type
-type favRoute = {
-  passenger: {
-    start: string,
-    destination: string,
-    time: string,
-    people: string,
-  },
-  driver: {
-    start: string,
-    destination: string,
-    time: string,
-    stops: Array<string>,
-  }
-}
-
-type car = {
-  brand: string,
-  type: string,
-  seat: string,
-  license: string
-}
-
-type user = {
-  name: string,
-  email: string,
-  phone: string,
-  gender: string,
-  home: string,
-  company: string,
-  wallet: string,
-  driver: boolean,
-  favRoute: favRoute,
-  car: car
-}
 
 type UserProps = {
   setStatus: (status: string) => void;

@@ -2,6 +2,7 @@ import { useState, useRef, RefObject } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
+import { user } from '../../../models/user.model';
 
 
 const MidButton = styled(Button)({
@@ -11,43 +12,6 @@ const MidButton = styled(Button)({
   width: "275px",
   background: "#9C694C",
 });
-
-// TODO: use global define user type
-type favRoute = {
-  passenger: {
-    start: string,
-    destination: string,
-    time: string,
-    people: string,
-  },
-  driver: {
-    start: string,
-    destination: string,
-    time: string,
-    stops: Array<string>,
-  }
-}
-
-type car = {
-  brand: string,
-  type: string,
-  seat: string,
-  license: string
-}
-
-type user = {
-  name: string,
-  email: string,
-  phone: string,
-  gender: string,
-  home: string,
-  company: string,
-  wallet: string,
-  driver: boolean,
-  favRoute: favRoute,
-  car: car
-}
-
 
 type PassengerRouteProps = {
   setStatus: (status: string) => void;

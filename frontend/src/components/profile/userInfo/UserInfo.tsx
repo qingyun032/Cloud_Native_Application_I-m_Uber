@@ -5,45 +5,10 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import { user } from '../../../models/user.model';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { User } from './User';
 import { Car } from './Car';
-
-// TODO: use global define user type
-type favRoute = {
-  passenger: {
-    start: string,
-    destination: string,
-    time: string,
-    people: string,
-  },
-  driver: {
-    start: string,
-    destination: string,
-    time: string,
-    stops: Array<string>,
-  }
-}
-
-type car = {
-  brand: string,
-  type: string,
-  seat: string,
-  license: string
-}
-
-type user = {
-  name: string,
-  email: string,
-  phone: string,
-  gender: string,
-  home: string,
-  company: string,
-  wallet: string,
-  driver: boolean,
-  favRoute: favRoute,
-  car: car
-}
 
 type UserInfoProps = {
   setStatus: (status: string) => void;

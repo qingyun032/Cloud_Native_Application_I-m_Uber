@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import { user, userMode } from '../models/user.model';
 import { ProfileSelection } from "../components/profile/ProfileSelection";
 import { UserInfo } from "../components/profile/userInfo/UserInfo";
 import { FavRoute } from '../components/profile/favRoute/FavRoute';
@@ -28,7 +29,7 @@ export const ProfilePage = () => {
   // const { isDriver, name } = state;
   const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
   // TODO: use context or parent page pass user information
-  const [ user, setUser ] = useState({
+  const [ user, setUser ] = useState<user>({
     name: "example",
     email: "123@gmail.com",
     phone: "0900000000",
@@ -37,6 +38,7 @@ export const ProfilePage = () => {
     company: "桃園市龍潭區龍園六路101號",
     wallet: "100",
     driver: true,
+    mode: userMode.Driver,
     favRoute: {
       passenger: {
         start: "台北市中正區思源街16-3號",
