@@ -5,6 +5,7 @@ import createTheme from '@mui/material/styles/createTheme';
 import React from 'react'
 import { CandidateInfo } from '../pages/PassengerCandidatePage';
 import { useNavigate } from 'react-router-dom';
+import styled from '@emotion/styled';
 
 const theme = createTheme({
   palette: {
@@ -64,12 +65,12 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 {candidate.driver.name}
               </Typography>
               <Divider/>
-              <Typography sx={{ mt:2 }}>Ratings</Typography>
+              <Typography sx={{ mt:2 }}>Trip Time</Typography>
               <Typography variant='h5'>
-                {candidate.driver.rating}
+                {candidate.departureTime} ~ {candidate.arrivalTime}
               </Typography>
               <Divider/>
-              <Typography sx={{ mt:2 }}>Stop</Typography>
+              <Typography sx={{ mt:2 }}>Departure Stop</Typography>
               <Typography variant='h5'>
                 {candidate.stop}
               </Typography>
@@ -79,12 +80,17 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 {candidate.destination}
               </Typography>
               <Divider/>
-              <Typography sx={{ mt:2 }}>Car</Typography>
+              <Typography sx={{ mt:2 }}>Car Model</Typography>
               <Typography variant='h5'>
                 {candidate.car}
               </Typography>
               <Divider/>
-              <Typography sx={{ mt:2 }}>Money</Typography>
+              <Typography sx={{ mt:2 }}>Ratings</Typography>
+              <Typography variant='h5'>
+                {candidate.driver.rating}
+              </Typography>
+              <Divider/>
+              <Typography sx={{ mt:2 }}>Cost</Typography>
               <Typography variant='h5'>
                 {candidate.money}
               </Typography>
@@ -98,7 +104,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 }}
                 onClick={toPassengerMatched}
               >
-                Confirm
+                Confirm and pay
               </Button>
               <Button 
                 variant='contained' 

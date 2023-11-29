@@ -48,7 +48,7 @@ function MyRating( props: RatingProps ) {
           }}
           onClick={handleClick}
         >
-          Go back to home page
+          Send Ratings & Go back to home page
         </Button>
       </Box>
     </>
