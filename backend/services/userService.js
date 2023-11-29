@@ -34,6 +34,20 @@ async function getUserById(userId) {
     }
 }
 
+async function getUserByIdWithAttributes(userId, attributes) {
+    try {
+        const user = await User.findByPk(userId, {
+            attributes: attributes,
+        });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    } catch (error) {
+        throw new Error('An error occurred while acquiring the user');
+    }
+}
+
 
 async function createUser(userData) {
     try {
@@ -45,19 +59,13 @@ async function createUser(userData) {
 }
 
 
-async function updateUser(userId, userData) {
+async function updateUser(userID, userData) {
     try {
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userID);
         if (!user) {
             throw new Error('User not found');
         }
-        for (const property in user["dataValues"]) {            
-            if(userData[property]){
-                user[property] = userData[property];
-            }
-                
-        }
-       
+        user.set(userData);
         await user.save();
         return user;
     } catch (error) {
@@ -84,4 +92,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    getUserByIdWithAttributes
 };

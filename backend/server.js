@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const sequelize = require('./config/database');
-const carInfoRouter = require('./routes/carInfo');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const app = express()
@@ -21,7 +20,6 @@ app.use(session({
 }));
 // Set Router
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/carInfo', carInfoRouter);
 app.use('/api/v1/users', userRouter);
 // Connect to the database and create the server
 sequelize.sync()

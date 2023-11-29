@@ -2,8 +2,8 @@ const DataTypes = require('sequelize');
 const sequelize = require('../../config/database');
 
 const Wallet = sequelize.define('Wallet', {
-    walletID: {
-        type: DataTypes.STRING,
+    userID: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
     },
     balance: {

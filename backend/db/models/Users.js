@@ -15,10 +15,11 @@ module.exports = ((sequelize, DataTypes) => {
         isDriver: DataTypes.ENUM('YES', 'NO'),
         gender: DataTypes.ENUM('M', 'F'),
         phone: DataTypes.STRING,
-        address: DataTypes.STRING,
+        addressHome: DataTypes.STRING,
+        addressCompany: DataTypes.STRING,
         nCancel: DataTypes.INTEGER,
-        walletID: DataTypes.STRING,
-        rating: DataTypes.DECIMAL,
+        ratingTotalScore: DataTypes.INTEGER,
+        nRating: DataTypes.INTEGER,
         carPlate: DataTypes.STRING
     }, {
         timestamps: false,
@@ -26,6 +27,6 @@ module.exports = ((sequelize, DataTypes) => {
         updatedAt: false,
     });
     User.belongsTo(CarInfo, { foreignKey: 'carPlate' });
-    User.belongsTo(Wallet, { foreignKey: 'walletID' });
+    User.hasOne(Wallet, { foreignKey: 'userID' });
     return User;
 })(sequelize, DataTypes);

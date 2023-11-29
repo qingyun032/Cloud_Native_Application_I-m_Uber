@@ -10,8 +10,7 @@ async function signup(req, res) {
 
         res.status(201).json( {message} );
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
+        res.status(401).json({ error: error.message });
     }
 }
 
@@ -31,7 +30,13 @@ async function signin(req, res) {
     }
 }
 
+
+async function signout(req, res) {
+    req.session.userId = null
+    res.status(200).json({ message: "Logout successfully" });
+}
 module.exports = {
     signup,
     signin,
+    signout
 };

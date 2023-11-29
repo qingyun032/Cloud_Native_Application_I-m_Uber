@@ -13,11 +13,12 @@ CREATE TABLE IF NOT EXISTS Users (
     isDriver ENUM('YES', 'NO'),
     gender ENUM('M', 'F'),
     phone VARCHAR(31),
-    `address` VARCHAR(127),
+    addressHome VARCHAR(127),
+    addressCompany VARCHAR(127),
     nCancel INT,
-    rating DECIMAL(2,1),
-    carPlate VARCHAR(15),
-    WalletID VARCHAR(255) 
+    ratingTotalScore INT,
+    nRating INT,
+    carPlate VARCHAR(15)
 );
 
 Create TABLE IF NOT EXISTS CarInfo(
@@ -29,9 +30,10 @@ Create TABLE IF NOT EXISTS CarInfo(
 );
 
 Create TABLE IF NOT EXISTS Wallet(
-    walletID VARCHAR(255) PRIMARY KEY,
+    userID PRIMARY KEY,
     balance INT
     -- Creditcard_Num VARCHAR(255),
+    FOREIGN KEY(userID) REFERENCES Users(userID)
 );
 
 Create TABLE IF NOT EXISTS Stops(

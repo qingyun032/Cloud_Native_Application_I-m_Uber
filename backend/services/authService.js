@@ -6,30 +6,16 @@ const bcrypt = require('bcrypt');
 // Service function to register a new user
 async function signup(userData, req) {
     try {
-        // Execute business logic for user registration here
-        // For example, create a new user record and hash the password
-        // Return the created user information
-        // This is a simplified example; actual business logic may be more complex
-
         // Create the user and hash the password
         const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const user = await User.create({
-            userName: userData.userName,
-            email: userData.email,
-            password: hashedPassword,
-            isDriver: userData.isDriver,
-            gender: userData.gender,
-            phone: userData.phone,
-            address: userData.address,
-            rating: userData.rating,
-            carPlate: userData.carPlate,
-            walletID: userData.walletID,
-            nCancel: 0
+        const checkExist = await User.count({
+            where: {
+                userName: userData.userName
+            }
         });
-        await Wallet.create({
-            walletID: userData.walletID,
-            balance: 0
-        })
+        if(checkExist != 0){
+            throw new Error('User name has already been used.');
+        }
         if(userData.isDriver == 'YES'){
             await CarInfo.create({
                 carPlate: userData.carPlate,
@@ -39,8 +25,24 @@ async function signup(userData, req) {
                 electric: userData.electric
             });
         }
-        // Set the user's session variable
-        req.session.userId = user.userID;
+        const user = await User.create({
+            userName: userData.userName,
+            email: userData.email,
+            password: hashedPassword,
+            isDriver: userData.isDriver,
+            gender: userData.gender,
+            phone: userData.phone,
+            addressHome: userData.addressHome,
+            addressCompany: userData.addressCompany,
+            ratingTotalScore: 0,
+            nRating: 0,
+            carPlate: userData.carPlate,
+            nCancel: 0
+        });
+        await Wallet.create({
+            userID: user.userID,
+            balance: 0
+        })
 
         return "Sign up successfully";
     } catch (error) {
@@ -51,15 +53,10 @@ async function signup(userData, req) {
 // Service function to log in a user
 async function signin(credentials, req) {
     try {
-        // Execute business logic for user login here
-        // For example, validate user information and generate an authentication token
-        // Return the generated token
-        // This is a simplified example; actual business logic may be more complex
-
-        const { email, password } = credentials;
+        const { userName, password } = credentials;
         const user = await User.findOne({
             where: {
-                email: email
+                userName: userName
             }
         });
         if (!user) {
