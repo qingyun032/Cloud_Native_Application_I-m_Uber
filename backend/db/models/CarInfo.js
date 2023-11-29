@@ -9,7 +9,7 @@ module.exports = ((sequelize, DataTypes) => {
             allowNull: false,
         },
         seat: DataTypes.INTEGER,
-        brand: DataTypes.STRING,
+        brand: DataTypes.INTEGER,
         color: DataTypes.INTEGER,
         electric: DataTypes.ENUM('YES', 'NO')
     }, {

@@ -22,7 +22,8 @@ async function getMyInfo(req, res) {
     try {
         userService.getUserById(userId).then((user)=>{
             const returnUser = user.toJSON();
-            returnUser.rating = (user.ratingTotalScore/user.nRating).toFixed(1);
+            if(user.nRating == 0) returnUser.rating = "0.0";
+            else returnUser.rating = (user.ratingTotalScore/user.nRating).toFixed(1);
             delete returnUser.ratingTotalScore;
             delete returnUser.nRating;
             res.status(200).json(returnUser);
@@ -78,14 +79,16 @@ async function updateDriver(req, res) {
                 "electric": req.body.electric,
                 "seat": req.body.seat
             }
-            await carInfoService.updateCarInfo(carInfoUpdateData);
+            await carInfoService.updateCarInfo(req.body.carPlate, carInfoUpdateData);
         }
         const userUpdateData = {
             "email": req.body.email,
             "gender": req.body.gender,
             "phone": req.body.phone,
             "addressHome": req.body.addressHome,
-            "addressCompany": req.body.addressCompany
+            "addressCompany": req.body.addressCompany,
+            "isDriver": "YES",
+            "carPlate": req.body.carPlate
         }
         await userService.updateUser(userID, userUpdateData);
         res.status(200).json({ message: "Update driver successfully" });
@@ -120,7 +123,7 @@ async function updatePassenger(req, res) {
     }
 
     try {
-        await userService.updateP(userID, updateData);
+        await userService.updateUser(userID, updateData);
         res.status(200).json({ message: 'Update passenger successfully'});
     } catch (error) {
         if(error.message == 'User not found'){

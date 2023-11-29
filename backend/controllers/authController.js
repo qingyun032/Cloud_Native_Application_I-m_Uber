@@ -32,7 +32,7 @@ async function signin(req, res) {
 
 
 async function signout(req, res) {
-    req.session.userId = null
+    req.session.userId = null;
     res.status(200).json({ message: "Logout successfully" });
 }
 module.exports = {

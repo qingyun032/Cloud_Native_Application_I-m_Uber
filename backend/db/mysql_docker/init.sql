@@ -24,16 +24,16 @@ CREATE TABLE IF NOT EXISTS Users (
 Create TABLE IF NOT EXISTS CarInfo(
     carPlate VARCHAR(15) PRIMARY KEY,
     seat INT,
-    brand VARCHAR(63),
+    brand INT,
     color INT,
     electric ENUM('YES', 'NO')
 );
 
 Create TABLE IF NOT EXISTS Wallet(
-    userID PRIMARY KEY,
-    balance INT
+    userID INT PRIMARY KEY,
+    balance INT,
     -- Creditcard_Num VARCHAR(255),
-    FOREIGN KEY(userID) REFERENCES Users(userID)
+    FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 Create TABLE IF NOT EXISTS Stops(
@@ -50,9 +50,9 @@ Create TABLE IF NOT EXISTS Reocrd(
     `date` DATETIME,
     `start` INT,
     destination INT,
-    price INT(15),
+    price INT,
     FOREIGN KEY(userID) REFERENCES Users(userID),
-    FOREIGN KEY(start) REFERENCES Stops(stopID),
+    FOREIGN KEY(`start`) REFERENCES Stops(stopID),
     FOREIGN KEY(destination) REFERENCES Stops(stopID)
 );
 

@@ -27,6 +27,9 @@ module.exports = ((sequelize, DataTypes) => {
         updatedAt: false,
     });
     User.belongsTo(CarInfo, { foreignKey: 'carPlate' });
-    User.hasOne(Wallet, { foreignKey: 'userID' });
+    User.hasOne(Wallet, { 
+        foreignKey: 'userID',
+        onDelete: 'CASCADE'
+    });
     return User;
 })(sequelize, DataTypes);

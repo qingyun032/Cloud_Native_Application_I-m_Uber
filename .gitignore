@@ -144,3 +144,4 @@ ehthumbs.db
 *.swp
 .DS_Store
 
+backend/yarn.lock
