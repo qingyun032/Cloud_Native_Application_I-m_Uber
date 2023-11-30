@@ -40,8 +40,8 @@ Create TABLE IF NOT EXISTS Stops(
     stopID INT AUTO_INCREMENT PRIMARY KEY,
     `Name` VARCHAR(63),
     `address` VARCHAR(255),
-    latitude DECIMAL(10, 8),
-    longitude DECIMAL(10, 8)
+    latitude DECIMAL(20, 17),
+    longitude DECIMAL(20, 17)
 );
 
 Create TABLE IF NOT EXISTS Reocrd(
@@ -56,7 +56,8 @@ Create TABLE IF NOT EXISTS Reocrd(
     FOREIGN KEY(destination) REFERENCES Stops(stopID)
 );
 
--- Insert some data into the table
--- INSERT INTO users (username, email) VALUES
---     ('john_doe', 'john@example.com'),
---     ('jane_doe', 'jane@example.com');
+-- Insert some initailize Stops into the table
+INSERT INTO Stops (`Name`, `address`, latitude, longitude)
+VALUES
+('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
