@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Users (
     email VARCHAR(31),
     `password` VARCHAR(255),
     isDriver ENUM('YES', 'NO'),
-    gender ENUM('M', 'F'),
+    gender ENUM('M', 'F', 'O'),
     phone VARCHAR(31),
     addressHome VARCHAR(127),
     addressCompany VARCHAR(127),

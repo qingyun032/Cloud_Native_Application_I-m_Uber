@@ -13,7 +13,7 @@ module.exports = ((sequelize, DataTypes) => {
         email: DataTypes.STRING,
         password: DataTypes.STRING,
         isDriver: DataTypes.ENUM('YES', 'NO'),
-        gender: DataTypes.ENUM('M', 'F'),
+        gender: DataTypes.ENUM('M', 'F', 'O'),
         phone: DataTypes.STRING,
         addressHome: DataTypes.STRING,
         addressCompany: DataTypes.STRING,
