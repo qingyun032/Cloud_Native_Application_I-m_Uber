@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { userSignIn } from "../../apis/sign.api";
+import { signIn } from "../../apis/sign.api";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-// import bcrypt from "bcryptjs";
+import {userSignIn} from "../../models/user.model";
 
 type SignInProps = {
     errorMessage: string;
@@ -20,14 +18,6 @@ type SignInProps = {
 
 export const SignIn = (props: SignInProps) => {
     const { setIsSignIn, errorMessage, setErrorMessage } = props;
-    // const [rememberMe, setRememberMe] = useState(false);
-    // useEffect(() => {
-    //     const storedToken = localStorage.getItem('authToken');
-    //     if (storedToken) {
-    //         // Navigate to the authenticated page
-    //         navigate('/home', { state: { isDriver: false, name: 'Joey' } });
-    //     }
-    // }, []);
 
     const navigate = useNavigate()
 
@@ -36,26 +26,6 @@ export const SignIn = (props: SignInProps) => {
         setIsSignIn(false);
     }
 
-    const validate = (async(passwordInput: string, hashedPasswordFromBackend: string) => {
-        try {
-            // const passwordMatches = await bcrypt.compare(passwordInput, hashedPasswordFromBackend);
-            const passwordMatches = true;
-            if (passwordMatches) {
-                console.log('password correct');
-                return true;
-            } else {
-                console.log('password incorrect');
-                return false;
-            }
-        } catch (error) {
-            console.error('Error during password validation:', error);
-            return false;
-        }
-    })
-
-    // TODO: password hashing package can't be installed
-    // TODO: Remember me function if needed
-    // TODO: No need to relogin when refresh if needed
     const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -65,6 +35,10 @@ export const SignIn = (props: SignInProps) => {
             { field: 'User Name', value: username },
             { field: 'Password', value: password },
         ];
+        const user: userSignIn = {
+            userName: username,
+            password: password
+        }
 
         const missingFields = requiredFields.filter(({ value }) => value === '');
         if (missingFields.length > 0) {
@@ -77,33 +51,18 @@ export const SignIn = (props: SignInProps) => {
         }
 
         try {
-            const hashedPasswordFromBackend = await userSignIn(username);
-
-            if (!hashedPasswordFromBackend) {
-                setErrorMessage('User name not found.');
-                return;
-            }
-
-            const passwordMatches = await validate(password, hashedPasswordFromBackend)
-            if (passwordMatches) {
-                setErrorMessage('None');
-
-                // if (rememberMe) {
-                //     // Store authentication state in local storage
-                //     localStorage.setItem('authToken', 'yourAuthTokenHere');
-                // } else {
-                //     // Clear any previous authentication state
-                //     localStorage.removeItem('authToken');
-                // }
-
-                navigate('/home', { state: { isDriver: false, name: 'Joey' } });
-            } 
-            else {
-                setErrorMessage('Incorrect password.');
-            }
+            const response = await signIn(user);
+            setErrorMessage("None");
         } 
-        catch (error) {
-            console.error(error);
+        catch (error: any) {
+            if (error.response.status === 401) {
+                if (error.response.data.message === "User does not exist") {
+                    setErrorMessage("User not found, please sign up first");
+                }
+                else if (error.response.data.message === "Incorrect password") {
+                    setErrorMessage("Incorrect password");
+                }
+            }
             return;
         }
     };
@@ -137,18 +96,6 @@ export const SignIn = (props: SignInProps) => {
                     id="password"
                     autoComplete="current-password"
                     sx={{ mb: 1.5, mt: 1 }}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            value="remember"
-                            color="primary"
-                            size="small"
-                            // checked={rememberMe}
-                            // onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                    }
-                    label="Remember me"
                 />
                 <Button
                     type="submit"
