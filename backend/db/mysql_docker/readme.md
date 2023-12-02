@@ -4,6 +4,7 @@
 
 Remember add the .env file and add the desired password to your Dockerfile.
 Otherwise, there will be an error!
+==================================
 
 ```shell
 sudo docker build -t my_uber_database_image .
