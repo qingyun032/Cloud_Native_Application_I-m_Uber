@@ -18,3 +18,11 @@ mysql -h 127.0.0.1 -P 8080 -u root -p
 # If you cannot run the first line:
 docker pull mysql:8.0.35
 ```
+
+>>>>>>> file)
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
