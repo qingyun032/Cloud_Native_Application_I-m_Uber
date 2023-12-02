@@ -1,22 +1,21 @@
-export type passenger = {
+export type userSignIn = {
     userName: string;
-    isMale: boolean;
-    // to be added
-};
-
-export type driver = {
-    userName: string;
-    isMale: boolean;
-    // to be added
-};
-
-export type user = {
     password: string;
-    username: string;
+};
+
+export type userSignUp = {
+    userName: string;
     email: string;
-    phone: string;
+    password: string;
+    isDriver: boolean;
     gender: string;
-    home: string;
-    company: string;
+    phone: string;
+    carPlate: string;
+    addressHome: string;
+    addressCompany: string;
+    seat: number;
+    brand: number;
+    color: number;
+    electric: boolean;
 }
   
