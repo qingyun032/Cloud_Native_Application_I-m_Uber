@@ -174,8 +174,8 @@ module.exports = {
     getAllUsers,
     getMyInfo,
     createUser,
-    updateDriver,
     deleteUser,
+    updateDriver,
+    updatePassenger,
     updateRating,
-    updatePassenger
 };
