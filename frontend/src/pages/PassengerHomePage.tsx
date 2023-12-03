@@ -6,11 +6,13 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import dayjs, { Dayjs } from 'dayjs';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 const theme = createTheme({
@@ -25,7 +27,6 @@ const theme = createTheme({
     typography: {
       fontFamily: [
         'Poppins',
-        // 'sans-serif'
       ].join(',')
     }
 });
@@ -33,9 +34,9 @@ const theme = createTheme({
 interface ItineraryData {
   start: string;
   destination: string;
-  passengerCount: number;
-  // date: Dayjs;
-  // time: Dayjs;
+  passengerCount: string;
+  date: Dayjs | null;
+  time: Dayjs | null;
 }
 
 export const PassengerHomePage = () => {
@@ -49,15 +50,17 @@ export const PassengerHomePage = () => {
   const [itineraryData, setItineraryData] = useState({
     start: "",
     destination: "",
-    passengerCount: 1,
+    passengerCount: "1",
+    date: dayjs(),
+    time: dayjs(),
   });
 
-  const handleInputChange = (field: keyof ItineraryData, value: string | number) => {
+  const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
     setItineraryData((prevItineraryData) => ({
         ...prevItineraryData,
         [field]: value,
     }));
-    console.log(itineraryData)
+    console.log(itineraryData.time)
   };
 
 
@@ -75,108 +78,97 @@ export const PassengerHomePage = () => {
               height: "90px",
             }}
           ></Box>
-          <Container 
-            sx={{
-              width: 0.8
-            }}
-          >
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column"
-            minHeight="80vh"
-          >
-            <div>
-              <Typography variant="h4" fontWeight="bold">
-                Start journey 
-              </Typography>
-              <Button variant="contained" 
-                sx={{
-                  textTransform : "none",
-                  mb: 2, mt: 2,
-                }}
-              >
-                Use favorite route
-              </Button>
+          <Container sx={{ width: 0.8 }} >
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+              minHeight="80vh"
+            >
               <div>
-                Start
-                <TextField
-                  fullWidth
-                  label="Enter your start location"
-                  size="small"
-                  sx={{ mb: 1.5, mt: 1 }}
-                  value={itineraryData.start}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('start', e.target.value)}
-                />
-                Destination
-                <TextField
-                  fullWidth
-                  label="Enter your destination location"
-                  size="small"
-                  sx={{ mb: 1.5, mt: 1 }}
-                  value={itineraryData.destination}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('destination', e.target.value)}
-                />
-                Passenger Count
-                <TextField
-                  fullWidth
-                  label="Enter your passenger count"
-                  size="small"
-                  sx={{ mb: 1.5, mt: 1 }}
-                  value={itineraryData.passengerCount}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('passengerCount', e.target.value)}
-                />
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <MobileDatePicker defaultValue={dayjs('2022-04-17')} />
-                </LocalizationProvider> */}
-                {/* <MobileTimePicker defaultValue={dayjs('2022-04-17T15:30')} /> */}
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                >
-                  {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <MobileDatePicker
-                      label="Controlled picker"
-                      value={value}
-                      onChange={(newValue) => setValue(newValue)}
-                    />
-                  </LocalizationProvider> */}
-                  <Box
-                    sx={{ mr:3 }}
-                  >
-                  Date
-                    <TextField
-                      fullWidth
-                      label="Today"
-                      size="small"
-                      sx={{ mb: 1.5, mt: 1 }}
-                    />
-                  </Box>
-                  <Box
-                    sx={{ ml:2 }}
-                  >
-                  Time
-                    <TextField
-                      fullWidth
-                      label="Now"
-                      size="small"
-                      sx={{ mb: 1.5, mt: 1 }}
-                    />
-                  </Box>
-                </Box>
-                <Button variant="contained" fullWidth onClick={toPassengerCandidatePage}
+                <Typography variant="h4" fontWeight="bold">
+                  Start journey 
+                </Typography>
+                <Button variant="contained" 
                   sx={{
                     textTransform : "none",
-                    backgroundColor : "secondary.main",
-                    mb: 1, mt: 1,
+                    mb: 2, mt: 2,
                   }}
                 >
-                  Search
+                  Use favorite route
                 </Button>
+                <div>
+                  Start
+                  <TextField
+                    fullWidth
+                    label="Enter your start location"
+                    size="small"
+                    sx={{ mb: 1.5, mt: 1 }}
+                    value={itineraryData.start}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('start', e.target.value)}
+                  />
+                  Destination
+                  <TextField
+                    fullWidth
+                    label="Enter your destination location"
+                    size="small" 
+                    sx={{ mb: 1.5, mt: 1 }}
+                    value={itineraryData.destination}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('destination', e.target.value)}
+                  />
+                  Passenger Count
+                  <Select
+                    fullWidth
+                    size='small'
+                    sx={{ mb: 1.5, mt: 1 }}
+                    value={itineraryData.passengerCount}
+                    onChange={(e: SelectChangeEvent) => handleInputChange('passengerCount', e.target.value)}
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                  </Select>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}> 
+                      <Box sx={{ mr:2 }} >
+                        Date
+                        <MobileDatePicker 
+                          defaultValue={dayjs()} 
+                          slotProps={{ textField: {size: 'small'} }} 
+                          sx={{ mt: 1 }}
+                          value={itineraryData.date}
+                          onChange={(newDate) => handleInputChange('date', newDate)}
+                        />
+                      </Box>
+                      <Box sx={{ ml:1 }} >
+                        Time
+                        <MobileTimePicker 
+                          defaultValue={dayjs()} 
+                          slotProps={{ textField: {size: 'small'} }} 
+                          sx={{ mt: 1 }}
+                          value={itineraryData.time}
+                          onChange={(newTime) => handleInputChange('time', newTime)}
+                        />
+                      </Box>
+                    </LocalizationProvider>
+                  </Box>
+                  <Button variant="contained" fullWidth onClick={toPassengerCandidatePage}
+                    sx={{
+                      textTransform : "none",
+                      backgroundColor : "secondary.main",
+                      mb: 1, mt: 3,
+                    }}
+                  >
+                    Search
+                  </Button>
+                </div>
               </div>
-            </div>
-          </Box>
+            </Box>
           </Container>
         </Container>
       </ThemeProvider>

@@ -2,11 +2,12 @@ import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import carImage from '../carIcon.png';
+import carImage from '../blue_car.png';
 import React, { useState } from 'react'
 import Arrival from '../components/matching/Arrival';
 import Departure from '../components/matching/Departure';
 import MyRating from '../components/matching/Rating';
+
 
 const theme = createTheme({
   palette: {

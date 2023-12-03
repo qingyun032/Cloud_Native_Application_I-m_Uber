@@ -52,7 +52,7 @@ function PassengerCandidatePage() {
   ]);
 
   const [candidateInfos, setCandidateInfos] = useState([
-    {id: 0, driver: Drivers[0], stop: "a", destination: "b", car: "Mercedes", money: 100, departureTime: "7:00 a.m.", arrivalTime: "8:30 a.m."},
+    {id: 0, driver: Drivers[0], stop: "台灣大學", destination: "台積電新竹一廠", car: "Mercedes", money: 100, departureTime: "7:00 a.m.", arrivalTime: "8:30 a.m."},
     {id: 1, driver: Drivers[1], stop: "c", destination: "d", car: "BMW", money: 120, departureTime: "7:30 a.m.", arrivalTime: "9:00 a.m."},
     {id: 2, driver: Drivers[2], stop: "e", destination: "f", car: "Porsche", money: 140, departureTime: "8:00 a.m.", arrivalTime: "9:30 a.m."},
     {id: 3, driver: Drivers[3], stop: "g", destination: "h", car: "Toyota", money: 80, departureTime: "8:30 a.m.", arrivalTime: "10:00 a.m."},
