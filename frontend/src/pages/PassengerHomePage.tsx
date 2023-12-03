@@ -46,6 +46,14 @@ export const PassengerHomePage = () => {
     navigate('/passengerCandidate')
   }
 
+  const passengerFavRoute: ItineraryData = {
+    start: '管二104',
+    destination: '德田101',
+    passengerCount : '2',
+    date: dayjs('2023-12-20'),
+    time: dayjs('15:00:00', "HH:mm:ss"),
+  }
+
   // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
   const [itineraryData, setItineraryData] = useState({
     start: "",
@@ -62,6 +70,14 @@ export const PassengerHomePage = () => {
     }));
     console.log(itineraryData.time)
   };
+
+  const useFavoriteRoute = () => {
+    handleInputChange('start', passengerFavRoute.start);
+    handleInputChange('destination', passengerFavRoute.destination);
+    handleInputChange('passengerCount', passengerFavRoute.passengerCount);
+    handleInputChange('date', passengerFavRoute.date);
+    handleInputChange('time', passengerFavRoute.time);
+  }
 
 
   return (
@@ -95,6 +111,7 @@ export const PassengerHomePage = () => {
                     textTransform : "none",
                     mb: 2, mt: 2,
                   }}
+                  onClick={useFavoriteRoute}
                 >
                   Use favorite route
                 </Button>

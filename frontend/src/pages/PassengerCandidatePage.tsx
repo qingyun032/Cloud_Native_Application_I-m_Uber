@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import { Button, Typography, styled } from '@mui/material';
+import { Button, Paper, Typography, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import createTheme from '@mui/material/styles/createTheme';
@@ -98,21 +98,26 @@ function PassengerCandidatePage() {
               flexDirection="column"
               minHeight="80vh"
             >
+              <Paper
+                style={{ maxHeight: 350 , overflow: 'auto'}}         
+              >
               {candidateInfos.map((candidateInfo)=>(
                 <Button 
                   variant="contained"
                   fullWidth
                   size="large"
                   sx={{
-                    height : 80,
+                    height : 100,
                     textTransform : "none",
-                    mb: 2, mt: 2,
+                    mb: 1, 
                   }}
                   onClick={() => showDriverDetail(candidateInfo.id)}
                 >
                   {candidateInfo.driver.name}
                 </Button>
               ))}
+              </Paper>
+
                 <Button            
                   variant="contained"
                   fullWidth

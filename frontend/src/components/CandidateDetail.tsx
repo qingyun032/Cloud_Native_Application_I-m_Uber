@@ -51,7 +51,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
           }}
         > */}
           {/* <Container sx={{ width : 1}}> */}
-            <Typography variant="h4">
+            <Typography variant="h4" sx={{ mt: 2, }}>
                Itinerary detail
             </Typography>
             <Box
@@ -63,15 +63,13 @@ const CandidateDetail = ( props: CandidateProps ) => {
               <Box
                 display="flex"
                 flexDirection="row"
-                // sx = {{
-                //   justifyContent: 'space-between'
-                // }}
+                sx = {{ justifyContent: 'space-between' }}
               >
                 <Box
                   display="flex"
                   flexDirection="column"
                 >
-                  <Typography sx={{ mt:2 }}>Name</Typography>
+                  <Typography sx={{ mt:1 }}>Name</Typography>
                   <Typography variant='h5'>
                     {candidate.driver.name}
                   </Typography>
@@ -82,7 +80,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                   flexDirection="column"
                   sx={{ ml: 8 }}
                 >
-                  <Typography sx={{ mt:2 }}>Driver Rating</Typography>
+                  <Typography sx={{ mt:1 }}>Driver Rating</Typography>
                   <Typography variant='h5'>
                     {candidate.driver.rating}
                   </Typography>
@@ -92,12 +90,13 @@ const CandidateDetail = ( props: CandidateProps ) => {
               <Box
                 display="flex"
                 flexDirection="row"
+                sx = {{ justifyContent: 'space-between' }}
               >
                 <Box
                   display="flex"
                   flexDirection="column"
                 >
-                  <Typography sx={{ mt:2 }}>Estimated Departure Time</Typography>
+                  <Typography sx={{ mt:2 }}>Departure Time</Typography>
                   <Typography variant='h5'>
                     {candidate.departureTime}
                   </Typography>
@@ -106,9 +105,9 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 <Box
                   display="flex"
                   flexDirection="column"
-                  sx={{ ml: 1 }}
+                  sx={{ ml: 4 }}
                 >
-                  <Typography sx={{ mt:2 }}>Estimated Arrival Time</Typography>
+                  <Typography sx={{ mt:2 }}>Arrival Time</Typography>
                   <Typography variant='h5'>
                     {candidate.arrivalTime}
                   </Typography>
