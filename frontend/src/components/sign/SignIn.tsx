@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../../apis/sign.api";
+import { getUserInfo} from "../../apis/user.api";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import {userSignIn} from "../../models/user.model";
+import { userSignIn } from "../../models/user.model";
+import { useUserContext } from '../../contexts/UserContext';
 
 type SignInProps = {
     errorMessage: string;
@@ -18,7 +19,7 @@ type SignInProps = {
 
 export const SignIn = (props: SignInProps) => {
     const { setIsSignIn, errorMessage, setErrorMessage } = props;
-
+    const { user, setUser } = useUserContext();
     const navigate = useNavigate()
 
     const toSignUp = () => {
@@ -35,7 +36,7 @@ export const SignIn = (props: SignInProps) => {
             { field: 'User Name', value: username },
             { field: 'Password', value: password },
         ];
-        const user: userSignIn = {
+        const userData: userSignIn = {
             userName: username,
             password: password
         }
@@ -51,8 +52,11 @@ export const SignIn = (props: SignInProps) => {
         }
 
         try {
-            const response = await signIn(user);
+            const response = await signIn(userData);
+            const userInfo = await getUserInfo(userData.userName);
+            setUser(userInfo);
             setErrorMessage("None");
+            navigate('/home');
         } 
         catch (error: any) {
             if (error.response.status === 401) {
