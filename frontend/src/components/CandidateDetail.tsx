@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import { Button, Container, Divider, Typography } from '@mui/material';
+import { Button, Card, Container, Divider, Paper, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import createTheme from '@mui/material/styles/createTheme';
 import React from 'react'
@@ -50,7 +50,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
             width: 328
           }}
         > */}
-          {/* <Container sx={{ width : 1}}> */}
+          {/* <Paper elevation={12}> */}
             <Typography variant="h4" sx={{ mt: 2, }}>
                Itinerary detail
             </Typography>
@@ -158,7 +158,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 Go Back
               </Button>
             </Box>
-          {/* </Container> */}
+          {/* </Paper> */}
         {/* </Box> */}
       </ThemeProvider>
     </>

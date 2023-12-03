@@ -13,7 +13,7 @@ function MyRating( props: RatingProps ) {
   const { setIsRating } = props;
 
   const navigate = useNavigate();
-  const [value, setValue] = React.useState<number | null>(2);
+  const [tripRating, setTripRating] = React.useState<number | null>(2);
 
   const handleClick = () => {
     setIsRating(false);
@@ -31,10 +31,10 @@ function MyRating( props: RatingProps ) {
       >
         <Typography variant='body1' sx={{mt: 5, mb: 2}}>Give your ratings!</Typography>
         <Rating
-          // name="simple-controlled"
-          value={value}
+          value={tripRating}
           onChange={(event, newValue) => {
-            setValue(newValue);
+            setTripRating(newValue);
+            // send trip rating to database
           }}
           sx={{mt: 3, mb: 2}}
         />
