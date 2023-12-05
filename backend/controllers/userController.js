@@ -26,6 +26,11 @@ async function getMyInfo(req, res) {
             else returnUser.rating = (user.ratingTotalScore/user.nRating).toFixed(1);
             delete returnUser.ratingTotalScore;
             delete returnUser.nRating;
+            returnUser.isDriver = returnUser.isDriver == 1;
+            if(returnUser.carPlate) returnUser.CarInfo.electric = returnUser.CarInfo.electric == 1;
+            delete returnUser.userID;
+            delete returnUser.carPlate;
+            delete returnUser.Wallet.userID;
             res.status(200).json(returnUser);
         })
         
@@ -59,7 +64,7 @@ async function updateDriver(req, res) {
             throw new Error("Please specify carPlate");
         }
         const oldDriver = await userService.getUserById(userID);
-        if(oldDriver.isDriver != "YES" || oldDriver.carPlate != req.body.carPlate){
+        if(oldDriver.isDriver != true || oldDriver.carPlate != req.body.carPlate){
             if(oldDriver.isDriver){
                 await carInfoService.deleteCarInfo(oldDriver.carPlate);
             }
@@ -87,7 +92,7 @@ async function updateDriver(req, res) {
             "phone": req.body.phone,
             "addressHome": req.body.addressHome,
             "addressCompany": req.body.addressCompany,
-            "isDriver": "YES",
+            "isDriver": true,
             "carPlate": req.body.carPlate
         }
         await userService.updateUser(userID, userUpdateData);

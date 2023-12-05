@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Users (
     userName VARCHAR(31),
     email VARCHAR(31),
     `password` VARCHAR(255),
-    isDriver ENUM('YES', 'NO'),
+    isDriver BOOLEAN,
     gender ENUM('M', 'F', 'O'),
     phone VARCHAR(31),
     addressHome VARCHAR(127),
@@ -26,7 +26,7 @@ Create TABLE IF NOT EXISTS CarInfo(
     seat INT,
     brand INT,
     color INT,
-    electric ENUM('YES', 'NO')
+    electric BOOLEAN
 );
 
 Create TABLE IF NOT EXISTS Wallet(
