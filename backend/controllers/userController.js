@@ -176,6 +176,62 @@ async function updateRating(req, res) {
     }
 }
 
+async function updateCarInfo(req, res) {
+    try {
+        const userID = req.session.userId;
+        if(!userID){
+            throw new Error("Please sign in before querying user data");
+        }
+        if(!req.body.carPlate){
+            throw new Error("Please specify carPlate");
+        }
+        const oldDriver = await userService.getUserById(userID);
+        if(oldDriver.isDriver != true || oldDriver.carPlate != req.body.carPlate){
+            if(oldDriver.isDriver){
+                await carInfoService.deleteCarInfo(oldDriver.carPlate);
+            }
+            const carInfoData = {
+                "carPlate": req.body.carPlate,
+                "color": req.body.color,
+                "brand": req.body.brand,
+                "type": req.body.type,
+                "electric": req.body.electric,
+                "seat": req.body.seat
+            }
+            await carInfoService.createCarInfo(carInfoData);
+        }
+        else{
+            const carInfoUpdateData = {
+                "color": req.body.color,
+                "brand": req.body.brand,
+                "type": req.body.type,
+                "electric": req.body.electric,
+                "seat": req.body.seat
+            }
+            await carInfoService.updateCarInfo(req.body.carPlate, carInfoUpdateData);
+        }
+        const userUpdateData = {
+            "isDriver": true,
+            "carPlate": req.body.carPlate
+        }
+        await userService.updateUser(userID, userUpdateData);
+        res.status(200).json({ message: "Update driver successfully" });
+    } catch (error) {
+        if(error.message == 'User not found'){
+            res.status(401).json({ error: 'Driver not found'});
+        }
+        else if(error.message == "Please sign in before querying user data"){
+            res.status(401).json({ error: error.message});
+        }
+        else if(error.message == "Please specify carPlate"){
+            res.status(401).json({ error: error.message});
+        }
+        else{
+            res.status(500).json({ error: "An error occurred while updating the driver" });
+        }
+    }
+}
+
 
 module.exports = {
     getAllUsers,
@@ -185,4 +241,5 @@ module.exports = {
     updateDriver,
     updatePassenger,
     updateRating,
+    updateCarInfo
 };
