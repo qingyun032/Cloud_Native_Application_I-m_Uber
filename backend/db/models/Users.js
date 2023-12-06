@@ -26,10 +26,14 @@ module.exports = ((sequelize, DataTypes) => {
         createdAt: false,
         updatedAt: false,
     });
+    // belongsTo: foreignKey is defined on the source model
+    // Which means that the source model has the target model's key
     User.belongsTo(CarInfo, { foreignKey: 'carPlate' });
+    // hasOne: foreignKey is defined on the target model
+    // Which means that the target model has the source model's key
     User.hasOne(Wallet, { 
         foreignKey: 'userID',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE' // when user is deleted, delete wallet
     });
     return User;
 })(sequelize, DataTypes);

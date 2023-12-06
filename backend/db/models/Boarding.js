@@ -20,13 +20,20 @@ module.exports = ((sequelize, DataTypes) => {
             }
         },
     }, {
-        freezeTableName: true,
+        freezeTableName: true, 
+        // I don't want to automatically pluralizes the model name
+        // because I want to use the table name as 'Boarding' instead of "Boardings"
         timestamps: false,
         createdAt: false,
         updatedAt: false,
     });
-    Boarding.belongsTo(Stops, { foreignKey: 'stopID' });
-    Boarding.hasMany(Passenger, { foreignKey: 'boardingID' });
+    Boarding.belongsTo(Stops, { 
+        foreignKey: 'stopID'
+    });
+    Boarding.hasMany(Passenger, { 
+        foreignKey: 'boardingID', 
+        onDelete: 'cascade',
+    });
     return Boarding;    
 })(sequelize, DataTypes);
 

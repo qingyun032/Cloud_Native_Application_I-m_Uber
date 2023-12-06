@@ -22,6 +22,19 @@ const getStopById = async (req, res) => {
   }
 };
 
+const getNearestStop = async (req, res) => {
+  const address = req.params.address;
+  // const { lat, long } = transformAddress(address);
+
+  try {
+    const nearestStop = await stopService.getNearestStop(lat, long);
+    res.status(200).json(nearestStop);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const createStop = async (req, res) => {
   const stopData = req.body;
 
@@ -62,6 +75,7 @@ const deleteStop = async (req, res) => {
 module.exports = {
   getAllStops,
   getStopById,
+  getNearestStop,
   createStop,
   updateStop,
   deleteStop

@@ -10,7 +10,7 @@ module.exports = ((sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        driveID: {
+        driverID: {
             type: DataTypes.INTEGER,
             references: {
                 model: 'Users', // This is a reference to another model
@@ -18,16 +18,20 @@ module.exports = ((sequelize, DataTypes) => {
             }
         },
         startTime: DataTypes.DATE,
-        start: DataTypes.INTEGER,
-        destination: DataTypes.INTEGER,
-        available: DataTypes.INTEGER,
+        start: DataTypes.INTEGER, // start stop
+        destination: DataTypes.INTEGER, // end stop
+        available: DataTypes.INTEGER, // number of available seats
+        state: DataTypes.ENUM("PROCESSING", "COMFIRMED"), // PROCESSING: the route is still open for passengers to join
     }, {
         timestamps: false,
         createdAt: false,
         updatedAt: false,
     });    
     Routes.belongsTo(Users, { foreignKey: 'driveID' });
-    Routes.hasMany(Boarding, { foreignKey: 'routeID' });
+    Routes.hasMany(Boarding, { 
+        foreignKey: 'routeID', 
+        onDelete: 'cascade'
+    });
     return Routes;
 })(sequelize, DataTypes);
 
