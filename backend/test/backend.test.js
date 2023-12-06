@@ -329,7 +329,7 @@ describe("POST /api/v1/users/updateDriver", () => {
             "password": "Leopassword"
         });
         let { header } = loginRes;
-        let res = await request(app).put("/api/v1/users/updateDriver").set("Cookie", [...header["set-cookie"]]).send({
+        let res = await request(app).put("/api/v1/users/updateCarInfo").set("Cookie", [...header["set-cookie"]]).send({
             "email": "leo@gamil.com",
             "gender": "M",
             "phone": "0987-654-321",
@@ -369,3 +369,87 @@ describe("POST /api/v1/users/updateDriver", () => {
         });
     });
 });
+
+
+describe("POST /api/v1/users/updateCarInfo", () => {
+    test("update carInfo without changing carPlate", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/users/updateDriver").set("Cookie", [...header["set-cookie"]]).send({
+            "carPlate": "OKDR-1111",
+            "color": 2,
+            "brand": 4,
+            "type": "Sedan",
+            "electric": true,
+            "seat": 3
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Update driver successfully");
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "OKDR-1111",
+                "color": 2,
+                "brand": 4,
+                "type": "Sedan",
+                "electric": true,
+                "seat": 3
+            },
+            "Wallet": {
+                "balance": 0
+            }
+        });
+    });
+    test("Update driver's infomation with changing carPlate", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/users/updateCarInfo").set("Cookie", [...header["set-cookie"]]).send({
+            "carPlate": "LK99-8917",
+            "color": 1,
+            "brand": 1,
+            "type": "SUV",
+            "electric": true,
+            "seat": 4
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Update driver successfully");
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "LK99-8917",
+                "color": 1,
+                "brand": 1,
+                "type": "SUV",
+                "electric": true,
+                "seat": 4
+            },
+            "Wallet": {
+                "balance": 0
+            }
+        });
+    });
+})
