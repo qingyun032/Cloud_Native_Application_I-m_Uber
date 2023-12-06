@@ -58,12 +58,13 @@ Create TABLE IF NOT EXISTS Reocrds(
 
 Create TABLE IF NOT EXISTS Routes(
     routeID INT AUTO_INCREMENT PRIMARY KEY,
-    driveID INT,
+    driverID INT,
     startTime DATETIME,
     `start` INT,
     destination INT,
     availale INT,
-    FOREIGN KEY(driveID) REFERENCES Users(userID)
+    `state` ENUM("PROCESSING", "COMFIRMED"), 
+    FOREIGN KEY(driverID) REFERENCES Users(userID)
 );
 
 Create TABLE IF NOT EXISTS Boarding(
