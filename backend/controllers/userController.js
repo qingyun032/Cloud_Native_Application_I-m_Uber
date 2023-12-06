@@ -72,6 +72,7 @@ async function updateDriver(req, res) {
                 "carPlate": req.body.carPlate,
                 "color": req.body.color,
                 "brand": req.body.brand,
+                "type": req.body.type,
                 "electric": req.body.electric,
                 "seat": req.body.seat
             }
@@ -81,6 +82,7 @@ async function updateDriver(req, res) {
             const carInfoUpdateData = {
                 "color": req.body.color,
                 "brand": req.body.brand,
+                "type": req.body.type,
                 "electric": req.body.electric,
                 "seat": req.body.seat
             }

@@ -41,6 +41,7 @@ describe("POST /api/v1/auth/signup", () => {
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "seat": 4,
             "brand": 2,
+            "type": "SUV",
             "color": 1,
             "electric": true
         });
@@ -112,6 +113,7 @@ describe("GET /api/v1/users/myInfo", () => {
                 "carPlate": "ABCD-8349",
                 "seat": 4,
                 "brand": 2,
+                "type": "SUV",
                 "color": 1,
                 "electric": true
             },
@@ -184,6 +186,7 @@ describe("POST /api/v1/users/rating", () => {
                 "carPlate": "ABCD-8349",
                 "seat": 4,
                 "brand": 2,
+                "type": "SUV",
                 "color": 1,
                 "electric": true
             },
@@ -245,6 +248,7 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "LOVE-9888",
             "color": 4,
             "brand": 3,
+            "type": "Sedan",
             "electric": false,
             "seat": 3
         });
@@ -265,6 +269,7 @@ describe("POST /api/v1/users/updateDriver", () => {
                 "carPlate": "LOVE-9888",
                 "seat": 3,
                 "brand": 3,
+                "type": "Sedan",
                 "color": 4,
                 "electric": false
             },
@@ -288,6 +293,7 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "ABCD-8349",
             "color": 10,
             "brand": 12,
+            "type": "SUV",
             "electric": false,
             "seat": 2
         });
@@ -308,6 +314,7 @@ describe("POST /api/v1/users/updateDriver", () => {
                 "carPlate": "ABCD-8349",
                 "seat": 2,
                 "brand": 12,
+                "type": "SUV",
                 "color": 10,
                 "electric": false
             },
@@ -331,6 +338,7 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "OKDR-1111",
             "color": 10,
             "brand": 12,
+            "type": "Sedan",
             "electric": false,
             "seat": 2
         });
@@ -351,6 +359,7 @@ describe("POST /api/v1/users/updateDriver", () => {
                 "carPlate": "OKDR-1111",
                 "seat": 2,
                 "brand": 12,
+                "type": "Sedan",
                 "color": 10,
                 "electric": false
             },

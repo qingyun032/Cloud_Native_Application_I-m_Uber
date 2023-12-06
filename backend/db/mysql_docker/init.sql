@@ -26,6 +26,7 @@ Create TABLE IF NOT EXISTS CarInfo(
     seat INT,
     brand INT,
     color INT,
+    `type` ENUM('SUV', 'Sedan'),
     electric BOOLEAN
 );
 

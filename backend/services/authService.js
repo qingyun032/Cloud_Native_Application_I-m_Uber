@@ -21,6 +21,7 @@ async function signup(userData, req) {
                 carPlate: userData.carPlate,
                 seat: userData.seat,
                 brand: userData.brand,
+                type: userData.type,
                 color: userData.color,
                 electric: userData.electric
             });

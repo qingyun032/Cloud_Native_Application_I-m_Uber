@@ -65,8 +65,6 @@ async function updateUser(userID, userData) {
         if (!user) {
             throw new Error('User not found');
         }
-        console.log(user)
-        console.log(userData);
         user.set(userData);
         await user.save();
         return user;
