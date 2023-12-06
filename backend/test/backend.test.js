@@ -33,7 +33,7 @@ describe("POST /api/v1/auth/signup", () => {
             "userName": "Leo",
             "email": "leo@gamil.com",
             "password": "Leopassword",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0912-345-678",
             "carPlate": "ABCD-8349",
@@ -41,8 +41,9 @@ describe("POST /api/v1/auth/signup", () => {
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "seat": 4,
             "brand": 2,
+            "type": "SUV",
             "color": 1,
-            "electric": "YES"
+            "electric": true
         });
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe("Sign up successfully");
@@ -52,7 +53,7 @@ describe("POST /api/v1/auth/signup", () => {
             "userName": "Chu",
             "email": "chu@gamil.com",
             "password": "Chupassword",
-            "isDriver": "NO",
+            "isDriver": false,
             "gender": "M",
             "phone": "0912-345-678",
             "addressHome": "106台北市大安區和平東路三段60號",
@@ -72,6 +73,23 @@ describe("POST /api/v1/auth/signin", () => {
         expect(res.body.message).toBe("Login successful");
     });
 });
+
+describe("POST /api/v1/auth/signout", () => {
+    test("Shoud sign out successfully", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        console.log([...header["set-cookie"]]);
+        let res = await request(app).post("/api/v1/auth/signout").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Logout successfully");
+    });
+});
+
+
+
 describe("GET /api/v1/users/myInfo", () => {
     test("Get user1's infomation", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
@@ -82,26 +100,24 @@ describe("GET /api/v1/users/myInfo", () => {
         const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
-            "userID": 1,
             "userName": "Leo",
             "email": "leo@gamil.com",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0912-345-678",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "No. 1, Sec. 4, Roosevelt Rd., Daan Dist., Taipei City 106319, Taiwan (R.O.C.)",
             "nCancel": 0,
             "rating": "0.0",
-            "carPlate": "ABCD-8349",
             "CarInfo": {
                 "carPlate": "ABCD-8349",
                 "seat": 4,
                 "brand": 2,
+                "type": "SUV",
                 "color": 1,
-                "electric": "YES"
+                "electric": true
             },
             "Wallet": {
-                "userID": 1,
                 "balance": 0
             }
         });
@@ -115,36 +131,20 @@ describe("GET /api/v1/users/myInfo", () => {
         const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
-            "userID": 2,
             "userName": "Chu",
             "email": "chu@gamil.com",
-            "isDriver": "NO",
+            "isDriver": false,
             "gender": "M",
             "phone": "0912-345-678",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "106台北市大安區和平東路三段60號",
             "nCancel": 0,
             "rating": "0.0",
-            "carPlate": null,
             "CarInfo": null,
             "Wallet": {
-                "userID": 2,
                 "balance": 0
             }
         });
-    });
-});
-describe("POST /api/v1/auth/signout", () => {
-    test("Shoud sign out successfully", async () => {
-        const loginRes = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Leo",
-            "password": "Leopassword"
-        });
-        let { header } = loginRes;
-        console.log([...header["set-cookie"]]);
-        let res = await request(app).post("/api/v1/auth/signout").set("Cookie", [...header["set-cookie"]]);
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe("Logout successfully");
     });
 });
 
@@ -173,26 +173,24 @@ describe("POST /api/v1/users/rating", () => {
         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
-            "userID": 1,
             "userName": "Leo",
             "email": "leo@gamil.com",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0912-345-678",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "No. 1, Sec. 4, Roosevelt Rd., Daan Dist., Taipei City 106319, Taiwan (R.O.C.)",
             "nCancel": 0,
             "rating": "3.0",
-            "carPlate": "ABCD-8349",
             "CarInfo": {
                 "carPlate": "ABCD-8349",
                 "seat": 4,
                 "brand": 2,
+                "type": "SUV",
                 "color": 1,
-                "electric": "YES"
+                "electric": true
             },
             "Wallet": {
-                "userID": 1,
                 "balance": 0
             }
         });
@@ -217,25 +215,23 @@ describe("POST /api/v1/users/updatePassenger", () => {
         expect(res.body.message).toBe("Update passenger successfully");
         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
-            "userID": 2,
             "userName": "Chu",
             "email": "Imchuchu@gamil.com",
-            "isDriver": "NO",
+            "isDriver": false,
             "gender": "M",
             "phone": "0912-345-678",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "106台北市大安區和平東路三段410號",
             "nCancel": 0,
             "rating": "0.0",
-            "carPlate": null,
             "CarInfo": null,
             "Wallet": {
-                "userID": 2,
                 "balance": 0
             }
         });
     });
 });
+
 describe("POST /api/v1/users/updateDriver", () => {
     test("Sign up driver from passenger", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
@@ -252,33 +248,32 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "LOVE-9888",
             "color": 4,
             "brand": 3,
-            "electric": "NO",
+            "type": "Sedan",
+            "electric": false,
             "seat": 3
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
-            "userID": 2,
             "userName": "Chu",
             "email": "driverchuchu@gamil.com",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0933-444-555",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "106台北市大安區和平東路三段410號",
             "nCancel": 0,
             "rating": "0.0",
-            "carPlate": "LOVE-9888",
             "CarInfo": {
                 "carPlate": "LOVE-9888",
                 "seat": 3,
                 "brand": 3,
+                "type": "Sedan",
                 "color": 4,
-                "electric": "NO"
+                "electric": false
             },
             "Wallet": {
-                "userID": 2,
                 "balance": 0
             }
         });
@@ -298,33 +293,32 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "ABCD-8349",
             "color": 10,
             "brand": 12,
-            "electric": "NO",
+            "type": "SUV",
+            "electric": false,
             "seat": 2
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
-            "userID": 1,
             "userName": "Leo",
             "email": "leo@gamil.com",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0987-654-321",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "106台北市大安區基隆路四段43號",
             "nCancel": 0,
             "rating": "3.0",
-            "carPlate": "ABCD-8349",
             "CarInfo": {
                 "carPlate": "ABCD-8349",
                 "seat": 2,
                 "brand": 12,
+                "type": "SUV",
                 "color": 10,
-                "electric": "NO"
+                "electric": false
             },
             "Wallet": {
-                "userID": 1,
                 "balance": 0
             }
         });
@@ -335,7 +329,7 @@ describe("POST /api/v1/users/updateDriver", () => {
             "password": "Leopassword"
         });
         let { header } = loginRes;
-        let res = await request(app).put("/api/v1/users/updateDriver").set("Cookie", [...header["set-cookie"]]).send({
+        let res = await request(app).put("/api/v1/users/updateCarInfo").set("Cookie", [...header["set-cookie"]]).send({
             "email": "leo@gamil.com",
             "gender": "M",
             "phone": "0987-654-321",
@@ -344,35 +338,118 @@ describe("POST /api/v1/users/updateDriver", () => {
             "carPlate": "OKDR-1111",
             "color": 10,
             "brand": 12,
-            "electric": "NO",
+            "type": "Sedan",
+            "electric": false,
             "seat": 2
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
-            "userID": 1,
             "userName": "Leo",
             "email": "leo@gamil.com",
-            "isDriver": "YES",
+            "isDriver": true,
             "gender": "M",
             "phone": "0987-654-321",
             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
             "addressHome": "106台北市大安區基隆路四段43號",
             "nCancel": 0,
             "rating": "3.0",
-            "carPlate": "OKDR-1111",
             "CarInfo": {
                 "carPlate": "OKDR-1111",
                 "seat": 2,
                 "brand": 12,
+                "type": "Sedan",
                 "color": 10,
-                "electric": "NO"
+                "electric": false
             },
             "Wallet": {
-                "userID": 1,
                 "balance": 0
             }
         });
     });
 });
+
+
+describe("POST /api/v1/users/updateCarInfo", () => {
+    test("update carInfo without changing carPlate", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/users/updateDriver").set("Cookie", [...header["set-cookie"]]).send({
+            "carPlate": "OKDR-1111",
+            "color": 2,
+            "brand": 4,
+            "type": "Sedan",
+            "electric": true,
+            "seat": 3
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Update driver successfully");
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "OKDR-1111",
+                "color": 2,
+                "brand": 4,
+                "type": "Sedan",
+                "electric": true,
+                "seat": 3
+            },
+            "Wallet": {
+                "balance": 0
+            }
+        });
+    });
+    test("Update driver's infomation with changing carPlate", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/users/updateCarInfo").set("Cookie", [...header["set-cookie"]]).send({
+            "carPlate": "LK99-8917",
+            "color": 1,
+            "brand": 1,
+            "type": "SUV",
+            "electric": true,
+            "seat": 4
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Update driver successfully");
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "LK99-8917",
+                "color": 1,
+                "brand": 1,
+                "type": "SUV",
+                "electric": true,
+                "seat": 4
+            },
+            "Wallet": {
+                "balance": 0
+            }
+        });
+    });
+})

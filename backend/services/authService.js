@@ -16,11 +16,12 @@ async function signup(userData, req) {
         if(checkExist != 0){
             throw new Error('User name has already been used.');
         }
-        if(userData.isDriver == 'YES'){
+        if(userData.isDriver){
             await CarInfo.create({
                 carPlate: userData.carPlate,
                 seat: userData.seat,
                 brand: userData.brand,
+                type: userData.type,
                 color: userData.color,
                 electric: userData.electric
             });

@@ -10,7 +10,11 @@ async function signup(req, res) {
 
         res.status(201).json( {message} );
     } catch (error) {
-        res.status(401).json({ error: error.message });
+        if(error.message == 'User name has already been used.'){
+            res.status(409).json({ error: error.message});
+        }
+        else res.status(401).json({ error: error.message });
+        
     }
 }
 

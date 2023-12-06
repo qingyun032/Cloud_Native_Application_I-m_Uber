@@ -10,8 +10,9 @@ module.exports = ((sequelize, DataTypes) => {
         },
         seat: DataTypes.INTEGER,
         brand: DataTypes.INTEGER,
+        type: DataTypes.ENUM('SUV', 'Sedan'),
         color: DataTypes.INTEGER,
-        electric: DataTypes.ENUM('YES', 'NO')
+        electric: DataTypes.BOOLEAN
     }, {
         timestamps: false,
         createdAt: false,
