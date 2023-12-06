@@ -1,14 +1,5 @@
 const routeService = require('../services/routeService');
-
-const getAllRoutes = async (req, res) => {
-    try {
-      const routes = await routeService.getAllRoutes();
-      res.status(200).json(routes);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
-    }
-};
+const boardingService = require('../services/boardingService');
   
 const getRouteById = async (req, res) => {
     const routeId = req.params.id;
@@ -28,6 +19,8 @@ const createRoute = async (req, res) => {
         res.status(401).json({ error: "Please sign in before querying driver data"})
         return;
     }
+    // TODO
+    // create boarding with aboard time calculated
 
     const routeData = req.body;
   

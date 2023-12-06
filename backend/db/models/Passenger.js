@@ -1,7 +1,7 @@
 const DataTypes = require('sequelize');
 const sequelize = require('../../config/database');
 const Users = require('./Users');
-
+const Stops = require('./Stops');
 
 module.exports = ((sequelize, DataTypes) => {
     const Passenger = sequelize.define('Passenger', {
@@ -13,7 +13,9 @@ module.exports = ((sequelize, DataTypes) => {
                 key: 'userID',
             }
         },
-        boardingID: DataTypes.INTEGER,
+        routeID: DataTypes.INTEGER,
+        pickUpStopID: DataTypes.INTEGER,
+        dropOffStopID: DataTypes.INTEGER,
         passengerCnt: DataTypes.INTEGER,
     }, {
         freezeTableName: true,
@@ -22,5 +24,7 @@ module.exports = ((sequelize, DataTypes) => {
         updatedAt: false,
     });
     Passenger.belongsTo(Users, { foreignKey: 'userID' });
+    Passenger.belongsTo(Stops, { foreignKey: 'pickUpStopID' });
+    Passenger.belongsTo(Stops, { foreignKey: 'dropOffStopID' });
     return Passenger;
 })(sequelize, DataTypes);

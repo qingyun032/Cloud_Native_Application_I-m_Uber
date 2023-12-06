@@ -1,7 +1,6 @@
 const DataTypes = require('sequelize');
 const sequelize = require('../../config/database');
 const Stops = require('./Stops');
-const Passenger = require('./Passenger');
 
 module.exports = ((sequelize, DataTypes) => {
     const Boarding = sequelize.define('Boarding', {
@@ -20,9 +19,9 @@ module.exports = ((sequelize, DataTypes) => {
             }
         },
     }, {
-        freezeTableName: true, 
         // I don't want to automatically pluralizes the model name
         // because I want to use the table name as 'Boarding' instead of "Boardings"
+        freezeTableName: true, 
         timestamps: false,
         createdAt: false,
         updatedAt: false,
@@ -30,11 +29,6 @@ module.exports = ((sequelize, DataTypes) => {
     Boarding.belongsTo(Stops, { 
         foreignKey: 'stopID'
     });
-    Boarding.hasMany(Passenger, { 
-        foreignKey: 'boardingID', 
-        onDelete: 'cascade',
-    });
+
     return Boarding;    
 })(sequelize, DataTypes);
-
-

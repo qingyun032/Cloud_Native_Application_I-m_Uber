@@ -79,7 +79,9 @@ Create TABLE IF NOT EXISTS Boarding(
 
 Create TABLE IF NOT EXISTS Passenger(
     userID INT PRIMARY KEY,
-    boardingID INT,
+    routeID INT,
+    pickUpStopID INT,
+    dropOFFStopID INT,
     passengerCnt INT,
     FOREIGN KEY(userID) REFERENCES Users(userID),
     FOREIGN KEY(boardingID) REFERENCES Boarding(boardingID)

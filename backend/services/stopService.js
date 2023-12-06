@@ -1,3 +1,4 @@
+const sequelize = require('../config/database');
 const Stop = require('../db/models/Stops');
 
 const getAllStops = async () => {
@@ -8,16 +9,24 @@ const getStopById = async (id) => {
     return Stop.findByPk(id);
 };
 
-const getNearestStop = async (lat, long) => {
+const getNearestNStops = async (lat, long, nStops, distance) => {
     // the distance as L2 norm in ascending order
     return Stop.findAll({
-        limit: 1,
-        order: sequelize.literal(
-            `
-            6371 * 2 * ASIN(SQRT(POW(SIN((RADIANS(${lat}) - RADIANS(latitude)) / 2), 2) + \
-            COS(RADIANS(lat1)) * COS(RADIANS(lat2)) * POW(SIN((RADIANS(${long}) - RADIANS(longtitude)) / 2), 2)))
-            `
-        )
+        limit: nStops,
+        attributes: [
+            '*',
+            [
+                sequelize.literal(
+                    `
+                    6371 * 2 * ASIN(SQRT(POW(SIN((RADIANS(${lat}) - RADIANS(latitude)) / 2), 2) + \
+                    COS(RADIANS(lat1)) * COS(RADIANS(lat2)) * POW(SIN((RADIANS(${long}) - RADIANS(longtitude)) / 2), 2)))
+                    `
+                ),
+                'distance'
+            ]
+        ],
+        having: sequelize.literal(`distance < ${distance}`),
+        order: sequelize.literal('distance') // Default: ascending order
     });
 }
 
@@ -40,7 +49,7 @@ const deleteStop = async (id) => {
 module.exports = {
     getAllStops,
     getStopById,
-    getNearestStop,
+    getNearestNStops,
     createStop,
     updateStop,
     deleteStop

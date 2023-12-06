@@ -9,6 +9,8 @@ const getRouteById = async (id) => {
 };
 
 const createRoute = async (routeData) => {
+    // TODO
+    // make sure the routeData is needed
     return Route.create(routeData);
 };
 

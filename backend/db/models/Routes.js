@@ -2,6 +2,7 @@ const DataTypes = require('sequelize');
 const sequelize = require('../../config/database');
 const Users = require('./Users')
 const Boarding = require('./Boarding');
+const Passenger = require('./Passenger');
 
 module.exports = ((sequelize, DataTypes) => {
     const Routes = sequelize.define('Routes', {
@@ -30,7 +31,11 @@ module.exports = ((sequelize, DataTypes) => {
     Routes.belongsTo(Users, { foreignKey: 'driveID' });
     Routes.hasMany(Boarding, { 
         foreignKey: 'routeID', 
-        onDelete: 'cascade'
+        onDelete: 'cascade' // when a route is deleted, all boardings associated with it will be deleted as well
+    });
+    Routes.hasMany(Passenger, { 
+        foreignKey: 'routeID', 
+        onDelete: 'cascade', // when a route is deleted, all passengers associated with it will be deleted as well
     });
     return Routes;
 })(sequelize, DataTypes);
