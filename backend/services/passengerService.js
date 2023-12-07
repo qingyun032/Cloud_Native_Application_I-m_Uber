@@ -1,4 +1,5 @@
 const Passenger = require('../db/models/Passengers');
+const User = require('../db/models/Users');
 const Stop = require('../db/models/Stops');
 
 async function getAllPassengers() {
