@@ -8,6 +8,9 @@ dotenv.config();
 const sequelize = require('./config/database');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+
+const Routes = require('./db/models/Routes');
+
 const app = express()
 
 app.use(cors())

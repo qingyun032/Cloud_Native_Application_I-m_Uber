@@ -26,6 +26,11 @@ async function getMyInfo(req, res) {
             else returnUser.rating = (user.ratingTotalScore/user.nRating).toFixed(1);
             delete returnUser.ratingTotalScore;
             delete returnUser.nRating;
+            returnUser.isDriver = returnUser.isDriver == 1;
+            if(returnUser.carPlate) returnUser.CarInfo.electric = returnUser.CarInfo.electric == 1;
+            delete returnUser.userID;
+            delete returnUser.carPlate;
+            delete returnUser.Wallet.userID;
             res.status(200).json(returnUser);
         })
         
@@ -59,7 +64,7 @@ async function updateDriver(req, res) {
             throw new Error("Please specify carPlate");
         }
         const oldDriver = await userService.getUserById(userID);
-        if(oldDriver.isDriver != "YES" || oldDriver.carPlate != req.body.carPlate){
+        if(oldDriver.isDriver != true || oldDriver.carPlate != req.body.carPlate){
             if(oldDriver.isDriver){
                 await carInfoService.deleteCarInfo(oldDriver.carPlate);
             }
@@ -67,6 +72,7 @@ async function updateDriver(req, res) {
                 "carPlate": req.body.carPlate,
                 "color": req.body.color,
                 "brand": req.body.brand,
+                "type": req.body.type,
                 "electric": req.body.electric,
                 "seat": req.body.seat
             }
@@ -76,6 +82,7 @@ async function updateDriver(req, res) {
             const carInfoUpdateData = {
                 "color": req.body.color,
                 "brand": req.body.brand,
+                "type": req.body.type,
                 "electric": req.body.electric,
                 "seat": req.body.seat
             }
@@ -87,7 +94,7 @@ async function updateDriver(req, res) {
             "phone": req.body.phone,
             "addressHome": req.body.addressHome,
             "addressCompany": req.body.addressCompany,
-            "isDriver": "YES",
+            "isDriver": true,
             "carPlate": req.body.carPlate
         }
         await userService.updateUser(userID, userUpdateData);
@@ -169,13 +176,70 @@ async function updateRating(req, res) {
     }
 }
 
+async function updateCarInfo(req, res) {
+    try {
+        const userID = req.session.userId;
+        if(!userID){
+            throw new Error("Please sign in before querying user data");
+        }
+        if(!req.body.carPlate){
+            throw new Error("Please specify carPlate");
+        }
+        const oldDriver = await userService.getUserById(userID);
+        if(oldDriver.isDriver != true || oldDriver.carPlate != req.body.carPlate){
+            if(oldDriver.isDriver){
+                await carInfoService.deleteCarInfo(oldDriver.carPlate);
+            }
+            const carInfoData = {
+                "carPlate": req.body.carPlate,
+                "color": req.body.color,
+                "brand": req.body.brand,
+                "type": req.body.type,
+                "electric": req.body.electric,
+                "seat": req.body.seat
+            }
+            await carInfoService.createCarInfo(carInfoData);
+        }
+        else{
+            const carInfoUpdateData = {
+                "color": req.body.color,
+                "brand": req.body.brand,
+                "type": req.body.type,
+                "electric": req.body.electric,
+                "seat": req.body.seat
+            }
+            await carInfoService.updateCarInfo(req.body.carPlate, carInfoUpdateData);
+        }
+        const userUpdateData = {
+            "isDriver": true,
+            "carPlate": req.body.carPlate
+        }
+        await userService.updateUser(userID, userUpdateData);
+        res.status(200).json({ message: "Update driver successfully" });
+    } catch (error) {
+        if(error.message == 'User not found'){
+            res.status(401).json({ error: 'Driver not found'});
+        }
+        else if(error.message == "Please sign in before querying user data"){
+            res.status(401).json({ error: error.message});
+        }
+        else if(error.message == "Please specify carPlate"){
+            res.status(401).json({ error: error.message});
+        }
+        else{
+            res.status(500).json({ error: "An error occurred while updating the driver" });
+        }
+    }
+}
+
 
 module.exports = {
     getAllUsers,
     getMyInfo,
     createUser,
-    updateDriver,
     deleteUser,
+    updateDriver,
+    updatePassenger,
     updateRating,
-    updatePassenger
+    updateCarInfo
 };

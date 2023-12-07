@@ -61,12 +61,10 @@ async function createUser(userData) {
 
 async function updateUser(userID, userData) {
     try {
-        console.log(userID);
         const user = await User.findByPk(userID);
         if (!user) {
             throw new Error('User not found');
         }
-        console.log(userData);
         user.set(userData);
         await user.save();
         return user;

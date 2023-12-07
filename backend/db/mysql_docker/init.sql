@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Users (
     userName VARCHAR(31),
     email VARCHAR(31),
     `password` VARCHAR(255),
-    isDriver ENUM('YES', 'NO'),
+    isDriver BOOLEAN,
     gender ENUM('M', 'F', 'O'),
     phone VARCHAR(31),
     addressHome VARCHAR(127),
@@ -26,7 +26,8 @@ Create TABLE IF NOT EXISTS CarInfo(
     seat INT,
     brand INT,
     color INT,
-    electric ENUM('YES', 'NO')
+    `type` ENUM('SUV', 'Sedan'),
+    electric BOOLEAN
 );
 
 Create TABLE IF NOT EXISTS Wallet(
@@ -44,8 +45,8 @@ Create TABLE IF NOT EXISTS Stops(
     longitude DECIMAL(20, 17)
 );
 
-Create TABLE IF NOT EXISTS Reocrd(
-    reocrdID INT PRIMARY KEY,
+Create TABLE IF NOT EXISTS Reocrds(
+    reocrdID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT,
     `date` DATETIME,
     `start` INT,
@@ -54,6 +55,33 @@ Create TABLE IF NOT EXISTS Reocrd(
     FOREIGN KEY(userID) REFERENCES Users(userID),
     FOREIGN KEY(`start`) REFERENCES Stops(stopID),
     FOREIGN KEY(destination) REFERENCES Stops(stopID)
+);
+
+Create TABLE IF NOT EXISTS Routes(
+    routeID INT AUTO_INCREMENT PRIMARY KEY,
+    driveID INT,
+    startTime DATETIME,
+    `start` INT,
+    destination INT,
+    availale INT,
+    FOREIGN KEY(driveID) REFERENCES Users(userID)
+);
+
+Create TABLE IF NOT EXISTS Boarding(
+    boardingID INT AUTO_INCREMENT PRIMARY KEY,
+    routeID INT,
+    boardTime DATETIME,
+    stopID INT,
+    FOREIGN KEY(routeID) REFERENCES Routes(routeID),
+    FOREIGN KEY(stopID) REFERENCES Stops(stopID)
+);
+
+Create TABLE IF NOT EXISTS Passenger(
+    userID INT PRIMARY KEY,
+    boardingID INT,
+    passengerCnt INT,
+    FOREIGN KEY(userID) REFERENCES Users(userID),
+    FOREIGN KEY(boardingID) REFERENCES Boarding(boardingID)
 );
 
 -- Insert some initailize Stops into the table
