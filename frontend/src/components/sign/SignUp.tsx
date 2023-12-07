@@ -22,6 +22,8 @@ interface UserData {
     gender: string;
 }
 
+type UserDataFiltered = Omit<UserData, "passwordConfirm">;
+
 type SignUpProps = {
     errorMessage: string;
 
@@ -32,7 +34,7 @@ type SignUpProps = {
 export const SignUp = (props: SignUpProps) => {
     const { setIsSignIn, errorMessage, setErrorMessage } = props;
     const [isFirstPage, setIsFirstPage] = useState<boolean>(true);
-    const [userData, setUserData] = useState({
+    const [userData, setUserData] = useState<UserData>({
         userName: "",
         email: "",
         phone: "",
@@ -81,8 +83,14 @@ export const SignUp = (props: SignUpProps) => {
             setErrorMessage('Password and Confirm Password do not match');
             return;
         }
+        
+        const userDataFiltered: UserDataFiltered = Object.fromEntries(
+            Object.entries(userData)
+              .filter(([key]) => key !== "passwordConfirm")
+              .map(([key, value]) => [key, value])
+          ) as UserDataFiltered;
 
-        const signUpData: userSignUp = { ...userData, isDriver: false, carPlate: "", seat: 0, brand: 0, color: 0, electric: false };
+        const signUpData: userSignUp = { ...userDataFiltered, isDriver: false, carPlate: "", seat: 0, brand: 0, color: 0, electric: false, type: "SUV" };
         
         try {
             const response = await signUp(signUpData);
@@ -152,9 +160,9 @@ export const SignUp = (props: SignUpProps) => {
                             value={userData.gender}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('gender', e.target.value)}
                         >
-                            <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
-                            <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
-                            <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
+                            <FormControlLabel value="M" control={<Radio size="small" />} label="Male" />
+                            <FormControlLabel value="F" control={<Radio size="small" />} label="Female" />
+                            <FormControlLabel value="O" control={<Radio size="small" />} label="Other" />
                         </RadioGroup>
                         <Button
                             fullWidth
