@@ -197,7 +197,7 @@ describe("POST /api/v1/users/rating", () => {
     });
 });
 
-describe("POST /api/v1/users/updatePassenger", () => {
+describe("PUT /api/v1/users/updatePassenger", () => {
     test("Update user2's infomation", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Chu",
@@ -232,7 +232,7 @@ describe("POST /api/v1/users/updatePassenger", () => {
     });
 });
 
-describe("POST /api/v1/users/updateDriver", () => {
+describe("PUT /api/v1/users/updateDriver", () => {
     test("Sign up driver from passenger", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Chu",
@@ -371,7 +371,7 @@ describe("POST /api/v1/users/updateDriver", () => {
 });
 
 
-describe("POST /api/v1/users/updateCarInfo", () => {
+describe("PUT /api/v1/users/updateCarInfo", () => {
     test("update carInfo without changing carPlate", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Leo",
@@ -412,7 +412,7 @@ describe("POST /api/v1/users/updateCarInfo", () => {
             }
         });
     });
-    test("Update driver's infomation with changing carPlate", async () => {
+    test("Update carInfo with changing carPlate", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Leo",
             "password": "Leopassword"
@@ -453,3 +453,52 @@ describe("POST /api/v1/users/updateCarInfo", () => {
         });
     });
 })
+
+describe("PUT /api/v1/wallet/topUp", () => {
+    test("provide top up service", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+            "cash": 300
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "balance": 300
+        });
+
+        res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+            "cash": 12333
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "balance": 12633
+        });
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "LK99-8917",
+                "color": 1,
+                "brand": 1,
+                "type": "SUV",
+                "electric": true,
+                "seat": 4
+            },
+            "Wallet": {
+                "balance": 12633
+            }
+        });
+    });
+})
+
