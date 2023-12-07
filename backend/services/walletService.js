@@ -1,22 +1,17 @@
 const Wallet = require('../db/models/Wallet'); 
 
-const getAllWallets = async () => {
-    return Wallet.findAll();
-};
 
-const getWalletById = async (id) => {
-    return Wallet.findByPk(id);
-};
 
 const createWallet = async (walletData) => {
     return Wallet.create(walletData);
 };
 
-const updateWallet = async (id, walletData) => {
-    return Wallet.update(walletData, {
-        where: { id: id }
-    });
-};
+const topUp = async (userID, cash) => {
+    const wallet = await Wallet.findByPk(userID);
+    await wallet.increment('balance', { by: cash});
+    await wallet.reload();
+    return wallet;
+}
 
 const deleteWallet = async (id) => {
     return Wallet.destroy({
@@ -25,9 +20,7 @@ const deleteWallet = async (id) => {
 };
 
 module.exports = {
-    getAllWallets,
-    getWalletById,
     createWallet,
-    updateWallet,
+    topUp,
     deleteWallet
 };
