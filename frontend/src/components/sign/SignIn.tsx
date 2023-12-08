@@ -53,7 +53,7 @@ export const SignIn = (props: SignInProps) => {
 
         try {
             const response = await signIn(userData);
-            const userInfo = await getUserInfo(userData.userName);
+            const userInfo = await getUserInfo();
             setUser(userInfo);
             setErrorMessage("None");
             navigate('/home');
