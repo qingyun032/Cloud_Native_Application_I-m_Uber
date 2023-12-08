@@ -25,7 +25,7 @@ export const signUp = async (user: userSignUp): Promise<string> => {
 
 export const signOut = async (): Promise<string> => {
   const config: AxiosRequestConfig = {
-    method: 'GET',
+    method: 'POST',
     url: path + "/api/v1/auth/signout",
   };
 

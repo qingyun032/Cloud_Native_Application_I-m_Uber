@@ -60,10 +60,10 @@ export const SignIn = (props: SignInProps) => {
         } 
         catch (error: any) {
             if (error.response.status === 401) {
-                if (error.response.data.message === "User does not exist") {
+                if (error.response.data.error === "User does not exist") {
                     setErrorMessage("User not found, please sign up first");
                 }
-                else if (error.response.data.message === "Incorrect password") {
+                else if (error.response.data.error === "Incorrect password") {
                     setErrorMessage("Incorrect password");
                 }
             }
