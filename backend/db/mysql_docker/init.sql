@@ -64,6 +64,7 @@ Create TABLE IF NOT EXISTS Routes(
     `start` INT,
     destination INT,
     availale INT,
+    `type` ENUM("GO", "BACK"),
     `state` ENUM("PROCESSING", "COMFIRMED"), 
     FOREIGN KEY(driverID) REFERENCES Users(userID)
 );
