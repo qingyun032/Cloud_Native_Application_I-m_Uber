@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { userSignUp } from "../../apis/sign.api";
+import { signUp } from "../../apis/sign.api";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -9,18 +9,20 @@ import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// import bcrypt from "bcryptjs";
+import { userSignUp } from '../../models/user.model';
 
 interface UserData {
-    username: string;
+    userName: string;
     email: string;
     phone: string;
     password: string;
-    home: string;
-    company: string;
+    addressHome: string;
+    addressCompany: string;
     passwordConfirm: string;
     gender: string;
 }
+
+type UserDataFiltered = Omit<UserData, "passwordConfirm">;
 
 type SignUpProps = {
     errorMessage: string;
@@ -32,25 +34,25 @@ type SignUpProps = {
 export const SignUp = (props: SignUpProps) => {
     const { setIsSignIn, errorMessage, setErrorMessage } = props;
     const [isFirstPage, setIsFirstPage] = useState<boolean>(true);
-    const [userData, setUserData] = useState({
-        username: "",
+    const [userData, setUserData] = useState<UserData>({
+        userName: "",
         email: "",
         phone: "",
         password: "",
         gender: "",
-        home: "",
-        company: "",
+        addressHome: "",
+        addressCompany: "",
         passwordConfirm: "",
     });
 
     const fieldLabels: { [key: string]: string } = {
-        username: 'User Name',
+        userName: 'User Name',
         email: 'Email',
         phone: 'Phone Number',
         password: 'Password',
         gender: 'Gender',
-        home: 'Home Address',
-        company: 'Company Address',
+        addressHome: 'Home Address',
+        addressCompany: 'Company Address',
         passwordConfirm: 'Password Confirmation',
     };
 
@@ -66,7 +68,6 @@ export const SignUp = (props: SignUpProps) => {
         }));
     };
     
-    // TODO: password hashing package can't be installed
     const handleRegister = async () => {
         const missingFields = Object.keys(userData).filter((field) => userData[field as keyof typeof userData] === '');
         if (missingFields.length > 0) {
@@ -82,23 +83,24 @@ export const SignUp = (props: SignUpProps) => {
             setErrorMessage('Password and Confirm Password do not match');
             return;
         }
-        // const salt = bcrypt.genSaltSync(10);
-        // const passwordHashed = await create(password, salt);
         
-        const passwordHashed = "123";
-        const userDataWithHashedPassword = {
-            ...userData,
-            password: passwordHashed,
-        };
-        const { passwordConfirm, ...userDataForApi } = userDataWithHashedPassword;
+        const userDataFiltered: UserDataFiltered = Object.fromEntries(
+            Object.entries(userData)
+              .filter(([key]) => key !== "passwordConfirm")
+              .map(([key, value]) => [key, value])
+          ) as UserDataFiltered;
 
+        const signUpData: userSignUp = { ...userDataFiltered, isDriver: false, carPlate: "", seat: 0, brand: 0, color: 0, electric: false, type: "SUV" };
+        
         try {
-            const signUpRes = await userSignUp(userDataForApi);
+            const response = await signUp(signUpData);
             setErrorMessage('None');
             setIsSignIn(true);
         }
-        catch (error) {
-            console.error(error);
+        catch (error: any) {
+            if (error.response.status === 409) {
+                setErrorMessage("User already exists");
+            }
             return;
         }
     };
@@ -120,8 +122,8 @@ export const SignUp = (props: SignUpProps) => {
                             label="User Name"
                             name="username"
                             autoComplete="username"
-                            value={userData.username}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('username', e.target.value)}
+                            value={userData.userName}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('userName', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                             autoFocus
                         />
@@ -158,9 +160,9 @@ export const SignUp = (props: SignUpProps) => {
                             value={userData.gender}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('gender', e.target.value)}
                         >
-                            <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
-                            <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
-                            <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
+                            <FormControlLabel value="M" control={<Radio size="small" />} label="Male" />
+                            <FormControlLabel value="F" control={<Radio size="small" />} label="Female" />
+                            <FormControlLabel value="O" control={<Radio size="small" />} label="Other" />
                         </RadioGroup>
                         <Button
                             fullWidth
@@ -183,8 +185,8 @@ export const SignUp = (props: SignUpProps) => {
                             label="Home Address"
                             name="home"
                             autoComplete="home"
-                            value={userData.home}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('home', e.target.value)}
+                            value={userData.addressHome}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('addressHome', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                             autoFocus
                         />
@@ -197,8 +199,8 @@ export const SignUp = (props: SignUpProps) => {
                             label="Company Address"
                             name="company"
                             autoComplete="company"
-                            value={userData.company}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('company', e.target.value)}
+                            value={userData.addressCompany}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('addressCompany', e.target.value)}
                             sx={{ mb: 1.5, mt: 1 }}
                         />
                         Password
