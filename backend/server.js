@@ -13,7 +13,11 @@ const Routes = require('./db/models/Routes');
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+}))
 app.use(bodyParser.json());
 // Session configuration
 app.use(session({
