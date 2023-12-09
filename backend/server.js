@@ -8,12 +8,17 @@ dotenv.config();
 const sequelize = require('./config/database');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const walletRouter = require('./routes/wallet');
 
 const Routes = require('./db/models/Routes');
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+}))
 app.use(bodyParser.json());
 // Session configuration
 app.use(session({
@@ -24,6 +29,7 @@ app.use(session({
 // Set Router
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/wallet', walletRouter);
 // Connect to the database and create the server
 sequelize.sync()
     .then(() => {

@@ -1,27 +1,66 @@
-const passenger = require('../db/models/Passenger');
+const Passenger = require('../db/models/Passengers');
+const User = require('../db/models/Users');
+const Stop = require('../db/models/Stops');
 
-const getAllPassengers = async () => {
-    return passenger.findAll();
+async function getAllPassengers() {
+    try {
+        const passengers = await Passenger.findAll({
+            include: [
+                User,
+                Stop,
+                Stop
+            ]
+        });
+        return passengers;
+    } catch (error) {
+        throw new Error('An error occurred while acquiring the user');
+    }
 }
 
-const getPassengerById = async (id) => {
-    return passenger.findByPk(id);
+async function getPassengerById(passengerID) {
+    try {
+      const passenger = await Passenger.findByPk(passengerID, {
+        include: [User, Stop, Stop], // Include associations (Users, pickUpStop, dropOffStop)
+      });
+        return passenger;
+    } catch (error) {
+        throw new Error(`Passenger with ID ${passengerID} not found`);
+    }
 }
 
-const createPassenger = async (passengerData) => {
-    return passenger.create(passengerData);
+async function createPassenger(passengerData) {
+    try {
+        const newPassenger = await Passenger.create(passengerData);
+        return newPassenger;
+    } catch (error) {
+        throw new Error(`Error creating passenger: ${error.message}`);
+    }
 }
 
-const updatePassenger = async (id, passengerData) => {
-    return passenger.update(passengerData, {
-        where: { id: id }
-    });
+async function updatePassenger(passengerID, passengerData) {
+    try {
+        const passenger = await Passenger.findByPk(passengerID);
+        if (!passenger) {
+            throw new Error('User not found');
+        }
+        passenger.set(passengerData);
+        await passenger.save();
+        return passenger;
+    } catch (error) {
+        throw new Error('An error occurred while updating the passenger');
+    }
 }
 
-const deletePassenger = async (id) => {
-    return passenger.destroy({
-        where: { id: id }
-    });
+async function deletePassenger(passengerID) {
+    try {
+        const passenger = await Passenger.findByPk(passengerID);
+        if (!passenger) {
+            throw new Error('User not found');
+        }
+        await passenger.destroy();
+    } catch (error) {
+        throw new Error('An error occurred while deleting the passenger.');
+    }
 }
 
 module.exports = {
@@ -31,3 +70,4 @@ module.exports = {
     updatePassenger,
     deletePassenger
 }
+

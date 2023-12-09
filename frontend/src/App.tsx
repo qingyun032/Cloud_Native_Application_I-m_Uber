@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { SignInPage } from "./pages/SignInPage";
 import { HomePage } from "./pages/HomePage";
 import { ProfilePage } from "./pages/ProfilePage";
-
+import axios from "axios";
+axios.defaults.withCredentials = true
 function App() {
   return (
     <BrowserRouter>
