@@ -1,3 +1,12 @@
+/**
+ * Calculate the price of the given route information
+ *
+ * @param {number} distance - Distance from start to destination of a passenger.
+ * @param {number} carBrand - The car brand of this journey.
+ * @param {number} rating - The rating of the driver
+ * @param {number} isElectric - The car is electrical or not.
+ * @returns {number} The calculated price if this journey.
+ */
 function calculatePrice(distance, carBrand, rating, isElectric) {
     // Define impact factors for each variable
     const distanceFactor = 0.5;   // Adjust based on the actual impact on price
