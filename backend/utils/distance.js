@@ -32,6 +32,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return distance;
 }
   
+module.exports = { calculateDistance };
   // Example usage:
 //   const lat1 = 37.7749;   // Latitude of the first point
 //   const lon1 = -122.4194; // Longitude of the first point
