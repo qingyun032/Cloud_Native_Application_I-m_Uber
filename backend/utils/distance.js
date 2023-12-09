@@ -1,3 +1,12 @@
+/**
+ * Find the distance of two points with given latitude and longitude.
+ *
+ * @param {number} lat1 - The latitude of the first point.
+ * @param {number} lon1 - The longitude of the first point.
+ * @param {number} lat2 - The latitude of the second point.
+ * @param {number} lon2 - The longitude of the second point.
+ * @returns {number} Distance in kilometer.
+ */
 function calculateDistance(lat1, lon1, lat2, lon2) {
     // Convert latitude and longitude from degrees to radians
     const toRadians = (angle) => (angle * Math.PI) / 180;
@@ -23,6 +32,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return distance;
 }
   
+module.exports = { calculateDistance };
   // Example usage:
 //   const lat1 = 37.7749;   // Latitude of the first point
 //   const lon1 = -122.4194; // Longitude of the first point
