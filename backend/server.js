@@ -8,6 +8,7 @@ dotenv.config();
 const sequelize = require('./config/database');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const walletRouter = require('./routes/wallet');
 
 const Routes = require('./db/models/Routes');
 
@@ -28,6 +29,7 @@ app.use(session({
 // Set Router
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/wallet', walletRouter);
 // Connect to the database and create the server
 sequelize.sync()
     .then(() => {
