@@ -4,11 +4,21 @@ const addressToLatLon = require('../utils/transformAddr')
 const calculateDistance = require('../utils/calculateDistance')
 
 const getAllStops = async () => {
-    return Stop.findAll();
+    try {
+        const stops = await Stop.findAll();
+        return stops;
+    } catch (error) {
+        throw new Error('An error occurred while getting all stops');
+    }
 };
 
 const getStopById = async (id) => {
-    return Stop.findByPk(id);
+    try {
+        const stop = await Stop.findByPk(id);
+        return stop;
+    } catch (error) {
+        throw new Error('An error occurred while getting a stop by id');
+    }
 };
 
 const getNearestNStops = async (address, nStops, limitDistance) => {
@@ -33,19 +43,34 @@ const getNearestNStops = async (address, nStops, limitDistance) => {
 }
 
 const createStop = async (stopData) => {
-    return Stop.create(stopData);
+    try {
+        const stop = await Stop.create(stopData);
+        return stop;
+    } catch (error) {
+        throw new Error('An error occurred while creating a stop');
+    }
 };
 
 const updateStop = async (id, stopData) => {
-    return Stop.update(stopData, {
-        where: { id: id }
-    });
+    try {
+        const stop = await Stop.findByPk(id);
+        if (!stop) throw new Error('Stop not found');
+        stop.set(stopData);
+        await stop.save();
+        return stop;
+    } catch (error) {
+        throw new Error('An error occurred while updating a stop');
+    };
 };
 
 const deleteStop = async (id) => {
-    return Stop.destroy({
-        where: { id: id }
-    });
+    try {
+        const stop = await Stop.findByPk(id);
+        if (!stop) throw new Error('Stop not found');
+        await stop.destroy();
+    } catch (error) {
+        throw new Error('An error occurred while deleting a stop');
+    };
 };
 
 module.exports = {
