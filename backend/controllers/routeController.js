@@ -59,21 +59,19 @@ const createRoute = async (req, res) => {
       const arriveTime = routeData.startTime;
       for (let i = 0; i < routeData.stopIds.length; i++) {
         const stop = stopService.getStopById(routeData.stopIds[i]);
-        if (i < routeData.stopIds.length - 1) {
-          const nextStopId = stopService.getStopById(routeData.stopIds[i + 1]);
-          const distance = distanceCalculator(stop.latitude, stop.longtitude, nextStopId.latitude, nextStopId.longtitude);
-          total_distance += distance;
-        }
         
         const boarding = {
           routeId: route.routeID,
           stopId: routeData.stopIds[i],
           boardTime: arriveTime
-        }
-        
+        } 
         await boardingService.createBoarding(boarding);
+        
         if (i < routeData.stopIds.length - 1) {
-          arriveTime = routeData.startTime + distance / 40; // 40 km/h
+          const nextStopId = stopService.getStopById(routeData.stopIds[i + 1]);
+          const distance = distanceCalculator(stop.latitude, stop.longtitude, nextStopId.latitude, nextStopId.longtitude);
+          total_distance += distance;
+          arriveTime = routeData.startTime + total_distance / 40; // 40 km/h
         }
       }
 
