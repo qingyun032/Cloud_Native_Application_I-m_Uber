@@ -4,6 +4,10 @@ const User = require('../db/models/Users');
 const CarInfo = require('../db/models/CarInfo');
 const Wallet = require('../db/models/Wallet');
 const sequelize = require('../config/database');
+const transformAddr = require('../utils/transformAddr');
+const axios = require('axios');
+jest.mock('axios');
+const mockedAxios = jest.mocked(axios, true);
 
 function sleep(ms) {
     return new Promise(function (resolve) {
@@ -498,6 +502,28 @@ describe("PUT /api/v1/wallet/topUp", () => {
             "Wallet": {
                 "balance": 12633
             }
+        });
+    });
+})
+
+describe("Test transformAddr", () => {
+    test("Should return lat and lon object", async () => {
+        mockedAxios.get.mockResolvedValue({
+            "data": {
+                "results": [
+                    {
+                        "position": {
+                            "lat": 25.01626,
+                            "lon": 121.5333
+                        },
+                    },
+                ]
+            }
+        });
+        const postion = await transformAddr("台北市大安區羅斯福路四段1號");
+        expect(postion).toEqual({
+            "lat": 25.01626,
+            "lon": 121.5333
         });
     });
 })
