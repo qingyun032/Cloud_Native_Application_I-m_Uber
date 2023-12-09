@@ -2,6 +2,7 @@ const stopService = require('../services/stopService');
 
 const getAllStops = async (req, res) => {
   try {
+    // grid
     const stops = await stopService.getAllStops();
     res.status(200).json(stops);
   } catch (error) {
