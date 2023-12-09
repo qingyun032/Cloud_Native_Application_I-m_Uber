@@ -22,6 +22,7 @@ module.exports = ((sequelize, DataTypes) => {
         start: DataTypes.INTEGER, // start stop
         destination: DataTypes.INTEGER, // end stop
         available: DataTypes.INTEGER, // number of available seats
+        type: DataTypes.ENUM("GO", "BACK"), // GO: from start to TSMC, BACK: from TSMC to destination
         state: DataTypes.ENUM("PROCESSING", "COMFIRMED"), // PROCESSING: the route is still open for passengers to join
     }, {
         timestamps: false,
