@@ -28,7 +28,12 @@ const createRoute = async (req, res) => {
 
 
     const routeData = req.body;
-  
+    stopsList = routeData.stops;
+    delete routeData.stops;
+    
+    routeData.driverID = driverId;
+    routeData.state = "PROCESSING";
+
     try {
       const route = await routeService.createRoute(routeData);
       const boarding = await 
