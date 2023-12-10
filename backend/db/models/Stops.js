@@ -3,7 +3,7 @@ const sequelize = require('../../config/database');
 
 module.exports = ((sequelize, DataTypes) => {
     const Stop = sequelize.define('Stops', {
-        id: {
+        stopID: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true

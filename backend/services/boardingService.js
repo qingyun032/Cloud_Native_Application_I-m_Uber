@@ -1,27 +1,57 @@
-const boarding = require('../db/models/Boarding');
+const boardingTable = require('../db/models/Boarding');
 
 const getAllBoardings = async () => {
-    return boarding.findAll();
+    try {
+        const boardings = await boardingTable.findAll();
+        return boardings;
+    } catch (error) {
+        throw new Error('An error occurred while getting all boardings');
+    }
 }
 
 const getBoardingById = async (id) => {
-    return boarding.findByPk(id);
+    try {
+        const boarding = await boardingTable.findByPk(id);
+        return boarding;
+    } catch (error) {
+        throw new Error('An error occurred while getting a boarding by id');
+    }
 }
 
 const createBoarding = async (boardingData) => {
-    return boarding.create(boardingData);
+    try {
+        console.log('ishere', boardingData)
+        const boarding = await boardingTable.create(boardingData);
+        return boarding;
+    } catch (error) {
+        throw new Error('An error occurred while creating a boarding');
+    }
 }
 
 const updateBoarding = async (id, boardingData) => {
-    return boarding.update(boardingData, {
-        where: { id: id }
-    });
+    try {
+        const boarding = await boardingTable.findByPk(id);
+        if (!boarding) {
+            throw new Error('Boarding not found');
+        }
+        boarding.set(boardingData);
+        await boarding.save();
+        return boarding;
+    } catch (error) {
+        throw new Error('An error occurred while updating the boarding');
+    }
 }
 
 const deleteBoarding = async (id) => {
-    return boarding.destroy({
-        where: { id: id }
-    });
+    try {
+        const boarding = await boardingTable.findByPk(id);
+        if (!boarding) {
+            throw new Error('Boarding not found');
+        }
+        await boarding.destroy();
+    } catch (error) {
+        throw new Error('An error occurred while deleting the boarding');
+    }
 }
 
 module.exports = {

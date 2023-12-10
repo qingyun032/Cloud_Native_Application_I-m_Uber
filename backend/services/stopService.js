@@ -1,7 +1,7 @@
 const sequelize = require('../config/database');
 const Stop = require('../db/models/Stops');
 const addressToLatLon = require('../utils/transformAddr')
-const calculateDistance = require('../utils/calculateDistance')
+const distanceCalculator = require('../utils/distance')
 
 const getAllStops = async () => {
     try {
@@ -27,8 +27,8 @@ const getNearestNStops = async (address, nStops, limitDistance) => {
     try {
         const stops = await Stop.findAll();
 
-        const stopWithDistance = stops.map((stop) => {
-            const distance = calculateDistance(lat, long, stop.latitude, stop.longtitude);
+        const stopWithDistance = stops.map(async (stop) => {
+            const distance = await distanceCalculator(lat, long, stop.latitude, stop.longitude);
             return {
                 ...stop.get(), // ...: spread operator for a shall
                 distance: distance

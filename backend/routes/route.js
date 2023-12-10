@@ -3,4 +3,6 @@ const router = express.Router();
 const routeController = require('../controllers/routeController');
 
 // Create a new route
-router.post('/create', routeController.createRoute);
+router.post('/createRoute', routeController.createRoute);
+
+module.exports = router;

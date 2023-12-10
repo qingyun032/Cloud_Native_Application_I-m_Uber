@@ -24,20 +24,19 @@ module.exports = ((sequelize, DataTypes) => {
         available: DataTypes.INTEGER, // number of available seats
         type: DataTypes.ENUM("GO", "BACK"), // GO: from start to TSMC, BACK: from TSMC to destination
         state: DataTypes.ENUM("PROCESSING", "COMFIRMED"), // PROCESSING: the route is still open for passengers to join
-        type: DataTypes.ENUM("GO", "BACK") // GO: the route is from start to TSMC, BACK: the route is from destination to start
     }, {
         timestamps: false,
         createdAt: false,
         updatedAt: false,
     });    
-    Routes.belongsTo(Users, { foreignKey: 'driveID' });
+    Routes.belongsTo(Users, { foreignKey: 'driverID' });
     Routes.hasMany(Boarding, { 
         foreignKey: 'routeID', 
-        onDelete: 'cascade' // when a route is deleted, all boardings associated with it will be deleted as well
+        onDelete: 'CASCADE' // when a route is deleted, all boardings associated with it will be deleted as well
     });
     Routes.hasMany(Passenger, { 
         foreignKey: 'routeID', 
-        onDelete: 'cascade', // when a route is deleted, all passengers associated with it will be deleted as well
+        onDelete: 'CASCADE', // when a route is deleted, all passengers associated with it will be deleted as well
     });
     return Routes;
 })(sequelize, DataTypes);

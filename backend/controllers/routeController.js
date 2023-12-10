@@ -2,6 +2,17 @@ const routeService = require('../services/routeService');
 const boardingService = require('../services/boardingService');
 const distanceCalculator = require('../utils/distance');
 const stopService = require('../services/stopService');
+
+const getAllRoutes = async (req, res) => {
+  try {
+    // grid
+    const stops = await routeService.getAllRoutes();
+    res.status(200).json(stops);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
   
 const getRouteById = async (req, res) => {
     const routeId = req.params.id;
@@ -27,44 +38,60 @@ const createRoute = async (req, res) => {
     // 3. available: available seats
     // 4. type: GO or BACK
     // 5. state: PROCESSING or CONFIRMED
-  
+    const routeData = req.body; 
+    const routeInfo = {'driverID': driverId};
+
     try {
       // create route
-      routeInfo = {}
+      var route = {};
       routeData.stopIds = routeData.stopIds.sort();
-      if (routeData.type == "GO") {
-        routeInfo.start = routeData.stopIds[0];
-        routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
+      if (routeData.stopIds.length < 3) {
+        res.status(400).json({ error: "You should include at least 1 intermediate stop" });
+        return;
       } else {
-        routeInfo.start = routeData.stopIds[routeData.stopIds.length - 1];
-        routeInfo.destination = routeData.stopIds[0];
-      }
-      routeInfo.driverId = driverId;
-      routeInfo.startTime = routeData.startTime;
-      routeInfo.available = routeData.available;
-      routeInfo.type = routeData.type;
-      routeInfo.state = routeData.state;
-
-      const route = await routeService.createRoute(routeInfo);
-
-      // create boardings
-      const total_distance = 0;
-      const arriveTime = routeData.startTime;
-      for (let i = 0; i < routeData.stopIds.length; i++) {
-        const stop = stopService.getStopById(routeData.stopIds[i]);
+        if (routeData.type == "GO") {
+          routeInfo.start = routeData.stopIds[0];
+          routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
+        } else {
+          routeInfo.start = routeData.stopIds[routeData.stopIds.length - 1];
+          routeInfo.destination = routeData.stopIds[0];
+        }
         
-        const boarding = {
-          routeId: route.routeID,
-          stopId: routeData.stopIds[i],
-          boardTime: arriveTime
-        } 
-        await boardingService.createBoarding(boarding);
-        
-        if (i < routeData.stopIds.length - 1) {
-          const nextStopId = stopService.getStopById(routeData.stopIds[i + 1]);
-          const distance = distanceCalculator(stop.latitude, stop.longtitude, nextStopId.latitude, nextStopId.longtitude);
-          total_distance += distance;
-          arriveTime = routeData.startTime + total_distance / 40; // 40 km/h
+        routeInfo.startTime = routeData.startTime;
+        routeInfo.available = routeData.available;
+        routeInfo.type = routeData.type;
+        routeInfo.state = routeData.state;
+        // console.log(routeInfo);
+  
+        route = await routeService.createRoute(routeInfo);
+  
+        // create boardings
+        var total_distance = 0;
+        var arriveTime = new Date(routeData.startTime);
+        var boardingInfo = {'routeID': route.routeID}; // when create a 
+        // for loop to create each boarding
+        for (let i = 0; i < routeData.stopIds.length; i++) {
+          const stop = await stopService.getStopById(routeData.stopIds[i]);
+          
+          boardingInfo.stopID = routeData.stopIds[i];
+          boardingInfo.boardTime = arriveTime;
+
+          console.log(boardingInfo);
+          
+          // await can make sure that the boarding is created before the next iteration
+          await boardingService.createBoarding(boardingInfo);
+
+          if (i < routeData.stopIds.length - 1) {
+            const nextStopId = await stopService.getStopById(routeData.stopIds[i + 1]);
+            const distance = await distanceCalculator(stop.latitude, stop.longitude, nextStopId.latitude, nextStopId.longitude);
+            total_distance += distance;
+            // console.log(`distance: ${distance} ${total_distance}`);
+            var intervalTime = new Date((distance / 40) * 60 * 60 * 1000); // 40 km/h
+            
+            // console.log('I am here')
+            arriveTime = new Date(arriveTime.getTime() + intervalTime.getTime());
+          }
+          // console.log(`time: ${arriveTime}`);
         }
       }
 

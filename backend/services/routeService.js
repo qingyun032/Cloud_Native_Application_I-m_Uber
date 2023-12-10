@@ -38,6 +38,7 @@ const getRouteById = async (id) => {
 const createRoute = async (routeData) => {
     try {
         const route = await Route.create(routeData);
+        // console.log(`route is here ${route}`);
         return route;
     } catch (error) {
         throw new Error('An error occurred while creating the route');

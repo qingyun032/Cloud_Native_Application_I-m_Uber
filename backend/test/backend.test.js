@@ -3,11 +3,14 @@ const request = require('supertest');
 const User = require('../db/models/Users');
 const CarInfo = require('../db/models/CarInfo');
 const Wallet = require('../db/models/Wallet');
+const Routes = require('../db/models/Routes');
+const Boarding = require('../db/models/Boarding');
 const sequelize = require('../config/database');
 const transformAddr = require('../utils/transformAddr');
 const axios = require('axios');
 jest.mock('axios');
 const mockedAxios = jest.mocked(axios, true);
+const boardingService = require('../services/boardingService');
 
 function sleep(ms) {
     return new Promise(function (resolve) {
@@ -23,16 +26,22 @@ beforeAll(async () => {
 
 describe("POST /api/v1/auth/signup", () => {
     test("Sign up user1", async () => {
+        // Clear Data
         await User.destroy({
             truncate: {cascade: true}
         });
+        await sequelize.query('ALTER TABLE Users AUTO_INCREMENT = 1;');
         await CarInfo.destroy({
             truncate: true
         });
         await Wallet.destroy({
             truncate: true
         });
-        await sequelize.query('ALTER TABLE Users AUTO_INCREMENT = 1;');
+        await Routes.destroy({
+            truncate: {cascade: true}
+        });
+        await sequelize.query('ALTER TABLE Routes AUTO_INCREMENT = 1;');
+        await sequelize.query('ALTER TABLE Boarding AUTO_INCREMENT = 1;');
         const res = await request(app).post("/api/v1/auth/signup").send({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -67,6 +76,7 @@ describe("POST /api/v1/auth/signup", () => {
         expect(res.body.message).toBe("Sign up successfully");
     });
 });
+
 describe("POST /api/v1/auth/signin", () => {
     test("Should log in successfully", async () => {
         const res = await request(app).post("/api/v1/auth/signin").send({
@@ -91,8 +101,6 @@ describe("POST /api/v1/auth/signout", () => {
         expect(res.body.message).toBe("Logout successfully");
     });
 });
-
-
 
 describe("GET /api/v1/users/myInfo", () => {
     test("Get user1's infomation", async () => {
@@ -525,6 +533,60 @@ describe("Test transformAddr", () => {
             "lat": 25.01626,
             "lon": 121.5333
         });
+    });
+})
+
+// describe("createBoarding", () => {
+//     test("Create a boarding", async () => {
+//         Routes.destroy({
+//             truncate: {cascade: true}
+//         });
+        
+//         const boardingData = {
+//             "routeID": 1,
+//             "stopID": 9,
+//             "boardTime": "2021-06-01 11:00:00:000Z",
+//         }
+
+//         const boarding = await boardingService.createBoarding(boardingData);
+//         console.log(boarding);
+//         expect(boarding).toEqual({
+//             "boardingID": 9,
+//             "routeID": 1,
+//             "stopID": 20,
+//             "boardTime": "2021-06-01T11:00:00.000Z",
+//         });
+//     });
+// })
+
+describe("POST /api/v1/route/createRoute", () => {
+    test("Create a route", async () => {
+
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+        res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
+            "startTime": '2021-06-01 11:00:00:000Z',
+            "stopIds": [1, 2, 3, 4, 5, 6, 7, 8],
+            "available": 3,
+            "type": "GO",
+            "state": "PROCESSING"
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toEqual(
+            {
+                "routeID": 1,
+                "driverID": 1,
+                "start": 1,
+                "destination": 8,
+                "startTime": "2021-06-01T11:00:00.000Z",
+                "available": 3,
+                "type": "GO",
+                "state": "PROCESSING"
+            }
+        );
     });
 })
 

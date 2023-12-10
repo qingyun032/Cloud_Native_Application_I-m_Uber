@@ -22,18 +22,21 @@ app.use(cors({
     credentials: true
 }))
 app.use(bodyParser.json());
+
 // Session configuration
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false
 }));
+
 // Set Router
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/wallet', walletRouter);
 app.use('/api/v1/route', routeRouter);
 app.use('/api/v1/stop', stopRouter);
+
 // Connect to the database and create the server
 sequelize.sync()
     .then(() => {
