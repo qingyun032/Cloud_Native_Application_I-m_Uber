@@ -45,8 +45,8 @@ Create TABLE IF NOT EXISTS Stops(
     longitude DECIMAL(20, 17)
 );
 
-Create TABLE IF NOT EXISTS Reocrds(
-    reocrdID INT AUTO_INCREMENT PRIMARY KEY,
+Create TABLE IF NOT EXISTS Records(
+    recordID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT,
     `date` DATETIME,
     `start` INT,
@@ -63,18 +63,18 @@ Create TABLE IF NOT EXISTS Routes(
     startTime DATETIME,
     `start` INT,
     destination INT,
-    availale INT,
+    available INT,
     `type` ENUM("GO", "BACK"),
     `state` ENUM("PROCESSING", "COMFIRMED"), 
-    FOREIGN KEY(driverID) REFERENCES Users(userID)
+    FOREIGN KEY(driverID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 Create TABLE IF NOT EXISTS Boarding(
     boardingID INT AUTO_INCREMENT PRIMARY KEY,
+    stopID INT,
     routeID INT,
     boardTime DATETIME,
-    stopID INT,
-    FOREIGN KEY(routeID) REFERENCES Routes(routeID),
+    FOREIGN KEY(routeID) REFERENCES Routes(routeID) ON DELETE CASCADE,
     FOREIGN KEY(stopID) REFERENCES Stops(stopID)
 );
 
@@ -85,11 +85,19 @@ Create TABLE IF NOT EXISTS Passenger(
     dropOFFStopID INT,
     passengerCnt INT,
     FOREIGN KEY(userID) REFERENCES Users(userID),
-    FOREIGN KEY(boardingID) REFERENCES Boarding(boardingID)
+    FOREIGN KEY(routeID) REFERENCES Routes(routeID) ON DELETE CASCADE
 );
 
 -- Insert some initailize Stops into the table
 INSERT INTO Stops (`Name`, `address`, latitude, longitude)
 VALUES
 ('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('Taoyuan Main Station', 'No.1, Zongzheng Rd., Taoyuan Dist., Taoyuan City Taiwan, R.O.C', 24.989838, 121.313255),
+('Hsinchu Main Station', 'No.445, Chunghwa. sec. Rd., East Dist., Hsinchu County Taiwan, R.O.C', 24.801775, 120.971574),
+('1', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('2', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('3', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('4', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+('5', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
 ('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
+
