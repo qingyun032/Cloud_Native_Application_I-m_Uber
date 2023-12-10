@@ -21,6 +21,19 @@ CREATE TABLE IF NOT EXISTS Users (
     carPlate VARCHAR(15)
 );
 
+Create TABLE IF NOT EXISTS Favor(
+    userID INT PRIMARY KEY,
+    GO_start INT,
+    GO_dest  INT,
+    BACK_start INT,
+    BACK_dest INT,
+    FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE,
+    FOREIGN KEY(GO_start) REFERENCES Stops(stopID),
+    FOREIGN KEY(GO_dest)  REFERENCES Stops(stopID),
+    FOREIGN KEY(BACK_start) REFERENCES Stops(stopID),
+    FOREIGN KEY(BACK_dest)  REFERENCES Stops(stopID),
+);
+
 Create TABLE IF NOT EXISTS CarInfo(
     carPlate VARCHAR(15) PRIMARY KEY,
     seat INT,
