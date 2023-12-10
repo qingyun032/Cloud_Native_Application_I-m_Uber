@@ -23,15 +23,19 @@ CREATE TABLE IF NOT EXISTS Users (
 
 Create TABLE IF NOT EXISTS Favor(
     userID INT PRIMARY KEY,
-    GO_start INT,
-    GO_dest  INT,
-    BACK_start INT,
-    BACK_dest INT,
-    FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE,
-    FOREIGN KEY(GO_start) REFERENCES Stops(stopID),
-    FOREIGN KEY(GO_dest)  REFERENCES Stops(stopID),
-    FOREIGN KEY(BACK_start) REFERENCES Stops(stopID),
-    FOREIGN KEY(BACK_dest)  REFERENCES Stops(stopID),
+    P_GO_start VARCHAR(255),
+    P_GO_cnt INT,
+    P_GO_TIME TIME,
+    P_BACK_dest VARCHAR(255),
+    P_BACK_cnt INT,
+    P_BACK_TIME TIME,
+    D_GO_start VARCHAR(255),
+    D_GO_TIME TIME,
+    D_GO_stops VARCHAR(255),
+    D_BACK_dest VARCHAR(255),
+    D_BACK_TIME TIME,
+    D_BACK_stops VARCHAR(255),
+    FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 Create TABLE IF NOT EXISTS CarInfo(

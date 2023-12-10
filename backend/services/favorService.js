@@ -1,32 +1,73 @@
 const Favor = require('../db/models/Favor');
+const Users = require('../db/models/Users');
 
-const getAllFavors = async () => {
-    return Favor.findAll();
+async function getAllFavors() {
+    try {
+        const favors = await Favor.findAll({
+            include: [
+                Users
+            ]
+        });
+        return favors;
+    } catch (error) {
+        throw new Error('An error occurred while acquiring the favors');
+    }
 }
 
-const getFavorById = async (id) => {
-    return Favor.findByPk(id);
+async function getFavorByUserId(userId) {
+    try {
+        const favor = await Favor.findByPk(userId, {
+            include: [
+                Users
+            ]
+        });
+        if (!favor) {
+            throw new Error('Favor not found');
+        }
+        return favor;
+    } catch (error) {
+        throw new Error('An error occurred while acquiring the favor');
+    }
 }
 
-const createFavor = async (favorData) => {
-    return Favor.create(favorData);
+async function createFavor(favorData) {
+    try {
+        const favor = await Favor.create(favorData);
+        return favor;
+    } catch (error) {
+        throw new Error('An error occurred while creating the favor');
+    }
 }
 
-const updateFavor = async (id, favorData) => {
-    return Favor.update(favorData, {
-        where: { userID: id }
-    });
+async function updateFavor(userId, favorData) {
+    try {
+        const favor = await Favor.findByPk(userId);
+        if (!favor) {
+            throw new Error('Favor not found');
+        }
+        favor.set(favorData);
+        await favor.save();
+        return favor;
+    } catch (error) {
+        throw new Error('An error occurred while updating the favor');
+    }
 }
 
-const deleteFavor = async (id) => {
-    return Favor.destroy({
-        where: { userID: id }
-    });
+async function deleteFavor(userId) {
+    try {
+        const favor = await Favor.findByPk(userId);
+        if (!favor) {
+            throw new Error('Favor not found');
+        }
+        await favor.destroy();
+    } catch (error) {
+        throw new Error('An error occurred while deleting the favor');
+    }
 }
 
 module.exports = {
     getAllFavors,
-    getFavorById,
+    getFavorByUserId,
     createFavor,
     updateFavor,
     deleteFavor
