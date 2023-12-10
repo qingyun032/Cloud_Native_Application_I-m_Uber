@@ -9,8 +9,7 @@ const sequelize = require('./config/database');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const walletRouter = require('./routes/wallet');
-
-const Routes = require('./db/models/Routes');
+const routeRouter = require('./routes/route');
 
 const app = express()
 
@@ -20,16 +19,20 @@ app.use(cors({
     credentials: true
 }))
 app.use(bodyParser.json());
+
 // Session configuration
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false
 }));
+
 // Set Router
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/wallet', walletRouter);
+app.use('/api/v1/route', routeRouter);
+
 // Connect to the database and create the server
 sequelize.sync()
     .then(() => {

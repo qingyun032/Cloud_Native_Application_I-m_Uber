@@ -1,4 +1,5 @@
-function calculateDistance(lat1, lon1, lat2, lon2) {
+const calculateDistance = async (lat1, lon1, lat2, lon2) => {
+  try {
     // Convert latitude and longitude from degrees to radians
     const toRadians = (angle) => (angle * Math.PI) / 180;
     lat1 = toRadians(lat1);
@@ -19,8 +20,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   
     // Calculate the distance
     const distance = earthRadius * c;
-  
+
     return distance;
+  } catch (error) {
+    return null;
+  }
 }
   
   // Example usage:
@@ -31,4 +35,5 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   
 //   const distance = calculateDistance(lat1, lon1, lat2, lon2);
 //   console.log(`Distance between the two points: ${distance.toFixed(2)} km`);
-  
+
+module.exports = calculateDistance;
