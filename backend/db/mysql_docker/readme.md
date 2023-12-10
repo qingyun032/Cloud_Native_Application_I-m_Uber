@@ -27,3 +27,8 @@ docker pull mysql:8.0.35
 >>>>
 >>>
 >>
+
+## Loads Stops Manually
+```mysql=
+mysql> source backend/db/mysql_docker/stops.sql
+```
