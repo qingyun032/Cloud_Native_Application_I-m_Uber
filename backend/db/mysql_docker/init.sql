@@ -88,7 +88,7 @@ Create TABLE IF NOT EXISTS Passenger(
 );
 
 -- Insert some initailize Stops into the table
-INSERT INTO Stops (`Name`, `address`, latitude, longitude)
-VALUES
-('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
-('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
+-- INSERT INTO Stops (`Name`, `address`, latitude, longitude)
+-- VALUES
+-- ('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
