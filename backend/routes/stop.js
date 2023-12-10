@@ -7,3 +7,4 @@ router.get('/', stopController.getAllStops);
 
 // // Get three nearest stops for passenger to choose
 // router.post('/nearest', stopController.getNearestStop);
+module.exports = router;
