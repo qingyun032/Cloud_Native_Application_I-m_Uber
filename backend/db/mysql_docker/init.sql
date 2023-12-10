@@ -83,8 +83,7 @@ Create TABLE IF NOT EXISTS Passenger(
     pickUpStopID INT,
     dropOFFStopID INT,
     passengerCnt INT,
-    FOREIGN KEY(userID) REFERENCES Users(userID),
-    FOREIGN KEY(boardingID) REFERENCES Boarding(boardingID)
+    FOREIGN KEY(userID) REFERENCES Users(userID)
 );
 
 -- Insert some initailize Stops into the table
