@@ -78,7 +78,7 @@ describe("POST /api/v1/auth/signup", () => {
 });
 
 describe("POST /api/v1/auth/signin", () => {
-    test("should log in successfully", async () => {
+    test("Should log in successfully", async () => {
         const res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Leo",
             "password": "Leopassword"
@@ -384,7 +384,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
 
 
 describe("PUT /api/v1/users/updateCarInfo", () => {
-    test("update carInfo without changing carPlate", async () => {
+    test("Update carInfo without changing carPlate", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Leo",
             "password": "Leopassword"
@@ -467,7 +467,7 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
 })
 
 describe("PUT /api/v1/wallet/topUp", () => {
-    test("provide top up service", async () => {
+    test("Provide top up service", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Leo",
             "password": "Leopassword"

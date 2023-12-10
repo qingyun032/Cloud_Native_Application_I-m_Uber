@@ -10,6 +10,9 @@ const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const walletRouter = require('./routes/wallet');
 const routeRouter = require('./routes/route');
+const stopRouter = require('./routes/stop');
+
+const Routes = require('./db/models/Routes');
 
 const app = express()
 
@@ -32,6 +35,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/wallet', walletRouter);
 app.use('/api/v1/route', routeRouter);
+app.use('/api/v1/stop', stopRouter);
 
 // Connect to the database and create the server
 sequelize.sync()

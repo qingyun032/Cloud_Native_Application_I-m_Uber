@@ -21,6 +21,23 @@ CREATE TABLE IF NOT EXISTS Users (
     carPlate VARCHAR(15)
 );
 
+Create TABLE IF NOT EXISTS Favor(
+    userID INT PRIMARY KEY,
+    P_GO_start VARCHAR(255),
+    P_GO_cnt INT,
+    P_GO_TIME TIME,
+    P_BACK_dest VARCHAR(255),
+    P_BACK_cnt INT,
+    P_BACK_TIME TIME,
+    D_GO_start VARCHAR(255),
+    D_GO_TIME TIME,
+    D_GO_stops VARCHAR(255),
+    D_BACK_dest VARCHAR(255),
+    D_BACK_TIME TIME,
+    D_BACK_stops VARCHAR(255),
+    FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE
+);
+
 Create TABLE IF NOT EXISTS CarInfo(
     carPlate VARCHAR(15) PRIMARY KEY,
     seat INT,
@@ -100,4 +117,3 @@ VALUES
 ('4', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
 ('5', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City Taiwan, R.O.C', 25.04792, 121.51708),
 ('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
-
