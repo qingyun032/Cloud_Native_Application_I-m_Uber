@@ -110,16 +110,24 @@ Create TABLE IF NOT EXISTS Passenger(
     FOREIGN KEY(routeID) REFERENCES Routes(routeID) ON DELETE CASCADE
 );
 
+Create TABLE IF NOT EXISTS Grids(
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `gridID` INT,
+    `stopID` INT,
+    `order` INT,
+    FOREIGN KEY(stopID) REFERENCES Stops(stopID)
+);
+
 -- Insert some initailize Stops into the table
-INSERT INTO Stops (`Name`, `address`, latitude, longitude)
-VALUES
-('TSMC HQ', 'No. 8, Lixing 6th Rd., East Dist., Hsinchu City, Taiwan, R.O.C', 24.771815, 121.013575),
-('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('Taoyuan Main Station', 'No.1, Zongzheng Rd., Taoyuan Dist., Taoyuan City, Taiwan, R.O.C', 24.989838, 121.313255),
-('Hsinchu Main Station', 'No.445, Chunghwa. sec. Rd., East Dist., Hsinchu County, Taiwan, R.O.C', 24.801775, 120.971574),
-('1', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('2', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('3', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('4', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('5', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
-('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City, Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);
+-- INSERT INTO Stops (`Name`, `address`, latitude, longitude)
+-- VALUES
+-- ('TSMC HQ', 'No. 8, Lixing 6th Rd., East Dist., Hsinchu City, Taiwan, R.O.C', 24.771815, 121.013575),
+-- ('Taipei Main Station', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('Taoyuan Main Station', 'No.1, Zongzheng Rd., Taoyuan Dist., Taoyuan City, Taiwan, R.O.C', 24.989838, 121.313255),
+-- ('Hsinchu Main Station', 'No.445, Chunghwa. sec. Rd., East Dist., Hsinchu County, Taiwan, R.O.C', 24.801775, 120.971574),
+-- ('1', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('2', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('3', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('4', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('5', 'No.3, Beiping W. Rd., Zongzheng Dist., Taipei City, Taiwan, R.O.C', 25.04792, 121.51708),
+-- ('National Taiwan University', 'No. 1, Sec. 4, Roosevelt Rd., Da''an Dist., Taipei City, Taiwan, R.O.C', 25.017123016936853, 121.53399498384425);

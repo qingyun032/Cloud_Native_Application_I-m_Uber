@@ -528,53 +528,53 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
     });
 })
 
-// describe("PUT /api/v1/wallet/topUp", () => {
-//     test("Provide top up service", async () => {
-//         const loginRes = await request(app).post("/api/v1/auth/signin").send({
-//             "userName": "Leo",
-//             "password": "Leopassword"
-//         });
-//         let { header } = loginRes;
-//         let res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
-//             "cash": 300
-//         });
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body).toEqual({
-//             "balance": 300
-//         });
+describe("PUT /api/v1/wallet/topUp", () => {
+    test("Provide top up service", async () => {
+        const loginRes = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        let { header } = loginRes;
+        let res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+            "cash": 300
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "balance": 300
+        });
 
-//         res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
-//             "cash": 12333
-//         });
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body).toEqual({
-//             "balance": 12633
-//         });
-//         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
-//         expect(res.body).toEqual({
-//             "userName": "Leo",
-//             "email": "leo@gamil.com",
-//             "isDriver": true,
-//             "gender": "M",
-//             "phone": "0987-654-321",
-//             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
-//             "addressHome": "106台北市大安區基隆路四段43號",
-//             "nCancel": 0,
-//             "rating": "3.0",
-//             "CarInfo": {
-//                 "carPlate": "LK99-8917",
-//                 "color": 1,
-//                 "brand": 1,
-//                 "type": "SUV",
-//                 "electric": true,
-//                 "seat": 4
-//             },
-//             "Wallet": {
-//                 "balance": 12633
-//             }
-//         });
-//     });
-// })
+        res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+            "cash": 12333
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "balance": 12633
+        });
+        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.body).toEqual({
+            "userName": "Leo",
+            "email": "leo@gamil.com",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+            "addressHome": "106台北市大安區基隆路四段43號",
+            "nCancel": 0,
+            "rating": "3.0",
+            "CarInfo": {
+                "carPlate": "LK99-8917",
+                "color": 1,
+                "brand": 1,
+                "type": "SUV",
+                "electric": true,
+                "seat": 4
+            },
+            "Wallet": {
+                "balance": 12633
+            }
+        });
+    });
+})
 
 describe("Test transformAddr", () => {
     test("Should return lat and lon object", async () => {
@@ -692,7 +692,7 @@ describe("POST /api/v1/route/createRoute", () => {
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
             "startTime": '2023-12-21 08:23:00:000Z',
-            "stopIds": [100, 201, 300, 1],
+            "stopIds": [88, 11, 33, 111],
             "available": 4,
             "type": "GO",
             "state": "PROCESSING"
@@ -701,8 +701,8 @@ describe("POST /api/v1/route/createRoute", () => {
         expect(res.body).toEqual({
             "routeID": 2,
             "driverID": 2,
-            "start": 100,
-            "destination": 1,
+            "start": 88,
+            "destination": 111,
             "startTime": "2023-12-21T08:23:00.000Z",
             "available": 4,
             "type": "GO",
@@ -718,7 +718,7 @@ describe("POST /api/v1/route/createRoute", () => {
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
             "startTime": '2023-12-21 08:23:00:000Z',
-            "stopIds": [10, 250, 395, 1],
+            "stopIds": [10, 77, 44, 23, 4, 111],
             "available": 4,
             "type": "GO",
             "state": "PROCESSING"
@@ -728,7 +728,7 @@ describe("POST /api/v1/route/createRoute", () => {
             "routeID": 3,
             "driverID": 3,
             "start": 10,
-            "destination": 1,
+            "destination": 111,
             "startTime": "2023-12-21T08:23:00.000Z",
             "available": 4,
             "type": "GO",
@@ -747,37 +747,46 @@ describe("GET /api/v1/passengers/showCandidates", () => {
         });
         // console.log("Message Here");
         const { header } = res;
-
         const passenger_pref = {
             "Go": true,
-            "address": "新竹縣新市路77號",
+            "address": "新竹縣竹東鎮光武街2號",
             "passenger_cnt": 1,
-            "board_time": "2023-12-21 08:40:00:000Z"
+            "board_time": "2023-12-21 12:01:00:000Z"
         }
+        mockedAxios.get.mockResolvedValue({
+            "data": {
+                "results": [
+                    {
+                        "position": {
+                            "lat": 24.7237,
+                            "lon": 121.09501
+                        },
+                    },
+                ]
+            }
+        });
         res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
             passenger_pref
         );
-        
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "Routes": [
 				{
-                    "routeID": 2,
-                    "stopID": 201,
-                    "stopAddress": "新竹縣新市路93號",
-                    "stopID": 201,
-                    "stop_lat": 24.901,
-                    "stop_lon": 120.98532,
-                    "driverID": 2,
-                    "driverName": "Chu",
-                    "board_time": "2023-12-21T08:43:51.000Z",
+                    "routeID": 3,
+                    "stopID": 23,
+                    "stopAddress": "新竹縣東寧路一段1號(北側)",
+                    "stop_lat": 24.72273000000000000,
+                    "stop_lon": 121.09597000000000000,
+                    "driverID": 3,
+                    "driverName": "Wei",
+                    "board_time": '2023-12-21T12:06:29.000Z',
                     "rating": 0,
                     "nRating": 0,
-                    "price": 190,
-                    "carPlate": "LOVE-9888",
-                    "cartype": "Sedan",
-                    "carbrand": 3,
-                    "carColor": 4,
+                    "price": 116,
+                    "carPlate": "BBC-1221",
+                    "cartype": "SUV",
+                    "carbrand": 1,
+                    "carColor": 2,
                     "carelectric": false
 				},
 		    ]

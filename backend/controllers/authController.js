@@ -29,7 +29,6 @@ async function signin(req, res) {
         // Respond with a success message (e.g., "Login successful")
         res.status(200).json({ message });
     } catch (error) {
-        console.error(error);
         res.status(401).json({ error: error.message });
     }
 }
