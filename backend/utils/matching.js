@@ -50,7 +50,6 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
           boarding.routeID === route.routeID &&
           boarding.boardTime > p_board_time
         ) {
-          console.log("I am here");
           find = 1;
           const user = await userService.getUserById(route.driverID);
           const distance = await calculateDistance(
@@ -63,14 +62,18 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
           if(user.nRating !== 0){
             const rating = user.ratingTotalScore / user.nRating;
           }
-          
+          // console.log(typeof parseFloat(stop.latitude))
+          // console.log(parseFloat(stop.latitude))
           const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
           const temp_dic = {
             routeID: route.routeID,
             stopID: stop.stopID,
+            stopAddress: stop.address,
+            stop_lat: parseFloat(stop.latitude),
+            stop_lon: parseFloat(stop.longitude),
             driverID: user.userID,
             driverName: user.userName,
-            board_time: "",
+            board_time: boarding.boardTime,
             rating: rating,
             nRating: user.nRating,
             price: price,
@@ -87,7 +90,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
     }
     // console.log(return_routes);
     // return return_routes;
-    console.log(Routes)
+    // console.log(Routes)
     return Routes;
   } catch(error) {
     return null;
