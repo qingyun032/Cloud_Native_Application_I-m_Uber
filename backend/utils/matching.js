@@ -70,7 +70,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
             stopID: stop.stopID,
             driverID: user.userID,
             driverName: user.userName,
-            board_time: "",
+            board_time: boarding.boardTime,
             rating: rating,
             nRating: user.nRating,
             price: price,

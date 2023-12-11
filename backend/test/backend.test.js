@@ -766,7 +766,7 @@ describe("GET /api/v1/passengers/showCandidates", () => {
                     "stopID": 201,
                     "driverID": 2,
                     "driverName": "Chu",
-                    "board_time": "",
+                    "board_time": "2023-12-21T08:43:51.000Z",
                     "rating": 0,
                     "nRating": 0,
                     "price": 190,
