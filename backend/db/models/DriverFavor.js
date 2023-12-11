@@ -3,45 +3,27 @@ const sequelize = require('../../config/database');
 const Users = require('./Users'); // Assuming Users is another defined model
 
 module.exports = ((sequelize, DataTypes) => {
-    const Favor = sequelize.define('Favor', {
+    const Favor = sequelize.define('Driver_Favor', {
         userID: {
             type: DataTypes.INTEGER,
             primaryKey: true
         },
-        P_GO_start: {
+        GO_start: {
             type: DataTypes.STRING(255),
         },
-        P_GO_cnt: {
-            type: DataTypes.INTEGER,
-        },
-        P_GO_TIME: {
+        GO_TIME: {
             type: DataTypes.TIME,
         },
-        P_BACK_dest: {
+        GO_stops: {
             type: DataTypes.STRING(255),
         },
-        P_BACK_cnt: {
-            type: DataTypes.INTEGER,
+        BACK_dest: {
+            type: DataTypes.STRING(255),
         },
-        P_BACK_TIME: {
+        BACK_TIME: {
             type: DataTypes.TIME,
         },
-        D_GO_start: {
-            type: DataTypes.STRING(255),
-        },
-        D_GO_TIME: {
-            type: DataTypes.TIME,
-        },
-        D_GO_stops: {
-            type: DataTypes.STRING(255),
-        },
-        D_BACK_dest: {
-            type: DataTypes.STRING(255),
-        },
-        D_BACK_TIME: {
-            type: DataTypes.TIME,
-        },
-        D_BACK_stops: {
+        BACK_stops: {
             type: DataTypes.STRING(255),
         },
     }, {
