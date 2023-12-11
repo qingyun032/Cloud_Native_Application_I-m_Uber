@@ -75,6 +75,68 @@ describe("POST /api/v1/auth/signup", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe("Sign up successfully");
     });
+    test("Sign up user3", async () => {
+        const res = await request(app).post("/api/v1/auth/signup").send({
+            "userName": "Wei",
+            "email": "wei@tsmc.com",
+            "password": "Weipassword",
+            "isDriver": true,
+            "gender": "M",
+            "phone": "0987-654-321",
+            "carPlate": "BBC-1221",
+            "addressHome": "新竹市光復路二段101號",
+            "addressCompany": "新竹科學園區新竹市力行六路8號",
+            "seat": 4,
+            "brand": 1,
+            "type": "SUV",
+            "color": 2,
+            "electric": false
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Sign up successfully");
+    });
+    test("Sign up user4", async () => {
+        const res = await request(app).post("/api/v1/auth/signup").send({
+            "userName": "Alice",
+            "email": "alice@tsmc.com",
+            "password": "Alicepassword",
+            "isDriver": false,
+            "gender": "F",
+            "phone": "0950-952-361",
+            "addressHome": "新竹市寶山路1號",
+            "addressCompany": "新竹科學園區新竹市力行六路8號",
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Sign up successfully");
+    });
+    test("Sign up user4", async () => {
+        const res = await request(app).post("/api/v1/auth/signup").send({
+            "userName": "Bob",
+            "email": "bob@tsmc.com",
+            "password": "Bobpassword",
+            "isDriver": false,
+            "gender": "M",
+            "phone": "0959-934-954",
+            "addressHome": "新竹市光復路一段23號",
+            "addressCompany": "新竹科學園區新竹市力行六路8號",
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Sign up successfully");
+    });
+    test("Sign up user4", async () => {
+        const res = await request(app).post("/api/v1/auth/signup").send({
+            "userName": "Candy",
+            "email": "candy@tsmc.com",
+            "password": "Candypassword",
+            "isDriver": false,
+            "gender": "F",
+            "phone": "0965-789-024",
+            "addressHome": "新竹市明湖路1101號",
+            "addressCompany": "新竹科學園區新竹市力行六路8號",
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Sign up successfully");
+    });
 });
 
 describe("POST /api/v1/auth/signin", () => {
@@ -210,7 +272,7 @@ describe("POST /api/v1/users/rating", () => {
 });
 
 describe("PUT /api/v1/users/updatePassenger", () => {
-    test("Update user2's infomation", async () => {
+    test("Update user2's infomation to driver", async () => {
         const loginRes = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Chu",
             "password": "Chupassword"
