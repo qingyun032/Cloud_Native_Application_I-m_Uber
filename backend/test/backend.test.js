@@ -764,6 +764,10 @@ describe("GET /api/v1/passengers/showCandidates", () => {
 				{
                     "routeID": 2,
                     "stopID": 201,
+                    "stopAddress": "新竹縣新市路93號",
+                    "stopID": 201,
+                    "stop_lat": 24.901,
+                    "stop_lon": 120.98532,
                     "driverID": 2,
                     "driverName": "Chu",
                     "board_time": "2023-12-21T08:43:51.000Z",
