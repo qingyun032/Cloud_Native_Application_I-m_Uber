@@ -22,18 +22,21 @@ const getStopById = async (id) => {
 };
 
 const getNearestNStops = async (address, nStops, limitDistance) => {
-    const { lat, long } = await addressToLatLon(address);
+    const position = await addressToLatLon(address);
+    const lat = position.lat
+    const long = position.lon
     // the distance as L2 norm in ascending order
     try {
         const stops = await Stop.findAll();
 
-        const stopWithDistance = stops.map(async (stop) => {
+        const stopWithDistance = await Promise.all(stops.map(async (stop) => {
             const distance = await distanceCalculator(lat, long, stop.latitude, stop.longitude);
             return {
                 ...stop.get(), // ...: spread operator for a shall
                 distance: distance
             }
-        })
+        }))
+        
         const filteredStops = stopWithDistance.filter((stop) => stop.distance <= limitDistance);
         const sortedStops = filteredStops.sort((a, b) => a.distance - b.distance).slice(0, nStops);
         return sortedStops

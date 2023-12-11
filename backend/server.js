@@ -11,6 +11,7 @@ const authRouter = require('./routes/auth');
 const walletRouter = require('./routes/wallet');
 const routeRouter = require('./routes/route');
 const stopRouter = require('./routes/stop');
+const passengersRouter = require('./routes/passengers');
 
 const Routes = require('./db/models/Routes');
 
@@ -36,6 +37,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/wallet', walletRouter);
 app.use('/api/v1/route', routeRouter);
 app.use('/api/v1/stop', stopRouter);
+app.use('/api/v1/passengers', passengersRouter);
 
 // Connect to the database and create the server
 sequelize.sync()

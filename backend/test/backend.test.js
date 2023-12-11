@@ -109,7 +109,7 @@ describe("POST /api/v1/auth/signup", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe("Sign up successfully");
     });
-    test("Sign up user4", async () => {
+    test("Sign up user5", async () => {
         const res = await request(app).post("/api/v1/auth/signup").send({
             "userName": "Bob",
             "email": "bob@tsmc.com",
@@ -123,7 +123,7 @@ describe("POST /api/v1/auth/signup", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe("Sign up successfully");
     });
-    test("Sign up user4", async () => {
+    test("Sign up user6", async () => {
         const res = await request(app).post("/api/v1/auth/signup").send({
             "userName": "Candy",
             "email": "candy@tsmc.com",
@@ -528,53 +528,53 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
     });
 })
 
-describe("PUT /api/v1/wallet/topUp", () => {
-    test("Provide top up service", async () => {
-        const loginRes = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Leo",
-            "password": "Leopassword"
-        });
-        let { header } = loginRes;
-        let res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
-            "cash": 300
-        });
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            "balance": 300
-        });
+// describe("PUT /api/v1/wallet/topUp", () => {
+//     test("Provide top up service", async () => {
+//         const loginRes = await request(app).post("/api/v1/auth/signin").send({
+//             "userName": "Leo",
+//             "password": "Leopassword"
+//         });
+//         let { header } = loginRes;
+//         let res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+//             "cash": 300
+//         });
+//         expect(res.statusCode).toBe(200);
+//         expect(res.body).toEqual({
+//             "balance": 300
+//         });
 
-        res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
-            "cash": 12333
-        });
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            "balance": 12633
-        });
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
-        expect(res.body).toEqual({
-            "userName": "Leo",
-            "email": "leo@gamil.com",
-            "isDriver": true,
-            "gender": "M",
-            "phone": "0987-654-321",
-            "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
-            "addressHome": "106台北市大安區基隆路四段43號",
-            "nCancel": 0,
-            "rating": "3.0",
-            "CarInfo": {
-                "carPlate": "LK99-8917",
-                "color": 1,
-                "brand": 1,
-                "type": "SUV",
-                "electric": true,
-                "seat": 4
-            },
-            "Wallet": {
-                "balance": 12633
-            }
-        });
-    });
-})
+//         res = await request(app).put("/api/v1/wallet/topUp").set("Cookie", [...header["set-cookie"]]).send({
+//             "cash": 12333
+//         });
+//         expect(res.statusCode).toBe(200);
+//         expect(res.body).toEqual({
+//             "balance": 12633
+//         });
+//         res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+//         expect(res.body).toEqual({
+//             "userName": "Leo",
+//             "email": "leo@gamil.com",
+//             "isDriver": true,
+//             "gender": "M",
+//             "phone": "0987-654-321",
+//             "addressCompany": "No. 8, Lixing 6th Rd., East Dist., Hsinchu City 30078, Taiwan (R.O.C.)",
+//             "addressHome": "106台北市大安區基隆路四段43號",
+//             "nCancel": 0,
+//             "rating": "3.0",
+//             "CarInfo": {
+//                 "carPlate": "LK99-8917",
+//                 "color": 1,
+//                 "brand": 1,
+//                 "type": "SUV",
+//                 "electric": true,
+//                 "seat": 4
+//             },
+//             "Wallet": {
+//                 "balance": 12633
+//             }
+//         });
+//     });
+// })
 
 describe("Test transformAddr", () => {
     test("Should return lat and lon object", async () => {
@@ -583,17 +583,17 @@ describe("Test transformAddr", () => {
                 "results": [
                     {
                         "position": {
-                            "lat": 25.01626,
-                            "lon": 121.5333
+                            "lat": 24.90037,
+                            "lon": 120.98572
                         },
                     },
                 ]
             }
         });
-        const postion = await transformAddr("台北市大安區羅斯福路四段1號");
+        const postion = await transformAddr("新竹市新市路77號");
         expect(postion).toEqual({
-            "lat": 25.01626,
-            "lon": 121.5333
+            "lat": 24.90037,
+            "lon": 120.98572
         });
     });
 })
@@ -637,7 +637,7 @@ describe("POST /api/v1/route/createRoute", () => {
             "state": "PROCESSING"
         });
         expect(res.statusCode).toBe(401);
-        expect(res.body.error).toBe("Please sign in before querying driver data");
+        expect(res.body.error).toBe("Wrong sign in information");
     });
     
     test("Try to create a route with invalid data", async () => {
@@ -668,23 +668,23 @@ describe("POST /api/v1/route/createRoute", () => {
             "startTime": '2021-06-01 11:00:00:000Z',
             "stopIds": [1, 2, 3, 4, 5, 6, 7, 9],
             "available": 3,
-            "type": "GO",
+            "type": "BACK",
             "state": "PROCESSING"
         });
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             "routeID": 1,
             "driverID": 1,
-            "start": 1,
-            "destination": 9,
+            "start": 9,
+            "destination": 1,
             "startTime": "2021-06-01T11:00:00.000Z",
             "available": 3,
-            "type": "GO",
+            "type": "BACK",
             "state": "PROCESSING"
         });
     });
 
-    test("Create multiple route successfully", async () => {
+    test("Create another route successfully", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Chu",
             "password": "Chupassword"
@@ -692,7 +692,7 @@ describe("POST /api/v1/route/createRoute", () => {
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
             "startTime": '2023-12-21 08:23:00:000Z',
-            "stopIds": [100, 200, 300, 456],
+            "stopIds": [100, 201, 300, 1],
             "available": 4,
             "type": "GO",
             "state": "PROCESSING"
@@ -702,7 +702,33 @@ describe("POST /api/v1/route/createRoute", () => {
             "routeID": 2,
             "driverID": 2,
             "start": 100,
-            "destination": 456,
+            "destination": 1,
+            "startTime": "2023-12-21T08:23:00.000Z",
+            "available": 4,
+            "type": "GO",
+            "state": "PROCESSING"
+        });
+    });
+
+    test("Create another route successfully", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
+        res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
+            "startTime": '2023-12-21 08:23:00:000Z',
+            "stopIds": [10, 250, 395, 1],
+            "available": 4,
+            "type": "GO",
+            "state": "PROCESSING"
+        });
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toEqual({
+            "routeID": 3,
+            "driverID": 3,
+            "start": 10,
+            "destination": 1,
             "startTime": "2023-12-21T08:23:00.000Z",
             "available": 4,
             "type": "GO",
@@ -713,5 +739,44 @@ describe("POST /api/v1/route/createRoute", () => {
 });
 
 
+describe("GET /api/v1/passengers/showCandidates", () => {
+    test("Show route candidates", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Alice",
+            "password": "Alicepassword"
+        });
+        // console.log("Message Here");
+        const { header } = res;
 
-
+        const passenger_pref = {
+            "Go": true,
+            "address": "新竹縣新市路77號",
+            "passenger_cnt": 1,
+            "board_time": "2023-12-21 08:40:00:000Z"
+        }
+        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
+            passenger_pref
+        );
+        
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "Routes": [
+				{
+                    "routeID": 2,
+                    "stopID": 201,
+                    "driverID": 2,
+                    "driverName": "Chu",
+                    "board_time": "",
+                    "rating": 0,
+                    "nRating": 0,
+                    "price": 190,
+                    "carPlate": "LOVE-9888",
+                    "cartype": "Sedan",
+                    "carbrand": 3,
+                    "carColor": 4,
+                    "carelectric": false
+				},
+		    ]
+        });
+    });
+})

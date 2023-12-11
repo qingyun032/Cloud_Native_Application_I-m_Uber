@@ -1,10 +1,10 @@
 const stopService = require('../services/stopService');
-const routesService = require('../services/routesService');
+const routesService = require('../services/routeService');
 const boardingService = require('../services/boardingService');
 const userService = require('../services/userService');
 const carInfoService = require('../services/carInfoService');
-const { calculateDistance } = require('./distance');
-const { calculatePrice } = require('./pricing');
+const calculateDistance = require('./distance');
+const calculatePrice = require('./pricing');
 
 /**
  * Matches routes based on given criteria.
@@ -17,68 +17,81 @@ const { calculatePrice } = require('./pricing');
  * @param {number} passenger_cnt - The amount of passenger of this order.
  * @returns {Promise<Array<Object>>} - An array of matched routes with relevant information.
  */
-async function Routes_matching(lat, long, FixStopID, direction, board_time, passenger_cnt) {
-  const Fixstop = await Stops.getStopById(FixStopID);
-  let routes = await routesService.getAllRoutes();
+const Routes_matching = async(address, FixStopID, direction, board_time, passenger_cnt) => {
+  try{
+    // console.log("In function")
+    // console.log(FixStopID)
+    const p_board_time = new Date(board_time)
+    const Fixstop = await stopService.getStopById(FixStopID);
+    let routes = await routesService.getAllRoutes();
+    
+    if (direction === true) {
+      routes = routes.filter(route => route.type === "GO" && route.destination === FixStopID);
+    } else if (direction === false) {
+      routes = routes.filter(route => route.type === "BACK" && route.start === FixStopID);
+    }
+    // console.log(address)
+    // console.log(routes)
 
-  if (direction === 'work') {
-    routes = routes.filter(route => route.direction === direction && route.destination === FixStopID);
-  } else if (direction === 'home') {
-    routes = routes.filter(route => route.direction === direction && route.start === FixStopID);
-  }
+    let Routes = [];
+    // const return_routes = {"Routes": []};
+    const nearNstops = await stopService.getNearestNStops(address, 3, 2);
+    const boardings = await boardingService.getAllBoardings();
+    const filteredboardings = boardings.filter(boarding => nearNstops.some(nearStop => nearStop.stopID === boarding.stopID));
 
-  const return_routes = [];
-  const nearNstops = await stopService.getNearestNStops(lat, long, 3, 2);
-  const boardings = await boardingService.findAllBoardings();
-
-  for (const route of routes) {
-    let find = 0;
-    if(route.state == 'COMFIRMED') continue
-    if(route.available - passenger_cnt < 0) continue
-    for (const boarding of boardings) {
-      const stop = await stopService.getStopById(boarding.stopID);
-
-      if (
-        find === 0 &&
-        boarding.routeID === route.routeID &&
-        boarding.boardTime > board_time &&
-        nearNstops.includes(stop)
-      ) {
-        find = 1;
-
-        const user = await userService.getUserById(route.userID);
-        const carInfo = await carInfoService.getCarInfoById(user.carPlate);
-        const distance = await calculateDistance(
-          stop.latitude,
-          stop.longitude,
-          Fixstop.latitude,
-          Fixstop.longitude
-        );
-
-        const rating = user.ratingTotalScore / user.nRating;
-
-        const price = calculatePrice(distance, carInfo.type, rating, carInfo.electric);
-
-        const temp_dic = {
-          routeID: route.userID,
-          stopID: stop.stopID,
-          driverID: user.userID,
-          rating: rating,
-          nRating: user.nRating,
-          price: price,
-          carPlate: carInfo.carPlate,
-          cartype: carInfo.type,
-          carbrand: carInfo.brand,
-          carColor: carInfo.color,
-          carelectric: carInfo.electric
-        };
-
-        return_routes.push(temp_dic);
+    for (const route of routes) {
+      let find = 0;
+      if(route.state == 'COMFIRMED') continue
+      if(route.available - passenger_cnt < 0) continue
+      for (const boarding of filteredboardings) {
+        const stop = await stopService.getStopById(boarding.stopID);
+        if (
+          find === 0 &&
+          boarding.routeID === route.routeID &&
+          boarding.boardTime > p_board_time
+        ) {
+          console.log("I am here");
+          find = 1;
+          const user = await userService.getUserById(route.driverID);
+          const distance = await calculateDistance(
+            stop.latitude,
+            stop.longitude,
+            Fixstop.latitude,
+            Fixstop.longitude
+          );
+          const rating = 0;
+          if(user.nRating !== 0){
+            const rating = user.ratingTotalScore / user.nRating;
+          }
+          
+          const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
+          const temp_dic = {
+            routeID: route.routeID,
+            stopID: stop.stopID,
+            driverID: user.userID,
+            driverName: user.userName,
+            board_time: "",
+            rating: rating,
+            nRating: user.nRating,
+            price: price,
+            carPlate: user.CarInfo.carPlate,
+            cartype: user.CarInfo.type,
+            carbrand: user.CarInfo.brand,
+            carColor: user.CarInfo.color,
+            carelectric: user.CarInfo.electric
+          };
+          Routes.push(temp_dic);
+          // return_routes.Routes.push(temp_dic);
+        }
       }
     }
+    // console.log(return_routes);
+    // return return_routes;
+    console.log(Routes)
+    return Routes;
+  } catch(error) {
+    return null;
   }
-
-  return return_routes;
 }
 
-module.exports = { Routes_matching };
+module.exports = Routes_matching;

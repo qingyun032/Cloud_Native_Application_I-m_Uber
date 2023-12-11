@@ -7,22 +7,29 @@
  * @param {number} isElectric - The car is electrical or not.
  * @returns {number} The calculated price if this journey.
  */
-function calculatePrice(distance, carBrand, rating, isElectric) {
-    // Define impact factors for each variable
-    const distanceFactor = 20;   // Adjust based on the actual impact on price
-    
-    const ratingFactor = 1.2;    // Adjust based on the actual impact on price
-    electricFactor = 1.0;
-    if(isElectric)
+const calculatePrice = async (distance, carBrand, type, rating, isElectric) => {
+    try{
+      // Define impact factors for each variable
+      const distanceFactor = 10;   // Adjust based on the actual impact on price
+      
+      // const ratingFactor = 1.2;    // Adjust based on the actual impact on price
+      let electricFactor = 1.0;
+      if(isElectric)
         electricFactor = 1.1;   // Adjust based on the actual impact on price
 
-    price = distance*distanceFactor*(1+carBrand/10)*electricFactor;
-
-    // Return the calculated price
-    return price;
+      let price = distance*distanceFactor*(1+carBrand/10)*electricFactor;;
+      if(type === 'SUV'){
+        price +=5;
+      }
+      // console.log(price)
+      // Return the calculated price
+      return Math.round( price );
+    } catch(error){
+      return null;
+    }
 }
 
-module.exports = { calculatePrice };
+module.exports = calculatePrice;
   // Example usage:
 //   const inputDistance = 20;         // Example distance in miles
 //   const inputCarBrand = 'Tesla';    // Example car brand
