@@ -17,7 +17,7 @@ async function showCandidates(req, res) {
         // const position = await transformAddr(reqData.address)
         // console.log(position)
         // const routes = await Routes_matching(position.lat, position.lon, 1, reqData.Go, reqData.board_time, reqData.passenger_cnt);
-        const routes = await Routes_matching(reqData.address, 1, reqData.Go, reqData.board_time, reqData.passenger_cnt);
+        const routes = await Routes_matching(reqData.address, 111, reqData.Go, reqData.board_time, reqData.passenger_cnt);
         RetData.Routes = routes;
         res.status(200).json(RetData);
     } catch (error) {

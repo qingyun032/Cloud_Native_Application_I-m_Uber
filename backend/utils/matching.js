@@ -58,9 +58,9 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
             Fixstop.latitude,
             Fixstop.longitude
           );
-          const rating = 0;
+          let rating = 0;
           if(user.nRating !== 0){
-            const rating = user.ratingTotalScore / user.nRating;
+            rating = user.ratingTotalScore / user.nRating;
           }
           // console.log(typeof parseFloat(stop.latitude))
           // console.log(parseFloat(stop.latitude))
