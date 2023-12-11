@@ -29,7 +29,7 @@ const getRouteById = async (req, res) => {
 const createRoute = async (req, res) => {
     const driverId = req.session.userId;
     if(!driverId){
-        res.status(401).json({ error: "Please sign in before querying driver data"})
+        res.status(401).json({ error: "Wrong sign in information"})
         return;
     }
     // I need frontend to send:
@@ -44,7 +44,7 @@ const createRoute = async (req, res) => {
     try {
       // create route
       var route = {};
-      routeData.stopIds = routeData.stopIds.sort();
+      // routeData.stopIds = routeData.stopIds.sort();
       if (routeData.stopIds.length < 3) {
         res.status(400).json({ error: "You should include at least 1 intermediate stop" });
         return;
