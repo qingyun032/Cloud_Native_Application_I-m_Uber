@@ -41,6 +41,8 @@ export type car = {
     type: string,
     seat: string,
     license: string // to be changed to carPlate
+    color: number,
+    electric: boolean
 };
 
 export enum userMode {
@@ -65,6 +67,20 @@ export enum userMode {
 //     CarInfo: car,
 // };
 
+// export type userInfo = {
+//     name: string,
+//     email: string,
+//     phone: string,
+//     gender: string,
+//     home: string,
+//     company: string,
+//     wallet: string,
+//     driver: boolean,        // Whether driver is verified
+//     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
+//     favRoute: favRoute,
+//     car: car
+// };
+
 export type userInfo = {
     name: string,
     email: string,
@@ -72,9 +88,11 @@ export type userInfo = {
     gender: string,
     home: string,
     company: string,
-    wallet: string,
+    wallet: number,
     driver: boolean,        // Whether driver is verified
     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
     favRoute: favRoute,
-    car: car
+    car: car,
+    nCancel: number,
+    rating: string,
 };

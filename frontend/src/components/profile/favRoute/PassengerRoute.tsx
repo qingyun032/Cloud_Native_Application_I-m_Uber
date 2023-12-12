@@ -1,8 +1,10 @@
 import { useState, useRef, RefObject } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import { userInfo } from '../../../models/user.model';
+import { padding } from '@mui/system';
 
 
 const MidButton = styled(Button)({
@@ -79,6 +81,25 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         variant="standard"
         InputProps={inputProps}
       />
+      <Text
+        id="time"
+        label="Time"
+        type="time"
+        defaultValue={user.favRoute.passenger.time}
+        ref={refs["time"]}
+        variant="standard"
+        InputProps={inputProps}
+      />
+      <Text
+        id="people"
+        label="Number of people"
+        type="number"
+        defaultValue={user.favRoute.passenger.people}
+        ref={refs["people"]}
+        variant="standard"
+        InputProps={inputProps}
+      />
+      <Divider color="#313944" sx={{marginBottom: "15px", marginTop: "10px", padding: "1px"}}/>
       <Text
         id="destination"
         label="Destination"
