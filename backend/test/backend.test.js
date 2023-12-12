@@ -825,3 +825,17 @@ describe("show and select Candidates then get arrival time", () => {
         });
     });
 })
+
+describe("show and select Candidates then get arrival time", () => {
+    test("Show route candidates and select", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
+        
+        res = await request(app).post("/api/v1/route/confirmRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Comfirm Route Successfully!");
+    });
+})

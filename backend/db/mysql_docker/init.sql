@@ -87,7 +87,7 @@ Create TABLE IF NOT EXISTS Routes(
     destination INT,
     available INT,
     `type` ENUM("GO", "BACK"),
-    `state` ENUM("PROCESSING", "COMFIRMED"), 
+    `state` ENUM("PROCESSING", "CONFIRMED"), 
     FOREIGN KEY(driverID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 

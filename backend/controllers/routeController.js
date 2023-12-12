@@ -102,7 +102,32 @@ const createRoute = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-  
+
+const confirmRoute = async (req, res) => {
+  const driverId = req.session.userId;
+  if(!driverId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+  try{
+    let routeInfo = await routeService.getAllRoutes();
+    routeInfo = routeInfo.filter(
+      route => 
+      route.driverID === driverId
+    );
+    routeInfo = routeInfo[0]
+    // console.log(routeInfo)
+    let modifyInfo = {
+      state: "CONFIRMED"
+    }
+    let updaterouteInfo = routeService.updateRoute(routeInfo.routeID, modifyInfo);
+    res.status(200).json({ message: "Comfirm Route Successfully!" });
+  } catch (error){
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const updateRoute = async (req, res) => {
     const routeId = req.params.id;
     const routeData = req.body;
@@ -132,6 +157,7 @@ module.exports = {
     getAllRoutes,
     getRouteById,
     createRoute,
+    confirmRoute,
     updateRoute,
     deleteRoute
 };
