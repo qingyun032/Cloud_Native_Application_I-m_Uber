@@ -6,7 +6,8 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { PassengerHomePage } from "./pages/PassengerHomePage";
 import PassengerCandidatePage from './pages/PassengerCandidatePage';
 import PassengerMatchedPage from './pages/PassengerMatchedPage';
-
+import axios from "axios";
+axios.defaults.withCredentials = true
 
 function App() {
   return (
