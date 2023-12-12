@@ -4,5 +4,5 @@ const routeController = require('../controllers/routeController');
 
 // Create a new route
 router.post('/createRoute', routeController.createRoute);
-
+router.get('/showStops', routeController.showStops);
 module.exports = router;

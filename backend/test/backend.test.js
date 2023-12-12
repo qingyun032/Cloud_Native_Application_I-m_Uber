@@ -1,4 +1,4 @@
-const app = require('../server');
+const { app, server } = require('../server');
 const request = require('supertest');
 const User = require('../db/models/Users');
 const CarInfo = require('../db/models/CarInfo');
@@ -22,6 +22,10 @@ beforeAll(async () => {
     console.log("sleep starts...");
     await sleep(2500)
     console.log("sleep ends...");
+});
+
+afterAll(async () => {
+    server.close();
 });
 
 describe("POST /api/v1/auth/signup", () => {
