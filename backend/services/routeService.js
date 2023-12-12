@@ -55,7 +55,8 @@ const updateRoute = async (id, routeData) => {
         await route.save();
         return route;
     } catch (error) {
-        throw new Error('An error occurred while updating the route');
+        console.error('An error occurred while updating the route:', error);
+        throw error; // Throw the original error
     }
 };
 

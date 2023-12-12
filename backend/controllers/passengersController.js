@@ -40,6 +40,12 @@ async function selectCandidates(req, res) {
     // }
     try {
         let routeData = await routeService.getRouteById(reqData.routeID);
+        routeData.available -= req.session.passengerCnt;
+        if(routeData.available < 0){
+            res.status(503).json( {message: "Seat not enough!"} );
+        }
+        // console.log(routeData)
+        const routeData_update = routeService.updateRoute(reqData.routeID, {available: routeData.available});
         let passengerData = {
             "userID": passengerId,
             "routeID": reqData.routeID,
@@ -48,7 +54,7 @@ async function selectCandidates(req, res) {
             "passengerCnt": req.session.passengerCnt,
             "price": reqData.price
         };
-        console.log(process.env.COMPANY_STOP_ID)
+        // console.log(process.env.COMPANY_STOP_ID)
         if(routeData.type === "GO"){
             passengerData.dropOFFStopID = process.env.COMPANY_STOP_ID;
             passengerData.pickUpStopID = reqData.stopID;
