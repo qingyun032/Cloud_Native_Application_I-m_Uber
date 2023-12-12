@@ -2,7 +2,9 @@ const routeService = require('../services/routeService');
 const boardingService = require('../services/boardingService');
 const distanceCalculator = require('../utils/distance');
 const stopService = require('../services/stopService');
-
+const coordinate2grid = require('../utils/coordinate2grid');
+const transformAddr = require('../utils/transformAddr');
+const gridService = require('../services/gridService');
 const getAllRoutes = async (req, res) => {
   try {
     // grid
@@ -152,12 +154,27 @@ const deleteRoute = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-  
+
+const showStops = async (req, res) => {
+    const isGo = req.query.isGo;
+    const address = req.query.address;
+    const position = await transformAddr(address);
+    const gridID = coordinate2grid(position['lat'], position['lon']);
+    try {
+        const stops = await gridService.pathOriginatedFromGrid(gridID, isGo);
+        res.status(200).json({ "Stops": stops });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+    
+    
+};
 module.exports = {
     getAllRoutes,
     getRouteById,
     createRoute,
     confirmRoute,
     updateRoute,
-    deleteRoute
+    deleteRoute,
+    showStops
 };
