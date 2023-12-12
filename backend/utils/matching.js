@@ -40,7 +40,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
 
     for (const route of routes) {
       let find = 0;
-      if(route.state == 'COMFIRMED') continue
+      if(route.state == 'CONFIRMED') continue
       if(route.available - passenger_cnt < 0) continue
       for (const boarding of filteredboardings) {
         const stop = await stopService.getStopById(boarding.stopID);
