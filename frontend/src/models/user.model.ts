@@ -21,18 +21,27 @@ export type userSignUp = {
     type: string;
 }
 
+type passengerRoute = {
+    address: string,
+    passengerCnt: number,
+    time: string
+}
+
+type driverRoute = {
+    address: string,
+    time: string,
+    stopIDs: Array<number>,
+    stopNames: Array<string>
+}
+
 export type favRoute = {
     passenger: {
-        start: string,
-        destination: string,
-        time: string,
-        people: string,
+        Go: passengerRoute,
+        Back: passengerRoute
     },
     driver: {
-        start: string,
-        destination: string,
-        time: string,
-        stops: Array<string>,
+        Go: driverRoute,
+        Back: driverRoute
     }
 };
 

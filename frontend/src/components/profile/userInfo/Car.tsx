@@ -81,6 +81,7 @@ export const Car = (props: CarProps) => {
       setUser({
         ...user,
         car: {
+          ...user.car,
           brand: refs["brand"].current?.getElementsByTagName("input")[0].value ?? user.car.brand,
           type: refs["type"].current?.getElementsByTagName("input")[0].value ?? user.car.type,
           seat: refs["seat"].current?.getElementsByTagName("input")[0].value ?? user.car.seat,
