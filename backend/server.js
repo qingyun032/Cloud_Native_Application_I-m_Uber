@@ -14,7 +14,7 @@ const stopRouter = require('./routes/stop');
 const passengersRouter = require('./routes/passengers');
 
 const Routes = require('./db/models/Routes');
-
+const Grid = require('./db/models/Routes');
 const app = express()
 
 app.use(cors({
@@ -43,13 +43,17 @@ app.use('/api/v1/passengers', passengersRouter);
 sequelize.sync()
     .then(() => {
         console.log('Database and tables have been created!');
-        const port = process.env.PORT;
-        app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
     })
     .catch((error) => {
         console.error('Error syncing database:', error);
     });
 
-module.exports = app;
+const port = process.env.PORT;
+const server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+module.exports = {
+    app,
+    server
+};
