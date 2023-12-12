@@ -9,8 +9,7 @@ const calculatePrice = require('./pricing');
 /**
  * Matches routes based on given criteria.
  *
- * @param {number} lat - The latitude of the current location.
- * @param {number} long - The longitude of the current location.
+ * @param {string} address - The address of the current location.
  * @param {number} FixStopID - The ID of the fixed stop.
  * @param {string} direction - The direction of the route ('work' or 'home').
  * @param {Date} board_time - The boarding time filter.
@@ -62,8 +61,6 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
           if(user.nRating !== 0){
             rating = user.ratingTotalScore / user.nRating;
           }
-          // console.log(typeof parseFloat(stop.latitude))
-          // console.log(parseFloat(stop.latitude))
           const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
           const temp_dic = {
             routeID: route.routeID,

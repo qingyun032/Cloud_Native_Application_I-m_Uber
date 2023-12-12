@@ -106,6 +106,7 @@ Create TABLE IF NOT EXISTS Passenger(
     pickUpStopID INT,
     dropOFFStopID INT,
     passengerCnt INT,
+    price INT,
     FOREIGN KEY(userID) REFERENCES Users(userID),
     FOREIGN KEY(routeID) REFERENCES Routes(routeID) ON DELETE CASCADE
 );

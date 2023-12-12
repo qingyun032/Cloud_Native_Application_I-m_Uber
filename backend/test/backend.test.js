@@ -739,8 +739,8 @@ describe("POST /api/v1/route/createRoute", () => {
 });
 
 
-describe("GET /api/v1/passengers/showCandidates", () => {
-    test("Show route candidates", async () => {
+describe("showCandidates and select", () => {
+    test("Show route candidates and select", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Alice",
             "password": "Alicepassword"
@@ -791,5 +791,15 @@ describe("GET /api/v1/passengers/showCandidates", () => {
 				},
 		    ]
         });
+        const route_selected_info = {
+            "routeID": 3,
+            "stopID": 23,
+            "price": 116,
+        }
+        res = await request(app).post("/api/v1/passengers/selectCandidate").set("Cookie", [...header["set-cookie"]]).send(
+            route_selected_info
+        );
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Select Route Successfully!");
     });
 })
