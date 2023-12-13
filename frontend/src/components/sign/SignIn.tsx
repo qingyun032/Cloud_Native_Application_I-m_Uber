@@ -56,7 +56,7 @@ export const SignIn = (props: SignInProps) => {
             const userInfo = await getUserInfo();
             setUser(userInfo);
             setErrorMessage("None");
-            navigate('/home');
+            navigate('/passengerHome');
         } 
         catch (error: any) {
             if (error.response.status === 401) {

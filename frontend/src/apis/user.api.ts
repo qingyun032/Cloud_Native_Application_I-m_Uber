@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { path } from "./url.api";
-import { userInfo } from "../models/user.model";
+import { userInfo, userMode } from "../models/user.model";
 
 export const getUserInfo = async (): Promise<userInfo> => {
   const config: AxiosRequestConfig = {
@@ -8,7 +8,22 @@ export const getUserInfo = async (): Promise<userInfo> => {
     url: path + "/api/v1/users/myInfo"
   };
   const response = await axios(config);
-  return response.data;
+  console.log(response.data);
+  return {
+    name: response.data.userName,
+    email: response.data.email,
+    phone: response.data.phone,
+    gender: response.data.gender,
+    home: response.data.addressHome,
+    company: response.data.addressCompany,
+    wallet: response.data.Wallet.balance,
+    driver: response.data.isDriver,       // Whether driver is verified
+    mode: userMode.Passenger,             // Which mode is this user use (userMode.Passenger/userMode.Driver)
+    favRoute: response.data.favRoute,
+    car: response.data.CarInfo,
+    nCancel: response.data.nCancel,
+    rating: response.data.rating,
+  }
 };
 
 export const updateCarInfo = async (user: userInfo): Promise<userInfo> => {
