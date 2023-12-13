@@ -175,7 +175,7 @@ describe("GET /api/v1/users/myInfo", () => {
             "password": "Leopassword"
         });
         const { header } = loginRes;
-        const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        const res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Leo",
@@ -206,7 +206,7 @@ describe("GET /api/v1/users/myInfo", () => {
             "password": "Chupassword"
         });
         const { header } = loginRes;
-        const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        const res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Chu",
@@ -248,7 +248,7 @@ describe("POST /api/v1/users/rating", () => {
             "password": "Leopassword"
         });
         const { header } = loginRes;
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Leo",
@@ -291,7 +291,7 @@ describe("PUT /api/v1/users/updatePassenger", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update passenger successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Chu",
             "email": "Imchuchu@gamil.com",
@@ -332,7 +332,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Chu",
             "email": "driverchuchu@gamil.com",
@@ -377,7 +377,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -422,7 +422,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -466,7 +466,7 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -506,7 +506,7 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -554,7 +554,7 @@ describe("PUT /api/v1/wallet/topUp", () => {
         expect(res.body).toEqual({
             "balance": 12633
         });
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
