@@ -65,7 +65,7 @@ export const updateDriverInfo = async (user: userInfo): Promise<userInfo> => {
   return response.data;
 };
 
-export const updatePassengerInfo = async (user: userInfo): Promise<userInfo> => {
+export const updatePassengerInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updatePassenger",

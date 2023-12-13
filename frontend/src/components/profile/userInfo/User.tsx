@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useUserContext } from '../../../contexts/UserContext';
+import { infoBarType } from '../../../models/user.model';
+import { updatePassengerInfo } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -22,10 +24,11 @@ const HalfButton = styled(Button)({
 
 type UserProps = {
   setStatus: (status: string) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const User = (props: UserProps) => {
-  const { setStatus } = props;
+  const { setStatus, setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
   const { user, setUser } = useUserContext();
@@ -81,7 +84,7 @@ export const User = (props: UserProps) => {
     }
   }
 
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
       setUser((user === null)? null :
         {
@@ -90,11 +93,20 @@ export const User = (props: UserProps) => {
           company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
         }
       )
+      if(user !== null){
+        try{
+          const response = await updatePassengerInfo(user);
+          setInfoBar({open: true, type: "success", message: response.message});
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error});
+        }
+      }
     }
     setEdit(!edit);
   }
 
   const topUpClick = () => {
+    // TODO: call api
     if(topUp)
       refs["wallet"].current?.getElementsByTagName("input")[0].focus();
     setTopUp(!topUp);

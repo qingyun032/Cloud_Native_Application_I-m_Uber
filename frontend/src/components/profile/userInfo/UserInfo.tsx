@@ -8,13 +8,15 @@ import TabPanel from '@mui/lab/TabPanel';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { User } from './User';
 import { Car } from './Car';
+import { infoBarType } from '../../../models/user.model';
 
 type UserInfoProps = {
   setStatus: (status: string) => void;
+  setInfoBar: (infobar: infoBarType) => void;
 }
 
 export const UserInfo = (props: UserInfoProps) => {
-  const { setStatus } = props;
+  const { setStatus, setInfoBar } = props;
   const [value, setValue] = useState("user");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -44,8 +46,8 @@ export const UserInfo = (props: UserInfoProps) => {
               <Tab label="Car" value="car" sx={{textTransform: 'none'}}/>
             </TabList>
           </Box>
-          <TabPanel value="user"><User setStatus={setStatus}/></TabPanel>
-          <TabPanel value="car"><Car setStatus={setStatus}/></TabPanel>
+          <TabPanel value="user"><User setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="car"><Car setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
         </TabContext>
       </Box>
     </>

@@ -1,3 +1,5 @@
+import { AlertColor } from "@mui/material";
+
 export type userSignIn = {
     userName: string;
     password: string;
@@ -59,37 +61,6 @@ export enum userMode {
     Driver = "driver"
 }
 
-// previous version of userInfo
-// export type userInfo = {
-//     userName: string,
-//     email: string,
-//     phone: string,
-//     gender: string,
-//     addressHome: string,
-//     addressCompany: string,
-//     nCancel: number,
-//     rating: number,
-//     wallet: number,
-//     isDriver: boolean,        // Whether driver is verified
-//     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
-//     favRoute: favRoute,
-//     CarInfo: car,
-// };
-
-// export type userInfo = {
-//     name: string,
-//     email: string,
-//     phone: string,
-//     gender: string,
-//     home: string,
-//     company: string,
-//     wallet: string,
-//     driver: boolean,        // Whether driver is verified
-//     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
-//     favRoute: favRoute,
-//     car: car
-// };
-
 export type userInfo = {
     name: string,
     email: string,
@@ -105,3 +76,9 @@ export type userInfo = {
     nCancel: number,
     rating: string,
 };
+
+export type infoBarType = {
+    open: boolean,
+    type: AlertColor,
+    message: string,
+}

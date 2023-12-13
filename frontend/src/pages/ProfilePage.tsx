@@ -3,9 +3,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import { ProfileSelection } from "../components/profile/ProfileSelection";
 import { UserInfo } from "../components/profile/userInfo/UserInfo";
 import { FavRoute } from '../components/profile/favRoute/FavRoute';
+import { infoBarType } from '../models/user.model';
 
 const theme = createTheme({
   palette: {
@@ -24,6 +27,7 @@ enum ProfileStatus {
 
 export const ProfilePage = () => {
   const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
+  const [ infoBar, setInfoBar ] = useState<infoBarType>({open: false, type: "success", message: "success"});
   // TODO: use context or parent page pass user information
   // const [ user, setUser ] = useState<userInfo>({
   //   name: "example",
@@ -94,12 +98,17 @@ export const ProfilePage = () => {
                 minHeight: "70vh"
               }}
             >
-              {status === "home" && <ProfileSelection setStatus={setStatus} />}
-              {status === "userInfo" && <UserInfo setStatus={setStatus}/>}
+              {status === "home" && <ProfileSelection setStatus={setStatus}/>}
+              {status === "userInfo" && <UserInfo setStatus={setStatus} setInfoBar={setInfoBar}/>}
               {status === "favRoute" && <FavRoute setStatus={setStatus}/>}
             </Box>
           </Container>
         </div>
+        <Snackbar open={infoBar.open} autoHideDuration={2000} onClose={() => setInfoBar({...infoBar, open: false})}>
+          <Alert onClose={() => setInfoBar({...infoBar, open: false})} severity={infoBar.type} sx={{ width: '100%' }}>
+            {infoBar.message}
+          </Alert>
+        </Snackbar>
       </ThemeProvider>
     </>
   );
