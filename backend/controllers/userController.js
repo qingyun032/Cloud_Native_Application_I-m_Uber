@@ -1,5 +1,7 @@
 const userService = require('../services/userService');
 const carInfoService = require('../services/carInfoService');
+const favorService = require('../services/favorService');
+const { TIME } = require('sequelize');
 
 async function getAllUsers(req, res) {
     try {
@@ -232,6 +234,86 @@ async function updateCarInfo(req, res) {
     }
 }
 
+async function updateDriverFavor(req, res) {
+    try {
+        const userID = req.session.userId;
+        if(!userID){
+            throw new Error("Please sign in before querying user data");
+        }
+        const newData = req.body;
+        console.log(newData)
+        // const OldFavor = await favorService.getDriverFavorByUserId(userID);
+        // let NewFavor = OldFavor;
+        let NewFavor = {};
+        if(newData.GO.address != null){
+            NewFavor.GO_start = newData.GO.address;
+            let [hours, minutes, seconds] = newData.GO.time.split(':');
+            NewFavor.GO_TIME = new Date(1970, 0, 1, (hours+8), minutes, seconds);
+            NewFavor.GO_stops = newData.GO.stopIDs.toString();
+        }
+        
+        if(newData.BACK.address != null){
+            NewFavor.BACK_dest = newData.BACK.address;
+            console.log(newData.BACK.time)
+            let [hours2, minutes2, seconds2] = newData.BACK.time.split(':');
+            NewFavor.BACK_TIME = new Date(1970, 0, 1, hours2, minutes2, seconds2);
+            NewFavor.BACK_stops = newData.BACK.stopIDs.toString();
+        }
+        // console.log(userID, NewFavor)
+        
+        await favorService.updateDriverFavor(userID, NewFavor);
+        res.status(200).json({ message: "Update driver favorite route successfully" });
+    } catch (error) {
+        if(error.message == 'User not found'){
+            res.status(401).json({ error: 'Driver not found'});
+        }
+        else if(error.message == "Please sign in before querying user data"){
+            res.status(401).json({ error: error.message});
+        }
+        else{
+            res.status(500).json({ error: "An error occurred while updating the driver's favor" });
+        }
+    }
+}
+
+async function updatePassengerFavor(req, res) {
+    try {
+        const userID = req.session.userId;
+        if(!userID){
+            throw new Error("Please sign in before querying user data");
+        }
+        const newData = req.body;
+        console.log(typeof newData.BACK.address)
+        let NewFavor = {};
+        if(newData.GO.address != null){
+            NewFavor.GO_start = newData.GO.address;
+            let [hours, minutes, seconds] = newData.GO.boardTime.split(':');
+            NewFavor.GO_TIME = new Date(1970, 0, 1, hours, minutes, seconds);
+            NewFavor.GO_cnt = newData.GO.passengerCnt;
+        }
+        if(newData.BACK.address != null){
+            NewFavor.BACK_dest = newData.BACK.address;
+            let [hours2, minutes2, seconds2] = newData.BACK.boardTime.split(':');
+            NewFavor.BACK_TIME = new Date(1970, 0, 1, hours2, minutes2, seconds2);
+            NewFavor.BACK_cnt = newData.BACK.passengerCnt;
+        }
+        // console.log(userID, NewFavor)
+        // console.log(NewFavor.BACK_TIME.toLocaleTimeString());
+
+        await favorService.updatePassengerFavor(userID, NewFavor);
+        res.status(200).json({ message: "Update passenger favorite route successfully" });
+    } catch (error) {
+        if(error.message == 'User not found'){
+            res.status(401).json({ error: 'Driver not found'});
+        }
+        else if(error.message == "Please sign in before querying user data"){
+            res.status(401).json({ error: error.message});
+        }
+        else{
+            res.status(500).json({ error: "An error occurred while updating the driver's favor" });
+        }
+    }
+}
 
 module.exports = {
     getAllUsers,
@@ -241,5 +323,7 @@ module.exports = {
     updateDriver,
     updatePassenger,
     updateRating,
-    updateCarInfo
+    updateCarInfo,
+    updateDriverFavor,
+    updatePassengerFavor
 };

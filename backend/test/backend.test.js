@@ -830,7 +830,7 @@ describe("show and select Candidates then get arrival time", () => {
     });
 })
 
-describe("show and select Candidates then get arrival time", () => {
+describe("Comfirm Route", () => {
     test("Show route candidates and select", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Wei",
@@ -841,5 +841,111 @@ describe("show and select Candidates then get arrival time", () => {
         res = await request(app).post("/api/v1/route/confirmRoute").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Comfirm Route Successfully!");
+    });
+})
+
+describe("Update favorite", () => {
+    test("Update Leo driver driver GO favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"time": "07:00:00",
+				"stopIDs": [12, 24, 63, 7, 2, 111]
+            },
+            "BACK": {
+				"address": null,
+				"time": null,
+				"stopIDs": null
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updateDriverFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update driver favorite route successfully");
+    });
+
+    test("Update Leo driver driver BACK favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": null,
+				"time": null,
+				"stopIDs": null
+            },
+            "BACK": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"time": "23:07:20",
+				"stopIDs": [111, 2, 7, 63, 24, 12]
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updateDriverFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update driver favorite route successfully");
+    });
+
+    test("Update Leo passenger GO favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"boardTime": "07:00:00",
+				"passengerCnt": 1
+            },
+            "BACK": {
+				"address": null,
+				"boardTime": null,
+				"passengerCnt": null
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updatePassengerFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update passenger favorite route successfully");
+    });
+
+    test("Update Leo passenger BACK favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": null,
+				"boardTime": null,
+				"passengerCnt": null
+            },
+            "BACK": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"boardTime": "22:07:20",
+				"passengerCnt": 1
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updatePassengerFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update passenger favorite route successfully");
     });
 })

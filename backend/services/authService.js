@@ -1,6 +1,8 @@
 const User = require('../db/models/Users');
 const CarInfo = require('../db/models/CarInfo');
 const Wallet = require('../db/models/Wallet');
+const DriverFavor = require('../db/models/DriverFavor');
+const PassengerFavor = require('../db/models/PassengerFavor');
 const bcrypt = require('bcrypt');
 
 // Service function to register a new user
@@ -44,7 +46,12 @@ async function signup(userData, req) {
             userID: user.userID,
             balance: 0
         })
-
+        await PassengerFavor.create({
+            userID: user.userID
+        })
+        await DriverFavor.create({
+            userID: user.userID
+        })
         return "Sign up successfully";
     } catch (error) {
         throw error;
