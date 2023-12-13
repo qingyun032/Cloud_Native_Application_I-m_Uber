@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { styled } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+
 
 const theme = createTheme({
   palette: {
@@ -34,8 +36,12 @@ export const SignInPage = () => {
   const [errorMessage, setErrorMessage] = useState("None")
   const navigate = useNavigate()
 
+  const toPassengerHomePage = () => {
+    navigate('/passengerHome')
+  }
+
   return (
-    <>
+    <> 
       <ThemeProvider theme={theme}>
         <div
           style={{
@@ -68,10 +74,11 @@ export const SignInPage = () => {
             </Div>
             {isSignIn === true && <SignIn setIsSignIn={setIsSignIn} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
             {isSignIn === false && <SignUp setIsSignIn={setIsSignIn} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+            <Button variant="contained" onClick={toPassengerHomePage}>Passenger Home Page</Button>
           </Box>
         </Container>
-      </div>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
     </>
   );
 }
