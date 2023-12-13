@@ -11,5 +11,8 @@ router.put('/updateDriver', userController.updateDriver);
 router.put('/updatePassenger', userController.updatePassenger);
 router.post('/rating', userController.updateRating);
 router.put('/updateCarInfo', userController.updateCarInfo);
+router.put('/updateDriverFavor', userController.updateDriverFavor);
+router.put('/updatePassengerFavor', userController.updatePassengerFavor);
+
 module.exports = router;
     
