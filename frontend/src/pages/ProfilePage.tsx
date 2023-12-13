@@ -36,25 +36,42 @@ export const ProfilePage = () => {
     gender: "Male",
     home: "台北市中正區思源街16-3號",
     company: "桃園市龍潭區龍園六路101號",
-    wallet: "100",
+    wallet: 100,
     driver: true,
     mode: userMode.Driver,
     favRoute: {
       passenger: {
-        start: "台北市中正區思源街16-3號",
-        destination: "桃園市龍潭區龍園六路101號",
-        time: "09:00",
-        people: "2",
+        Go: {
+          address: "台北市大安區羅斯福路四段一號",
+          passengerCnt: 1,
+          time: "08:54:21" 
+        },
+        Back: {
+          address: "台北市大安區羅斯福路四段一號",
+          passengerCnt: 1,
+          time: "18:54:12" 
+        }
       },
       driver: {
-        start: "台北市中正區思源街16-3號",
-        destination: "桃園市龍潭區龍園六路101號",
-        time: "10:00",
-        stops: ["1", "2", "3"],
+        Go: {
+          address: "台北市大安區羅斯福路四段一號",
+          time: "07:00:00",
+          stopIDs: [12, 24, 63, 7, 2, 111],
+          stopNames: ["竹北遠東百貨", "至善公園", "汐止火車站", "香山天后宮", "國賓大飯店", "大安站"]
+        },
+        Back: {
+          address: "台北市大安區羅斯福路四段一號",
+          time: "23:07:20",
+          stopIDs: [111, 2, 7, 63, 24, 12],
+          stopNames: ["大安站", "國賓大飯店", "香山天后宮", "汐止火車站", "至善公園", "竹北遠東百貨"]
+        }
       }
     },
-    car: {brand: "Mercedes-Benz", type: "Sedan", seat: "4", license: "ABC-9999"},
+    car: {brand: "Mercedes-Benz", type: "Sedan", seat: "4", license: "ABC-9999", color: 1, electric: false},
+    nCancel: 0,
+    rating: "4.5",
   });
+  
   return (
     <>
       <ThemeProvider theme={theme}>

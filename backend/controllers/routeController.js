@@ -171,6 +171,7 @@ const showBoardingInfo = async (req, res) => {
       res.status(401).json({ error: "Wrong sign in information"})
       return;
   }
+
   try{
     let routeInfo = await routeService.getAllRoutes();
     routeInfo = routeInfo.filter(

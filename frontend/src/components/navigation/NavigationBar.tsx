@@ -121,7 +121,7 @@ export const NavigationBar = () => {
             <ListItem key="Home" disablePadding>
               <ListItemButton
                 sx={{ margin: "10px", borderRadius: "5px", backgroundColor: (location.pathname === "/profile")? "inherit":"#9C694C" }}
-                onClick={() => onClick('/home', { state: { isDriver: false, name: 'Joey' }})}
+                onClick={() => onClick('/passengerHome', { state: { isDriver: false, name: 'Joey' }})}
               >
                 <ListItemIcon>
                   <HomeIcon sx={{ color: "#ffffff" }}/>

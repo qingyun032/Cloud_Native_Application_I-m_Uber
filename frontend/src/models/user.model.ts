@@ -21,18 +21,27 @@ export type userSignUp = {
     type: string;
 }
 
+type passengerRoute = {
+    address: string,
+    passengerCnt: number,
+    time: string
+}
+
+type driverRoute = {
+    address: string,
+    time: string,
+    stopIDs: Array<number>,
+    stopNames: Array<string>
+}
+
 export type favRoute = {
     passenger: {
-        start: string,
-        destination: string,
-        time: string,
-        people: string,
+        Go: passengerRoute,
+        Back: passengerRoute
     },
     driver: {
-        start: string,
-        destination: string,
-        time: string,
-        stops: Array<string>,
+        Go: driverRoute,
+        Back: driverRoute
     }
 };
 
@@ -41,6 +50,8 @@ export type car = {
     type: string,
     seat: string,
     license: string // to be changed to carPlate
+    color: number,
+    electric: boolean
 };
 
 export enum userMode {
@@ -65,6 +76,20 @@ export enum userMode {
 //     CarInfo: car,
 // };
 
+// export type userInfo = {
+//     name: string,
+//     email: string,
+//     phone: string,
+//     gender: string,
+//     home: string,
+//     company: string,
+//     wallet: string,
+//     driver: boolean,        // Whether driver is verified
+//     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
+//     favRoute: favRoute,
+//     car: car
+// };
+
 export type userInfo = {
     name: string,
     email: string,
@@ -72,9 +97,11 @@ export type userInfo = {
     gender: string,
     home: string,
     company: string,
-    wallet: string,
+    wallet: number,
     driver: boolean,        // Whether driver is verified
     mode: userMode,         // Which mode is this user use (userMode.Passenger/userMode.Driver)
     favRoute: favRoute,
-    car: car
+    car: car,
+    nCancel: number,
+    rating: string,
 };

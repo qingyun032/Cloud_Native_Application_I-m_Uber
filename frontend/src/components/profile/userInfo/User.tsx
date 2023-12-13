@@ -36,10 +36,6 @@ export const User = (props: UserProps) => {
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
-    name: useRef<HTMLDivElement>(null),
-    email: useRef<HTMLDivElement>(null),
-    phone: useRef<HTMLDivElement>(null),
-    gender: useRef<HTMLDivElement>(null),
     home: useRef<HTMLDivElement>(null),
     company: useRef<HTMLDivElement>(null),
     wallet: useRef<HTMLDivElement>(null),
@@ -74,7 +70,6 @@ export const User = (props: UserProps) => {
   })
 
   const inputProps = {
-    disabled: !edit,
     style: {
       fontSize: "14px",
     },
@@ -91,10 +86,6 @@ export const User = (props: UserProps) => {
     if(edit){
       setUser({
         ...user,
-        name: refs["name"].current?.getElementsByTagName("input")[0].value ?? user.name,
-        email: refs["email"].current?.getElementsByTagName("input")[0].value ?? user.email,
-        phone: refs["phone"].current?.getElementsByTagName("input")[0].value ?? user.phone,
-        gender: refs["gender"].current?.getElementsByTagName("input")[0].value ?? user.gender,
         home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
         company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
       })
@@ -111,21 +102,6 @@ export const User = (props: UserProps) => {
   return (
     <>
       {textMap.map(({ id, label, user }) => (
-        (id === "gender")? 
-        <Text
-          select
-          id={id}
-          label={label}
-          defaultValue={user}
-          ref={refs[id]}
-          variant="standard"
-          InputProps={inputProps}
-        >
-          <SelectItem value={"Male"}>Male</SelectItem>
-          <SelectItem value={"Female"}>Female</SelectItem>
-          <SelectItem value={"Other"}>Other</SelectItem>
-        </Text>
-        :
         (id === "wallet")?
         <Text
           key={id}
@@ -145,6 +121,7 @@ export const User = (props: UserProps) => {
           defaultValue={user}
           ref={refs[id]}
           variant="standard"
+          disabled={(id === "name" || id === "email" || id === "phone" || id === "gender")? true : !edit}
           InputProps={inputProps}
         />
       ))}
