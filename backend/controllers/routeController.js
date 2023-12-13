@@ -223,7 +223,7 @@ const showBoardingInfo = async (req, res) => {
       boardingInfo.stops.push(stopInfo);
     }
 
-    res.status(200).json({boardingInfo});
+    res.status(200).json(boardingInfo);
   } catch (error){
     console.error(error);
     res.status(500).json({ error: error.message });

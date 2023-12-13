@@ -841,6 +841,18 @@ describe("GET /api/v1/route/showBoardingInfo", () => {
 
         res = await request(app).get("/api/v1/route/showBoardingInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
+
+        expect(res.body.stops.length).toEqual(6);
+        expect(res.body.stops[5]).toEqual(
+            {
+                stopID: 111,
+                address: '新竹縣寶山鄉園區二路168號',
+                boardTime: '2023-12-21T12:24:35.000Z',
+                latitude: '24.77134000000000000',
+                longitude: '121.01209000000000000',
+                passengers: [ { count: 1, type: 'dropOff' } ]
+            }
+        );
     });
 });
 
