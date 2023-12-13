@@ -190,5 +190,6 @@ module.exports = {
     confirmRoute,
     updateRoute,
     deleteRoute,
-    showStops
+    showStops, 
+    showBoardingInfo
 };
