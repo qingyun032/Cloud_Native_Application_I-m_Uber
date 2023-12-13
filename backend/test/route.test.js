@@ -73,7 +73,6 @@ describe("POST /api/v1/auth/signup", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe("Sign up successfully");
     });
-    
 });
 
 describe("GET /api/v1/route/showStops", () => {
