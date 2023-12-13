@@ -6,6 +6,7 @@ import createTheme from '@mui/material/styles/createTheme';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import CandidateDetail from '../components/CandidateDetail';
+import { NavigationBar } from '../components/navigation/NavigationBar';
 
 const theme = createTheme({
   palette: {
@@ -74,32 +75,22 @@ function PassengerCandidatePage() {
     <>
       <ThemeProvider theme={theme}>
         <Container maxWidth="xs">
-          {/* Navigation Bar */}
-          <Box
-            sx={{
-              // display: "flex",
-              // alignItems: "center",
-              // flexDirection: "column",
-              backgroundColor : 'primary.main',
-              height: "90px",
-            }}
-          ></Box>
+          <NavigationBar></NavigationBar>
           <Container 
             sx={{
               width: 0.8
             }}
           >
-            {/* {isSignIn === true && <SignIn setIsSignIn={setIsSignIn} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />} */}
           {driverIsShown === false &&
             <Box
               display="flex"
               justifyContent="center"
               alignItems="center"
               flexDirection="column"
-              minHeight="80vh"
+              minHeight="90vh"
             >
               <Paper
-                style={{ maxHeight: 350 , overflow: 'auto'}}         
+                style={{ maxHeight: 450 , overflow: 'auto'}}         
               >
               {candidateInfos.map((candidateInfo)=>(
                 <Button 

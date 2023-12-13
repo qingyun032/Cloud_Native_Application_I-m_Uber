@@ -19,6 +19,7 @@ function Departure( props: DepartureProps ) {
   return (
     <>
       <Box
+        // minHeight= "70vh"
         sx={{
           display: 'flex', 
           flexDirection: 'column',

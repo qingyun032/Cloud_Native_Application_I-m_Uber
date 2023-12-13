@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import Arrival from '../components/matching/Arrival';
 import Departure from '../components/matching/Departure';
 import MyRating from '../components/matching/Rating';
+import { NavigationBar } from '../components/navigation/NavigationBar';
 
 
 const theme = createTheme({
@@ -35,16 +36,7 @@ function PassengerMatchedpage() {
     <>
       <ThemeProvider theme={theme}>
         <Container maxWidth="xs">
-          {/* Navigation Bar */}
-          <Box
-            sx={{
-              // display: "flex",
-              // alignItems: "center",
-              // flexDirection: "column",
-              backgroundColor : 'primary.main',
-              height: "90px",
-            }}
-          ></Box>
+          <NavigationBar></NavigationBar>
           <Container 
             sx={{
               width: 0.8,

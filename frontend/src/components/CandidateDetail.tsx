@@ -51,7 +51,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
           }}
         > */}
           {/* <Paper elevation={12}> */}
-            <Typography variant="h4" sx={{ mt: 2, }}>
+            <Typography variant="h4" sx={{ mt: 4, }}>
                Itinerary detail
             </Typography>
             <Box
@@ -78,7 +78,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 <Box
                   display="flex"
                   flexDirection="column"
-                  sx={{ ml: 8 }}
+                  sx={{ ml: 6 }}
                 >
                   <Typography sx={{ mt:1 }}>Driver Rating</Typography>
                   <Typography variant='h5'>
@@ -105,7 +105,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 <Box
                   display="flex"
                   flexDirection="column"
-                  sx={{ ml: 4 }}
+                  sx={{ ml: 2 }}
                 >
                   <Typography sx={{ mt:2 }}>Arrival Time</Typography>
                   <Typography variant='h5'>

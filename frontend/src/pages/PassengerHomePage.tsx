@@ -14,6 +14,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import { NavigationBar } from '../components/navigation/NavigationBar';
 
 const theme = createTheme({
     palette: {
@@ -84,23 +85,14 @@ export const PassengerHomePage = () => {
     <>
       <ThemeProvider theme={theme}>
         <Container maxWidth="xs">
-          {/* Navigation Bar */}
-          <Box
-            sx={{
-              // display: "flex",
-              // alignItems: "center",
-              // flexDirection: "column",
-              backgroundColor : 'primary.main',
-              height: "90px",
-            }}
-          ></Box>
+          <NavigationBar></NavigationBar>
           <Container sx={{ width: 0.8 }} >
             <Box
               display="flex"
               justifyContent="center"
               alignItems="center"
               flexDirection="column"
-              minHeight="80vh"
+              minHeight="90vh"
             >
               <div>
                 <Typography variant="h4" fontWeight="bold">
