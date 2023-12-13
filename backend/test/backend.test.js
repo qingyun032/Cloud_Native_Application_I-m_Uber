@@ -841,7 +841,8 @@ describe("GET /api/v1/route/showBoardingInfo", () => {
 
         res = await request(app).get("/api/v1/route/showBoardingInfo").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
-        // expect(res.body.message).toBe("Show boarding info successfully");
+    });
+});
 
 describe("Update favorite", () => {
     test("Update Leo driver driver GO favorite", async () => {
@@ -948,4 +949,4 @@ describe("Update favorite", () => {
         expect(res.body.message).toEqual("Update passenger favorite route successfully");
 
     });
-})
+});
