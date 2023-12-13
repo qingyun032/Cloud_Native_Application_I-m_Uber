@@ -170,7 +170,17 @@ const showStops = async (req, res) => {
 };
 
 const showBoardingInfo = async (req, res) => {
-  
+  const driverId = req.session.userId;
+  if(!driverId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+
+  try {
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
 }
 
 module.exports = {
@@ -180,5 +190,6 @@ module.exports = {
     confirmRoute,
     updateRoute,
     deleteRoute,
-    showStops
+    showStops, 
+    showBoardingInfo
 };
