@@ -4,9 +4,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
-
-import { userInfo } from '../../../models/user.model';
-
+import { useUserContext } from '../../../contexts/UserContext'; 
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -18,13 +16,12 @@ const MidButton = styled(Button)({
 
 type DriverRouteProps = {
   setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
 }
 
 export const DriverRoute = (props: DriverRouteProps) => {
-  const { setStatus, user, setUser } = props;
+  const { setStatus } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
+  const { user, setUser } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
     time: useRef<HTMLDivElement>(null),
@@ -62,26 +59,28 @@ export const DriverRoute = (props: DriverRouteProps) => {
 
   const editClick = () => {
     if(edit){
-      setUser({
-        ...user,
-        favRoute:{
-          driver: {
-            Go: {
-              address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Go.address,
-              time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Go.time,
-              stopIDs: user.favRoute.driver.Go.stopIDs,
-              stopNames: user.favRoute.driver.Go.stopNames,
+      setUser((user === null)? null :
+        {
+          ...user,
+          favRoute:{
+            driver: {
+              Go: {
+                address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Go.address,
+                time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Go.time,
+                stopIDs: user.favRoute.driver.Go.stopIDs,
+                stopNames: user.favRoute.driver.Go.stopNames,
+              },
+              Back: {
+                address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Back.address,
+                time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Back.time,
+                stopIDs: user.favRoute.driver.Back.stopIDs,
+                stopNames: user.favRoute.driver.Back.stopNames,
+              }
             },
-            Back: {
-              address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Back.address,
-              time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.Back.time,
-              stopIDs: user.favRoute.driver.Back.stopIDs,
-              stopNames: user.favRoute.driver.Back.stopNames,
-            }
+            passenger: {...user.favRoute.passenger},
           },
-          passenger: {...user.favRoute.passenger},
-        },
-      });
+        }
+      );
     }
     setEdit(!edit);
   }
@@ -91,7 +90,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="start"
         label="Start"
-        defaultValue={user.favRoute.driver.Go.address}
+        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.driver.Go.address}
         ref={goRefs["start"]}
         variant="standard"
         InputProps={inputProps}
@@ -100,7 +99,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={user.favRoute.driver.Go.time}
+        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.driver.Go.time}
         ref={goRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -109,7 +108,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         multiple
         id="stops"
         options={stopList.map<string>((item) => {return item.Name})}
-        defaultValue={user.favRoute.driver.Go.stopNames}
+        defaultValue={(user === null || user.favRoute === null)? [] : user.favRoute.driver.Go.stopNames}
         disabled={!edit}
         renderInput={(params) => (
           <Text
@@ -123,7 +122,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="destination"
         label="Destination"
-        defaultValue={user.favRoute.driver.Back.address}
+        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.driver.Back.address}
         ref={backRefs["destination"]}
         variant="standard"
         InputProps={inputProps}
@@ -132,7 +131,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={user.favRoute.driver.Back.time}
+        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.driver.Back.time}
         ref={backRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -141,7 +140,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         multiple
         id="stops"
         options={stopList.map<string>((item) => {return item.Name})}
-        defaultValue={user.favRoute.driver.Back.stopNames}
+        defaultValue={(user === null || user.favRoute === null)? [] : user.favRoute.driver.Back.stopNames}
         disabled={!edit}
         renderInput={(params) => (
           <Text

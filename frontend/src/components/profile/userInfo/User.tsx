@@ -2,9 +2,8 @@ import { useState, useRef, RefObject } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
-import { userInfo } from '../../../models/user.model';
+import { useUserContext } from '../../../contexts/UserContext';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -21,33 +20,33 @@ const HalfButton = styled(Button)({
   width: "130px"
 });
 
-const SelectItem = styled(MenuItem)({
-  fontSize: "14px"
-})
-
 type UserProps = {
   setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
 }
 
 export const User = (props: UserProps) => {
-  const { setStatus, user, setUser } = props;
+  const { setStatus } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
+  const { user, setUser } = useUserContext();
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     home: useRef<HTMLDivElement>(null),
     company: useRef<HTMLDivElement>(null),
     wallet: useRef<HTMLDivElement>(null),
   }
+  const genderMap = (s: string) => {
+    if(s === "M") return "Male";
+    else if(s === "F") return "Female";
+    else if(s === "O") return "Other";
+  }
   const textMap = [
-    {id: "name", label: "User name", user: user.name},
-    {id: "email", label: "Email", user: user.email},
-    {id: "phone", label: "Phone number", user: user.phone},
-    {id: "gender", label: "Gender", user: user.gender},
-    {id: "home", label: "Home address", user: user.home},
-    {id: "company", label: "Company address", user: user.company},
-    {id: "wallet", label: "Wallet", user: user.wallet}
+    {id: "name", label: "User name", user: (user === null)? null : user.name},
+    {id: "email", label: "Email", user: (user === null)? null : user.email},
+    {id: "phone", label: "Phone number", user: (user === null)? null : user.phone},
+    {id: "gender", label: "Gender", user: (user === null)? null : genderMap(user.gender)},
+    {id: "home", label: "Home address", user: (user === null)? null : user.home},
+    {id: "company", label: "Company address", user: (user === null)? null : user.company},
+    {id: "wallet", label: "Wallet", user: (user === null)? null : user.wallet}
   ]
 
   const Text = styled(TextField)({
@@ -84,11 +83,13 @@ export const User = (props: UserProps) => {
 
   const editClick = () => {
     if(edit){
-      setUser({
-        ...user,
-        home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
-        company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
-      })
+      setUser((user === null)? null :
+        {
+          ...user,
+          home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
+          company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
+        }
+      )
     }
     setEdit(!edit);
   }

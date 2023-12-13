@@ -2,10 +2,11 @@ import { useState, useRef, RefObject } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
-import { userInfo } from '../../../models/user.model';
-import { brand } from '../../../models/carBrand';
+import Snackbar from '@mui/material/Snackbar';
+import { brandList } from '../../../models/carBrand';
+import { useUserContext } from '../../../contexts/UserContext';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -17,14 +18,19 @@ const MidButton = styled(Button)({
 
 type CarProps = {
   setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
+}
+
+type infoBarType = {
+  open: boolean,
+  type: AlertColor,
+  message: string,
 }
 
 export const Car = (props: CarProps) => {
-  const { setStatus, user, setUser } = props;
+  const { setStatus } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
-  const [ newBrand, setNewBrand ] = useState<Number | null>();
+  const [ infoBar, setInfoBar ] = useState<infoBarType>({open: false, type: "success", message: "success"});
+  const { user, setUser } = useUserContext();
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     brand: useRef<HTMLDivElement>(null),
     type: useRef<HTMLDivElement>(null),
@@ -32,10 +38,10 @@ export const Car = (props: CarProps) => {
     license: useRef<HTMLDivElement>(null),
   }
   const textMap = [
-    {id: "brand", label: "Brand", user: user.car.brand},
-    {id: "type", label: "Type", user: user.car.type},
-    {id: "seat", label: "Number of seats", user: user.car.seat},
-    {id: "license", label: "License plate", user: user.car.license},
+    {id: "brand", label: "Brand", user: (user === null || user.car === null)? null : user.car.brand},
+    {id: "type", label: "Type", user: (user === null || user.car === null)? null : user.car.type},
+    {id: "seat", label: "Number of seats", user: (user === null || user.car === null)? null : user.car.seat},
+    {id: "license", label: "License plate", user: (user === null || user.car === null)? null : user.car.license},
   ]
 
   const Text = styled(TextField)({
@@ -67,47 +73,56 @@ export const Car = (props: CarProps) => {
   }
 
   const alertStyle = {
-    display: (user.driver)? "none" : "flex",
+    display: (user != null && user.driver)? "none" : "flex",
     marginBottom: "10px",
-  }
-
-  const brandChange = (e: any) => {
-    console.log(Number(e.target.id))
-    setNewBrand(Number(e.target.id))
   }
 
   const editClick = () => {
     if(edit){
-      setUser({
-        ...user,
-        car: {
-          ...user.car,
-          brand: refs["brand"].current?.getElementsByTagName("input")[0].value ?? user.car.brand,
-          type: refs["type"].current?.getElementsByTagName("input")[0].value ?? user.car.type,
-          seat: refs["seat"].current?.getElementsByTagName("input")[0].value ?? user.car.seat,
-          license: refs["license"].current?.getElementsByTagName("input")[0].value ?? user.car.license,
-        }
-      })
+      const brand = refs["brand"].current?.getElementsByTagName("input")[0].value;
+      const type = refs["type"].current?.getElementsByTagName("input")[0].value;
+      const seat = refs["seat"].current?.getElementsByTagName("input")[0].value;
+      const license = refs["license"].current?.getElementsByTagName("input")[0].value;
+      if(brand === "" && type === "" && seat === "" && license === ""){
+      }else if(brand !== "" && type !== "" && seat !== "" && license !== ""){
+        setUser((user === null)? null :
+          {
+            ...user,
+            driver: true,
+            car: {
+              ...user.car,
+              brand: brandList.findIndex((i) => i === brand) ?? user.car.brand,
+              type: type ?? user.car.type,
+              seat: Number(seat) ?? user.car.seat,
+              license: license ?? user.car.license,
+            }
+          }
+        )
+        console.log(user);
+        setInfoBar({open: true, type: "success", message: "Update successfully!"});
+      }else{
+        setInfoBar({open: true, type: "error", message: "All fields need to be filled."});
+      }
     }
     setEdit(!edit);
   }
 
   return (
     <>
-      <Alert severity="error" style={alertStyle}>You are not a driver!</Alert>
+      <Alert severity="error" style={alertStyle}>Please fill in below informations to become a driver.</Alert>
       {textMap.map(({ id, label, user }) => (
         (id === "brand")?
         <Text
           select
           id={id}
           label={label}
-          defaultValue={user}
+          defaultValue={(user === null)? null : brandList[Number(user)]}
           ref={refs[id]}
           variant="standard"
           InputProps={inputProps}
         >
-          {brand.map((option, i) => (
-            <MenuItem id={i.toString()} key={option} value={option} onChange={(e) => brandChange(e)}>
+          {brandList.map((option, i) => (
+            <MenuItem id={i.toString()} key={option} value={option}>
               {option}
             </MenuItem>
           ))}
@@ -140,6 +155,11 @@ export const Car = (props: CarProps) => {
       ))}
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
       <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <Snackbar open={infoBar.open} autoHideDuration={3000} onClose={() => setInfoBar({...infoBar, open: false})}>
+        <Alert onClose={() => setInfoBar({...infoBar, open: false})} severity={infoBar.type} sx={{ width: '100%' }}>
+          {infoBar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

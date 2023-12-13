@@ -46,9 +46,9 @@ export type favRoute = {
 };
 
 export type car = {
-    brand: string,
+    brand: number,
     type: string,
-    seat: string,
+    seat: number,
     license: string // to be changed to carPlate
     color: number,
     electric: boolean

@@ -1,4 +1,4 @@
-export const brand = [
+export const brandList = [
     "Toyota",
     "Ford",
     "Lexus",
