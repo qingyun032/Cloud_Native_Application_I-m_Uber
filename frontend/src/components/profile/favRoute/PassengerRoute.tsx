@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../../contexts/UserContext';
+import { infoBarType } from '../../../models/user.model';
+import { updatePassengerFav } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -15,10 +17,11 @@ const MidButton = styled(Button)({
 
 type PassengerRouteProps = {
   setStatus: (status: string) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const PassengerRoute = (props: PassengerRouteProps) => {
-  const { setStatus } = props;
+  const { setStatus, setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const { user, setUser } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
@@ -54,10 +57,10 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
     marginBottom: "5px",
   }
 
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
-      setUser((user === null)? null :
-        {
+      if(user !== null){
+        setUser({
           ...user,
           favRoute: {
             passenger: {
@@ -74,8 +77,14 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
             },
             driver: {...user.favRoute.driver}
           },
+        });
+        try{
+          const response = await updatePassengerFav(user);
+          setInfoBar({open: true, type: "success", message: response.message});
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
-      );
+      }
     }
     setEdit(!edit);
   }

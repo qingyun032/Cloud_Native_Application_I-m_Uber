@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { brandList } from '../../../models/carBrand';
 import { useUserContext } from '../../../contexts/UserContext';
 import { infoBarType } from '../../../models/user.model';
+import { updateCarInfo, updateDriverInfo } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -71,7 +72,7 @@ export const Car = (props: CarProps) => {
     marginBottom: "10px",
   }
 
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
       const brand = refs["brand"].current?.getElementsByTagName("input")[0].value;
       const type = refs["type"].current?.getElementsByTagName("input")[0].value;
@@ -79,8 +80,10 @@ export const Car = (props: CarProps) => {
       const license = refs["license"].current?.getElementsByTagName("input")[0].value;
       if(brand === "" && type === "" && seat === "" && license === ""){
       }else if(brand !== "" && type !== "" && seat !== "" && license !== ""){
-        setUser((user === null)? null :
-          {
+        if(user === null){
+          setInfoBar({open: true, type: "error", message: "Please sign in first."});
+        }else{
+          setUser({
             ...user,
             driver: true,
             car: {
@@ -90,9 +93,15 @@ export const Car = (props: CarProps) => {
               seat: Number(seat) ?? user.car.seat,
               license: license ?? user.car.license,
             }
+          })
+          try{
+            const response = await updateDriverInfo(user);
+            setInfoBar({open: true, type: "success", message: response.message});
+          }catch(error: any){
+            setInfoBar({open: true, type: "error", message: error.response.data.error});
           }
-        )
-        setInfoBar({open: true, type: "success", message: "Update successfully!"});
+          // setInfoBar({open: true, type: "success", message: "Update successfully!"});
+        }
       }else{
         setInfoBar({open: true, type: "error", message: "All fields need to be filled."});
       }

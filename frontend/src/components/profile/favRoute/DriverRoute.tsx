@@ -5,6 +5,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../../contexts/UserContext'; 
+import { infoBarType } from '../../../models/user.model';
+import { updateDriverFav } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -16,10 +18,11 @@ const MidButton = styled(Button)({
 
 type DriverRouteProps = {
   setStatus: (status: string) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const DriverRoute = (props: DriverRouteProps) => {
-  const { setStatus } = props;
+  const { setStatus, setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const { user, setUser } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
@@ -32,7 +35,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
     time: useRef<HTMLDivElement>(null),
     people: useRef<HTMLDivElement>(null),
   }
-
+  // TODO: call api
   const stopList = [{stopID: 0, Name: "台灣大學"}, {stopID: 1, Name: "家樂福新店店"}, {stopID: 2, Name: "家樂福北大店"}, {stopID: 3, Name: "1"}, {stopID: 4, Name: "2"}, {stopID: 5, Name: "3"}];
 
   const Text = styled(TextField)({
@@ -57,10 +60,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
     marginBottom: "5px",
   }
 
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
-      setUser((user === null)? null :
-        {
+      if(user !== null){
+        setUser({
           ...user,
           favRoute:{
             driver: {
@@ -79,8 +82,14 @@ export const DriverRoute = (props: DriverRouteProps) => {
             },
             passenger: {...user.favRoute.passenger},
           },
+        });
+        try{
+          const response = await updateDriverFav(user);
+          setInfoBar({open: true, type: "success", message: response.message});
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
-      );
+      }
     }
     setEdit(!edit);
   }

@@ -100,7 +100,7 @@ export const ProfilePage = () => {
             >
               {status === "home" && <ProfileSelection setStatus={setStatus}/>}
               {status === "userInfo" && <UserInfo setStatus={setStatus} setInfoBar={setInfoBar}/>}
-              {status === "favRoute" && <FavRoute setStatus={setStatus}/>}
+              {status === "favRoute" && <FavRoute setStatus={setStatus} setInfoBar={setInfoBar}/>}
             </Box>
           </Container>
         </div>

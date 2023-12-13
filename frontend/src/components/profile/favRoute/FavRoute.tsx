@@ -8,13 +8,15 @@ import TabPanel from '@mui/lab/TabPanel';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { PassengerRoute } from './PassengerRoute';
 import { DriverRoute } from './DriverRoute';
+import { infoBarType } from '../../../models/user.model';
 
 type FavRouteProps = {
   setStatus: (status: string) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const FavRoute = (props: FavRouteProps) => {
-  const { setStatus } = props;
+  const { setStatus, setInfoBar } = props;
   const [value, setValue] = useState("passenger");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -44,8 +46,8 @@ export const FavRoute = (props: FavRouteProps) => {
               <Tab label="As a driver" value="driver" sx={{textTransform: 'none'}}/>
             </TabList>
           </Box>
-          <TabPanel value="passenger"><PassengerRoute setStatus={setStatus}/></TabPanel>
-          <TabPanel value="driver"><DriverRoute setStatus={setStatus}/></TabPanel>
+          <TabPanel value="passenger"><PassengerRoute setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="driver"><DriverRoute setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
         </TabContext>
       </Box>
     </>

@@ -26,7 +26,7 @@ export const getUserInfo = async (): Promise<userInfo> => {
   }
 };
 
-export const updateCarInfo = async (user: userInfo): Promise<userInfo> => {
+export const updateCarInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateCarInfo",
@@ -43,7 +43,7 @@ export const updateCarInfo = async (user: userInfo): Promise<userInfo> => {
   return response.data;
 };
 
-export const updateDriverInfo = async (user: userInfo): Promise<userInfo> => {
+export const updateDriverInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateDriver",
@@ -76,6 +76,26 @@ export const updatePassengerInfo = async (user: userInfo): Promise<any> => {
       "addressHome": user.home,
       "addressCompany": user.company,
     }
+  };
+  const response = await axios(config);
+  return response.data;
+};
+
+export const updateDriverFav = async (user: userInfo): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/users/updateDriverFavor",
+    data: user.favRoute.driver
+  };
+  const response = await axios(config);
+  return response.data;
+};
+
+export const updatePassengerFav = async (user: userInfo): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/users/updatePassengerFavor",
+    data: user.favRoute.passenger
   };
   const response = await axios(config);
   return response.data;
