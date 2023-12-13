@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -9,18 +8,20 @@ import { NavigationBar } from '../../navigation/NavigationBar';
 import { PassengerRoute } from './PassengerRoute';
 import { DriverRoute } from './DriverRoute';
 import { infoBarType } from '../../../models/user.model';
+import { useUserContext } from '../../../contexts/UserContext';
 
 type FavRouteProps = {
-  setStatus: (status: string) => void;
   setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const FavRoute = (props: FavRouteProps) => {
-  const { setStatus, setInfoBar } = props;
-  const [value, setValue] = useState("passenger");
+  const { setInfoBar } = props;
+  // const [value, setValue] = useState("passenger");
+  const { profileStatus, setProfileStatus } = useUserContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    // setValue(newValue);
+    setProfileStatus([profileStatus[0], newValue]);
   };
 
   return (
@@ -39,15 +40,15 @@ export const FavRoute = (props: FavRouteProps) => {
           minHeight: "75vh"
         }}
       >
-        <TabContext value={value}>
+        <TabContext value={profileStatus[1]}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="FavRoute label">
               <Tab label="As a passenger" value="passenger" sx={{textTransform: 'none'}}/>
               <Tab label="As a driver" value="driver" sx={{textTransform: 'none'}}/>
             </TabList>
           </Box>
-          <TabPanel value="passenger"><PassengerRoute setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
-          <TabPanel value="driver"><DriverRoute setStatus={setStatus} setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="passenger"><PassengerRoute setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="driver"><DriverRoute setInfoBar={setInfoBar}/></TabPanel>
         </TabContext>
       </Box>
     </>

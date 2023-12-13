@@ -17,14 +17,13 @@ const MidButton = styled(Button)({
 });
 
 type DriverRouteProps = {
-  setStatus: (status: string) => void;
   setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const DriverRoute = (props: DriverRouteProps) => {
-  const { setStatus, setInfoBar } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
-  const { user, setUser } = useUserContext();
+  const { user, setUser, setProfileStatus } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
     time: useRef<HTMLDivElement>(null),
@@ -160,7 +159,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         )}
       />
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

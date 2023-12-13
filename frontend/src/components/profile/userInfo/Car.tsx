@@ -18,14 +18,13 @@ const MidButton = styled(Button)({
 });
 
 type CarProps = {
-  setStatus: (status: string) => void;
   setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const Car = (props: CarProps) => {
-  const { setStatus, setInfoBar } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
-  const { user, setUser } = useUserContext();
+  const { user, setUser, setProfileStatus } = useUserContext();
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     brand: useRef<HTMLDivElement>(null),
     type: useRef<HTMLDivElement>(null),
@@ -83,7 +82,7 @@ export const Car = (props: CarProps) => {
         if(user === null){
           setInfoBar({open: true, type: "error", message: "Please sign in first."});
         }else{
-          setUser({
+          const newUser = {
             ...user,
             driver: true,
             car: {
@@ -93,14 +92,17 @@ export const Car = (props: CarProps) => {
               seat: Number(seat) ?? user.car.seat,
               license: license ?? user.car.license,
             }
-          })
+          }
           try{
-            const response = await updateDriverInfo(user);
+            const response = await updateDriverInfo(newUser);
             setInfoBar({open: true, type: "success", message: response.message});
+            setUser(newUser);
           }catch(error: any){
+            if(error.response.data.error === "Please specify carPlate"){
+
+            }
             setInfoBar({open: true, type: "error", message: error.response.data.error});
           }
-          // setInfoBar({open: true, type: "success", message: "Update successfully!"});
         }
       }else{
         setInfoBar({open: true, type: "error", message: "All fields need to be filled."});
@@ -156,7 +158,7 @@ export const Car = (props: CarProps) => {
         />
       ))}
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

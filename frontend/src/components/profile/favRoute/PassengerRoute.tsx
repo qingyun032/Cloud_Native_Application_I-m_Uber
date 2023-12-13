@@ -16,14 +16,13 @@ const MidButton = styled(Button)({
 });
 
 type PassengerRouteProps = {
-  setStatus: (status: string) => void;
   setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const PassengerRoute = (props: PassengerRouteProps) => {
-  const { setStatus, setInfoBar } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
-  const { user, setUser } = useUserContext();
+  const { user, setUser, setProfileStatus } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
     time: useRef<HTMLDivElement>(null),
@@ -145,7 +144,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         InputProps={inputProps}
       />
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

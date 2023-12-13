@@ -23,15 +23,14 @@ const HalfButton = styled(Button)({
 });
 
 type UserProps = {
-  setStatus: (status: string) => void;
   setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const User = (props: UserProps) => {
-  const { setStatus, setInfoBar } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
-  const { user, setUser } = useUserContext();
+  const { user, setUser, setProfileStatus } = useUserContext();
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     home: useRef<HTMLDivElement>(null),
     company: useRef<HTMLDivElement>(null),
@@ -142,7 +141,7 @@ export const User = (props: UserProps) => {
         <HalfButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</HalfButton>
         <HalfButton variant="contained" onClick={() => topUpClick()}>{(topUp)? "Comfirm" : "Top up"}</HalfButton>
       </div>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

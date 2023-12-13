@@ -9,6 +9,7 @@ import { ProfileSelection } from "../components/profile/ProfileSelection";
 import { UserInfo } from "../components/profile/userInfo/UserInfo";
 import { FavRoute } from '../components/profile/favRoute/FavRoute';
 import { infoBarType } from '../models/user.model';
+import { useUserContext } from '../contexts/UserContext';
 
 const theme = createTheme({
   palette: {
@@ -18,15 +19,16 @@ const theme = createTheme({
   }
 });
 
-enum ProfileStatus {
-  Home = "home",
-  UserInfo = "userInfo",
-  FavRoute = "favRoute",
-  CarInfo = "carInfo",
-}
+// enum ProfileStatus {
+//   Home = "home",
+//   UserInfo = "userInfo",
+//   FavRoute = "favRoute",
+//   CarInfo = "carInfo",
+// }
 
 export const ProfilePage = () => {
-  const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
+  // const [ status, setStatus ] = useState<string>(ProfileStatus.Home);
+  const { profileStatus } = useUserContext();
   const [ infoBar, setInfoBar ] = useState<infoBarType>({open: false, type: "success", message: "success"});
   // TODO: use context or parent page pass user information
   // const [ user, setUser ] = useState<userInfo>({
@@ -98,9 +100,9 @@ export const ProfilePage = () => {
                 minHeight: "70vh"
               }}
             >
-              {status === "home" && <ProfileSelection setStatus={setStatus}/>}
-              {status === "userInfo" && <UserInfo setStatus={setStatus} setInfoBar={setInfoBar}/>}
-              {status === "favRoute" && <FavRoute setStatus={setStatus} setInfoBar={setInfoBar}/>}
+              {profileStatus[0] === "home" && <ProfileSelection />}
+              {profileStatus[0] === "userInfo" && <UserInfo setInfoBar={setInfoBar}/>}
+              {profileStatus[0] === "favRoute" && <FavRoute setInfoBar={setInfoBar}/>}
             </Box>
           </Container>
         </div>
