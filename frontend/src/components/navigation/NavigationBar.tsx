@@ -55,7 +55,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export const NavigationBar = () => {
   const theme = useTheme();
   const location = useLocation();
-  console.log(location);
+  // console.log(location);
   const [open, setOpen] = useState(false);
   // TODO: get isDriver from user infomation
   const [isDriver, setIsDriver] = useState(false);
