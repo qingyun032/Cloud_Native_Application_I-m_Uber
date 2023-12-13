@@ -602,29 +602,6 @@ describe("Test transformAddr", () => {
     });
 })
 
-// describe("createBoarding", () => {
-//     test("Create a boarding", async () => {
-//         Routes.destroy({
-//             truncate: {cascade: true}
-//         });
-        
-//         const boardingData = {
-//             "routeID": 1,
-//             "stopID": 9,
-//             "boardTime": "2021-06-01 11:00:00:000Z",
-//         }
-
-//         const boarding = await boardingService.createBoarding(boardingData);
-//         console.log(boarding);
-//         expect(boarding).toEqual({
-//             "boardingID": 9,
-//             "routeID": 1,
-//             "stopID": 20,
-//             "boardTime": "2021-06-01T11:00:00.000Z",
-//         });
-//     });
-// })
-
 describe("POST /api/v1/route/createRoute", () => {
 
     test("Try to create a route without authentication", async () => {
@@ -742,14 +719,14 @@ describe("POST /api/v1/route/createRoute", () => {
     // Add more test cases as needed
 });
 
-
-describe("show and select Candidates then get arrival time", () => {
+describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/selectCandidates", () => {
     test("Show route candidates and select", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Alice",
             "password": "Alicepassword"
         });
         const { header } = res;
+
         const passenger_pref = {
             "Go": true,
             "address": "新竹縣竹東鎮光武街2號",
@@ -803,7 +780,17 @@ describe("show and select Candidates then get arrival time", () => {
             route_selected_info
         );
         expect(res.statusCode).toBe(201);
-        expect(res.body.message).toBe("Select Route Successfully!");
+        console.log(res.body);
+        expect(res.body).toEqual(
+            {
+                "userID": 4,
+                "routeID": 3,
+                "pickUpStopID": 23,
+                "dropOFFStopID": '111',
+                "passengerCnt": 1,
+                "price": 116
+            }
+        );
     });
 
     test("getArrivalTime", async () => {
@@ -828,10 +815,10 @@ describe("show and select Candidates then get arrival time", () => {
             dest_arrival_time: "2023-12-21T12:24:35.000Z"
         });
     });
-})
+});
 
-describe("Comfirm Route", () => {
-    test("Show route candidates and select", async () => {
+describe("POST /api/v1/route/confirmRoute", () => {
+    test("confirmRoute", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Wei",
             "password": "Weipassword"
@@ -843,6 +830,18 @@ describe("Comfirm Route", () => {
         expect(res.body.message).toBe("Comfirm Route Successfully!");
     });
 })
+
+describe("GET /api/v1/route/showBoardingInfo", () => {
+    test("Get boarding info", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+          "userName": "Wei",
+          "password": "Weipassword"
+        }); 
+        const { header } = res;
+
+        res = await request(app).get("/api/v1/route/showBoardingInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        // expect(res.body.message).toBe("Show boarding info successfully");
 
 describe("Update favorite", () => {
     test("Update Leo driver driver GO favorite", async () => {
@@ -947,5 +946,6 @@ describe("Update favorite", () => {
         );
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toEqual("Update passenger favorite route successfully");
+
     });
 })

@@ -46,8 +46,9 @@ async function selectCandidates(req, res) {
         if(routeData.available < 0){
             res.status(503).json( {message: "Seat not enough!"} );
         }
-        // console.log(routeData)
-        const routeData_update = routeService.updateRoute(reqData.routeID, {available: routeData.available});
+        await routeService.updateRoute(reqData.routeID, {available: routeData.available});
+        
+        // create passenger
         let passengerData = {
             "userID": passengerId,
             "routeID": reqData.routeID,
@@ -56,7 +57,7 @@ async function selectCandidates(req, res) {
             "passengerCnt": req.session.passengerCnt,
             "price": reqData.price
         };
-        // console.log(process.env.COMPANY_STOP_ID)
+
         if(routeData.type === "GO"){
             passengerData.dropOFFStopID = process.env.COMPANY_STOP_ID;
             passengerData.pickUpStopID = reqData.stopID;
@@ -66,7 +67,7 @@ async function selectCandidates(req, res) {
             passengerData.pickUpStopID = parseInt(process.env.COMPANY_STOP_ID);
         }
         const newPassenger = await passengersService.createPassenger(passengerData);
-        res.status(201).json( {message: "Select Route Successfully!"} );
+        res.status(201).json(newPassenger);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
