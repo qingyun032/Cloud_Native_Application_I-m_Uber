@@ -5,6 +5,7 @@ const stopService = require('../services/stopService');
 const coordinate2grid = require('../utils/coordinate2grid');
 const transformAddr = require('../utils/transformAddr');
 const gridService = require('../services/gridService');
+
 const getAllRoutes = async (req, res) => {
   try {
     // grid
@@ -118,7 +119,7 @@ const confirmRoute = async (req, res) => {
       route.driverID === driverId
     );
     routeInfo = routeInfo[0]
-    // console.log(routeInfo)
+    
     let modifyInfo = {
       state: "CONFIRMED"
     }
@@ -166,9 +167,12 @@ const showStops = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-    
-    
 };
+
+const showBoardingInfo = async (req, res) => {
+  
+}
+
 module.exports = {
     getAllRoutes,
     getRouteById,

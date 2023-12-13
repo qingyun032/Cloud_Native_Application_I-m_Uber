@@ -19,9 +19,9 @@ async function getAllPassengers() {
 
 async function getPassengerById(passengerID) {
     try {
-      const passenger = await Passenger.findByPk(passengerID, {
-        include: [User, Stop, Stop], // Include associations (Users, pickUpStop, dropOffStop)
-      });
+        const passenger = await Passenger.findByPk(passengerID, {
+            include: [User, Stop, Stop], // Include associations (Users, pickUpStop, dropOffStop)
+        });
         return passenger;
     } catch (error) {
         throw new Error(`Passenger with ID ${passengerID} not found`);
