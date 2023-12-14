@@ -64,7 +64,6 @@ async function getMyInfoV2(req, res) {
         delete returnUser.Wallet.userID;
         const passengerFavor = await favorService.getPassengerFavorByUserId(userID);
         const driverFavor = await favorService.getDriverFavorByUserId(userID);
-        console.log(typeof passengerFavor.BACK_TIME)
         const returnPassengerFavor = passengerFavor.toJSON();
         const returnDriverFavor = driverFavor.toJSON();
         returnUser.favorRoute = {
@@ -327,23 +326,23 @@ async function updateDriverFavor(req, res) {
             throw new Error("Please sign in before querying user data");
         }
         const newData = req.body;
-        console.log(newData)
+        // TODO
         // const OldFavor = await favorService.getDriverFavorByUserId(userID);
         // let NewFavor = OldFavor;
         let NewFavor = {};
         if(newData.GO.address != null){
             NewFavor.GO_start = newData.GO.address;
             let [hours, minutes, seconds] = newData.GO.time.split(':');
-            console.log(newData.GO.time);
+            // console.log("new_dat", newData.GO.time);
             // NewFavor.GO_TIME = new Date(1970, 0, 1, (hours+8), minutes, seconds);
             NewFavor.GO_TIME = newData.GO.time;
-            console.log(NewFavor.GO_TIME);
+            // console.log(NewFavor.GO_TIME);
             NewFavor.GO_stops = newData.GO.stopIDs.toString();
         }
         
         if(newData.BACK.address != null){
             NewFavor.BACK_dest = newData.BACK.address;
-            console.log(newData.BACK.time)
+            // console.log(newData.BACK.time)
             let [hours2, minutes2, seconds2] = newData.BACK.time.split(':');
             // NewFavor.BACK_TIME = new Date(1970, 0, 1, hours2, minutes2, seconds2);
             NewFavor.BACK_TIME = newData.BACK.time;
@@ -373,7 +372,6 @@ async function updatePassengerFavor(req, res) {
             throw new Error("Please sign in before querying user data");
         }
         const newData = req.body;
-        console.log(typeof newData.BACK.address)
         let NewFavor = {};
         if(newData.GO.address != null){
             NewFavor.GO_start = newData.GO.address;

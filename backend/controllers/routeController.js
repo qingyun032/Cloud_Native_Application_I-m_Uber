@@ -6,6 +6,7 @@ const coordinate2grid = require('../utils/coordinate2grid');
 const transformAddr = require('../utils/transformAddr');
 const gridService = require('../services/gridService');
 const passengerService = require('../services/passengerService');
+const toCorrectString = require('../utils/toCorrectString');
 
 const getAllRoutes = async (req, res) => {
   try {
@@ -33,7 +34,7 @@ const getRouteById = async (req, res) => {
 const createRoute = async (req, res) => {
     const driverId = req.session.userId;
     if(!driverId){
-        res.status(401).json({ error: "Wrong sign in information"})
+        res.status(401).json({ error: "Please sign in first"})
         return;
     }
     // I need frontend to send:
@@ -53,19 +54,13 @@ const createRoute = async (req, res) => {
         res.status(400).json({ error: "You should include at least 1 intermediate stop" });
         return;
       } else {
-        if (routeData.type == "GO") {
-          routeInfo.start = routeData.stopIds[0];
-          routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
-        } else {
-          routeInfo.start = routeData.stopIds[routeData.stopIds.length - 1];
-          routeInfo.destination = routeData.stopIds[0];
-        }
-        
+        // TODO
+        routeInfo.start = routeData.stopIds[0];
+        routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
         routeInfo.startTime = routeData.startTime;
         routeInfo.available = routeData.available;
         routeInfo.type = routeData.type;
         routeInfo.state = routeData.state;
-        // console.log(routeInfo);
   
         route = await routeService.createRoute(routeInfo);
   
@@ -78,7 +73,7 @@ const createRoute = async (req, res) => {
           const stop = await stopService.getStopById(routeData.stopIds[i]);
           
           boardingInfo.stopID = routeData.stopIds[i];
-          boardingInfo.boardTime = arriveTime;
+          boardingInfo.boardTime = toCorrectString(arriveTime);
           
           // await can make sure that the boarding is created before the next iteration
           await boardingService.createBoarding(boardingInfo);
@@ -93,9 +88,17 @@ const createRoute = async (req, res) => {
           }
         }
       }
-
-      res.status(201).json(route);
-      
+      let returnRoute = {
+        routeID: route.routeID,
+        driverID: route.driverID,
+        startTime: toCorrectString(route.startTime),
+        start: route.start,
+        destination: route.destination,
+        available: route.available,
+        type: route.type, 
+        state: route.state
+      }
+      res.status(201).json(returnRoute);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: error.message });
@@ -178,7 +181,6 @@ const showBoardingInfo = async (req, res) => {
       route => 
       route.driverID === driverId
     );
-    console.log(`route nums: ${routeInfo.length}`);
     routeInfo = routeInfo[0]
     
     let boardings = await boardingService.getAllBoardings();
@@ -199,9 +201,9 @@ const showBoardingInfo = async (req, res) => {
       const stop = await stopService.getStopById(boardings[i].stopID);
       let stopInfo = {}
       stopInfo.stopID = stop.stopID;
-      stopInfo.name = stop.name;
+      stopInfo.name = stop.Name;
       stopInfo.address = stop.address;
-      stopInfo.boardTime = boardings[i].boardTime;
+      stopInfo.boardTime = toCorrectString(boardings[i].boardTime);
       stopInfo.latitude = stop.latitude;
       stopInfo.longitude = stop.longitude;
 
@@ -223,12 +225,42 @@ const showBoardingInfo = async (req, res) => {
       boardingInfo.stops.push(stopInfo);
     }
 
+    boardingInfo.stops.sort((a, b) => {
+      return new Date(a.boardTime) - new Date(b.boardTime);
+    })
+
     res.status(200).json(boardingInfo);
   } catch (error){
     console.error(error);
     res.status(500).json({ error: error.message });
   }
 }
+
+const finishRoute = async (req, res) => {
+  const driverId = req.session.userId;
+  if(!driverId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+  
+  try{
+    // delete all data related to this route
+    let routeInfo = await routeService.getAllRoutes();
+    routeInfo = routeInfo.filter(
+      route =>
+      route.driverID === driverId
+    );
+
+    routeInfo = routeInfo[0];
+    const routeId = routeInfo.routeID;
+    await routeService.deleteRoute(routeId);
+    
+    res.status(200).send({message: "Finish route successfully"})
+  } catch (error){
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
     getAllRoutes,
@@ -238,5 +270,6 @@ module.exports = {
     updateRoute,
     deleteRoute,
     showStops, 
-    showBoardingInfo
+    showBoardingInfo,
+    finishRoute
 };

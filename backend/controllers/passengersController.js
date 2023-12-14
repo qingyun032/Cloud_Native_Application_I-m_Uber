@@ -4,6 +4,7 @@ const userService = require('../services/userService');
 const boardingService = require('../services/boardingService');
 
 const Routes_matching = require('../utils/matching');
+const toCorrectString = require('../utils/toCorrectString');
 // const transformAddr = require('../utils/transformAddr');
 
 async function showCandidates(req, res) {
@@ -13,15 +14,20 @@ async function showCandidates(req, res) {
         return;
     }
     const reqData = req.body; 
-    const RetData = {"Routes":[]};
+    const RouteData = {"Routes":[]};
     try {
-        // const position = await transformAddr(reqData.address)
-        // console.log(position)
-        // const routes = await Routes_matching(position.lat, position.lon, 1, reqData.Go, reqData.board_time, reqData.passenger_cnt);
+        // return a list of viable routes
         const routes = await Routes_matching(reqData.address, parseInt(process.env.COMPANY_STOP_ID), reqData.Go, reqData.board_time, reqData.passenger_cnt);
-        RetData.Routes = routes;
+        for (let route of routes){
+            route.board_time = toCorrectString(route.board_time);
+        }
+        // sort by boarding time
+        routes.sort((a, b) => {
+            return new Date(a.board_time) - new Date(b.board_time);
+        });
+        RouteData.Routes = routes;
         req.session.passengerCnt = reqData.passenger_cnt;
-        res.status(200).json(RetData);
+        res.status(200).json(RouteData);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -59,14 +65,16 @@ async function selectCandidates(req, res) {
         };
 
         if(routeData.type === "GO"){
-            passengerData.dropOFFStopID = process.env.COMPANY_STOP_ID;
+            passengerData.dropOFFStopID = parseInt(process.env.COMPANY_STOP_ID);
             passengerData.pickUpStopID = reqData.stopID;
         }
         else{
             passengerData.dropOFFStopID = reqData.stopID;
             passengerData.pickUpStopID = parseInt(process.env.COMPANY_STOP_ID);
         }
+
         const newPassenger = await passengersService.createPassenger(passengerData);
+        
         res.status(201).json(newPassenger);
     } catch (error) {
         console.error(error);
@@ -75,7 +83,7 @@ async function selectCandidates(req, res) {
 }
 
 async function getArrivalTime(req, res) {
-    console.log("123456789")
+    // console.log("123456789")
     const passengerId = req.session.userId;
     if(!passengerId){
         res.status(401).json({ error: "Wrong sign in information"})
@@ -97,9 +105,10 @@ async function getArrivalTime(req, res) {
             boarding.stopID === passengerInfo.dropOFFStopID;
         });
         // console.log(driverInfo.CarInfo.dataValues)
-        let reutrnInfo = {CarInfo:driverInfo.CarInfo.dataValues,
-        stop_arrival_time: stopBoardings[0].boardTime,
-        dest_arrival_time: destinationBoardings[0].boardTime
+        let reutrnInfo = {
+            CarInfo:driverInfo.CarInfo.dataValues,
+            stop_arrival_time: toCorrectString(stopBoardings[0].boardTime),
+            dest_arrival_time: toCorrectString(destinationBoardings[0].boardTime)
         }
         // console.log(reutrnInfo)
         res.status(200).json(reutrnInfo);
