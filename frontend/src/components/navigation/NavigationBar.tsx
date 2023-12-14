@@ -58,7 +58,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export const NavigationBar = () => {
   const theme = useTheme();
   const location = useLocation();
-  console.log(location);
+  // console.log(location);
   const [open, setOpen] = useState(false);
   // const [lastHome, setLastHome] = useState<string>("");
   const { user, setUser, setProfileStatus, lastHome, setLastHome } = useUserContext();
