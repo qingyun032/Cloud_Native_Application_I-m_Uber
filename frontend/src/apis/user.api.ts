@@ -85,7 +85,18 @@ export const updateDriverFav = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateDriverFavor",
-    data: user.favRoute.driver
+    data: {
+      "GO": {
+          "address": user.favRoute.driver.GO.address,
+          "time": user.favRoute.driver.GO.boardTime,
+          "stopIDs": user.favRoute.driver.GO.stopIDs
+       },
+       "BACK": {
+          "address": user.favRoute.driver.BACK.address,
+          "time": user.favRoute.driver.BACK.boardTime,
+          "stopIDs": user.favRoute.driver.BACK.stopIDs
+       }  
+   }
   };
   const response = await axios(config);
   return response.data;
