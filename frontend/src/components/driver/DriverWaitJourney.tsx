@@ -13,7 +13,7 @@ import Avatar from '@mui/material/Avatar';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
-import { Boarding } from "../../models/journey.model"
+import { Boarding, Passenger } from "../../models/journey.model"
 import { showBoardingInfo, confirmRoute } from "../../apis/driver.journey.api"
 
 type DriverWaitJourneyProps = {
@@ -66,11 +66,11 @@ const theme = createTheme({
 export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
   const { boardingInfo, setDriverStatus, setBoardingInfo } = props; // TODO: Replace boarding with boardingInfo
   const [modalAddress, setModalAddress] = useState<string>("")
+  const [passengers, setPassengers] = useState<Passenger[]>([])
   const [open, setOpen] = React.useState(false);
   const handleOpen = (idx: number) => {
-    // TODO: name missing
-     const [ stopID, address, boardTime, latitude, lontitude, passengers ] = Object.values(boardingInfo[idx]);
-    setModalAddress(String(address));
+    setModalAddress(boardingInfo[idx].address);
+    setPassengers(boardingInfo[idx].passengers);
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -139,8 +139,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto' }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {boardingInfo.map((stop, idx) => {
-                  const [ stopID, address, boardTime, latitude, lontitude, passengers ] = Object.values(stop);
-                  console.log(Object.values(stop))
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
@@ -166,6 +164,13 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 <p id="unstyled-modal-description" className="modal-description">
                   {modalAddress}
                 </p>
+                {passengers.map((passenger, idx) => {
+                  return (
+                    <Typography key={idx}>
+                      {passenger.name}: {passenger.count} {passenger.count > 1 ? "people" : "person"}
+                    </Typography>
+                  )
+                })}
               </ModalContent>
             </Modal>
             {/* <Button            

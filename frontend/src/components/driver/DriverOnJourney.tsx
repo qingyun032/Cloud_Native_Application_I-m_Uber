@@ -12,11 +12,11 @@ import Avatar from '@mui/material/Avatar';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
-import { Boarding } from "../../models/journey.model"
+import { Boarding, Passenger } from "../../models/journey.model"
 import { finishRoute } from "../../apis/driver.journey.api"
 
 type DriverOnJourneyProps = {
-  boardingInfo: Boarding[] | null;
+  boardingInfo: Boarding[];
   setDriverStatus: (status: string) => void;
 }
 
@@ -69,9 +69,11 @@ const boarding = [
 export const DriverOnJourney = (props: DriverOnJourneyProps) => {
   const { setDriverStatus, boardingInfo } = props; // TODO: Replace boarding with boardingInfo
   const [modalAddress, setModalAddress] = useState<string>("")
+  const [passengers, setPassengers] = useState<Passenger[]>([])
   const [open, setOpen] = React.useState(false);
   const handleOpen = (idx: number) => {
-    setModalAddress(boarding[idx].address);
+    setModalAddress(boardingInfo[idx].address);
+    setPassengers(boardingInfo[idx].passengers);
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -112,7 +114,7 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
             </Box>
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', mt: 9 }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {boarding.map((stop, idx) => {
+                {boardingInfo.map((stop, idx) => {
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
@@ -139,6 +141,13 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
                 <p id="unstyled-modal-description" className="modal-description">
                   {modalAddress}
                 </p>
+                {passengers.map((passenger, idx) => {
+                  return (
+                    <Typography key={idx}>
+                      {passenger.name}: {passenger.count} {passenger.count > 1 ? "people" : "person"}
+                    </Typography>
+                  )
+                })}
               </ModalContent>
             </Modal>
             <Button            
