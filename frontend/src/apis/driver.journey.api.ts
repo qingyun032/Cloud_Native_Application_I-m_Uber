@@ -10,6 +10,7 @@ export const showStops = async (query: {isGo: boolean, address: string}): Promis
     params: query,
   };
   const response = await axios(config);
+  console.log(response)
   return response.data;
 };
 
@@ -19,7 +20,6 @@ export const createRoute = async (route: DriverRoute): Promise<string> => {
     url: path + "/api/v1/route/createRoute",
     data: route,
   };
-  console.log(route);
   const response = await axios(config);
   console.log(response)
   return response.data;
@@ -52,6 +52,7 @@ export const confirmRoute = async (): Promise<string> => {
     url: path + "/api/v1/route/confirmRoute",
   };
   const response = await axios(config);
+  console.log(response)
   return response.data;
 }
 
@@ -61,5 +62,6 @@ export const finishRoute = async (): Promise<string> => {
     url: path + "/api/v1/route/finishRoute",
   };
   const response = await axios(config);
+  console.log(response)
   return response.data;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -17,6 +17,7 @@ import { NavigationBar } from '../navigation/NavigationBar';
 import { showStops } from '../../apis/driver.journey.api';
 import { Stop } from '../../models/stop.model';
 import { ItineraryData } from '../../models/journey.model';
+import { useUserContext } from '../../contexts/UserContext';
 
 type driverStartProps = {
     setDriverStatus: (status: string) => void;
@@ -29,6 +30,7 @@ type driverStartProps = {
 
 export const DriverStart = (props: driverStartProps) => {
   const { setDriverStatus, setStops, itineraryData, setItineraryData, isGo, setIsGo } = props;
+  const { user } = useUserContext();
   const currentDate = dayjs().startOf('day');
   const currentTime = dayjs().startOf('minute');
   const selectedDate = itineraryData.date?.startOf('day');
@@ -46,24 +48,30 @@ export const DriverStart = (props: driverStartProps) => {
     catch (error: any) {
         console.log(error);
     }
-    setDriverStatus('stops') // TODO: remove this line after API worked
   }
+    const goBoardTime = user?.favRoute.driver.GO.boardTime;
+    const goBoardTimeDayjs = goBoardTime ? dayjs(goBoardTime) : null;
+    const backBoardTime = user?.favRoute.driver.BACK.boardTime;
+    const backBoardTimeDayjs = backBoardTime ? dayjs(backBoardTime) : null;
+    const driverFavRouteToWork: ItineraryData = { // TODO: boardTime to time
+        start: user?.favRoute.driver.GO.address || "",
+        destination: '台積電',
+        passengerCount : String(user?.car.seat),
+        date: goBoardTimeDayjs && goBoardTimeDayjs.isAfter(currentTime)
+            ? currentTime
+            : currentTime.add(1, 'day'),
+        time: goBoardTimeDayjs || null,
+    }
 
-  const driverFavRouteToWork: ItineraryData = { // TODO: get driver favRoute
-    start: '台大',
-    destination: '台積電',
-    passengerCount : '4',
-    date: dayjs('2023-12-21'),
-    time: dayjs('15:00:00', "HH:mm:ss"),
-  }
-
-  const driverFavRouteToHome: ItineraryData = {
-    start: '台積電',
-    destination: '中正紀念堂',
-    passengerCount : '4',
-    date: dayjs('2023-12-21'),
-    time: dayjs('15:00:00', "HH:mm:ss"),
-  }
+    const driverFavRouteToHome: ItineraryData = {
+        start: '台積電',
+        destination:user?.favRoute.driver.BACK.address || "",
+        passengerCount : String(user?.car.seat),
+        date: backBoardTimeDayjs && backBoardTimeDayjs.isAfter(currentTime)
+            ? currentTime
+            : currentTime.add(1, 'day'),
+        time: backBoardTimeDayjs || null,
+    }
 
   const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
     const updatedItineraryData = {
@@ -211,7 +219,7 @@ export const DriverStart = (props: driverStartProps) => {
                       backgroundColor : "secondary.main",
                       mb: 1, mt: 3,
                     }}
-                    disabled={itineraryData.start === "" || itineraryData.destination === "" || (selectedDate?.isSame(currentDate) && selectedTime?.isBefore(currentTime))}
+                    disabled={itineraryData.start === "" || itineraryData.destination === "" || (selectedDate?.isSame(currentDate) && selectedTime?.isBefore(currentTime)) || itineraryData.time === null || itineraryData.date === null}
                   >
                     Select Stops
                   </Button>

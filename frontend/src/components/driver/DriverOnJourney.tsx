@@ -20,54 +20,8 @@ type DriverOnJourneyProps = {
   setDriverStatus: (status: string) => void;
 }
 
-const boarding = [
-  {
-      "stopID": 103,
-      "name": "樹林區公所",
-      "passengers": [
-          {
-              "name": "Leo",
-              "count": 1, 
-              "type": "pickUp"
-          },
-          {
-              "name": "Chu",
-              "count": 1, 
-              "type": "dropOff"
-          }
-      ],
-      "address": "新北市博愛街198-5號對側",
-      "latitude": 24.93555000000000000,
-      "longitude": 121.71021000000000000,
-      "boardTime": "2023-12-21T12:06:29.000Z"
-  },
-  {
-      "stopID": 13,
-      "name": "中國醫藥大學新竹附設醫院",
-      "passengers": [
-          {
-              "name": "Wei",
-              "count": 1
-          },
-      ],
-      "address": "新竹縣博愛南路/興隆路一段口(東北側)",
-      "latitude": 24.7342000000000000,
-      "longitude": 121.88381000000000000,
-      "boardTime": "2023-12-21T14:07:29.000Z"
-  },
-  {
-      "stopID": 20,
-      "name": "台積電",
-      "passengers": [],
-      "address": "新竹縣寶山鄉園區二路168號",
-      "latitude": 24.13535000000000000,
-      "longitude": 121.72321000000000000,
-      "boardTime": "2023-12-21T15:25:20.000Z"
-  }
-]
-
 export const DriverOnJourney = (props: DriverOnJourneyProps) => {
-  const { setDriverStatus, boardingInfo } = props; // TODO: Replace boarding with boardingInfo
+  const { setDriverStatus, boardingInfo } = props;
   const [modalAddress, setModalAddress] = useState<string>("")
   const [passengers, setPassengers] = useState<Passenger[]>([])
   const [open, setOpen] = React.useState(false);
@@ -87,7 +41,6 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
     catch (error: any) {
         console.log(error);
     }
-    setDriverStatus('endJourney') // TODO: remove this line after API worked
   }
 
   return (
@@ -182,15 +135,6 @@ const Backdrop = React.forwardRef<
     />
   );
 });
-
-const blue = {
-  200: '#99CCFF',
-  300: '#66B2FF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0066CC',
-};
 
 const grey = {
   50: '#F3F6F9',

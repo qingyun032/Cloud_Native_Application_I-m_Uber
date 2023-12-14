@@ -22,36 +22,6 @@ type DriverWaitJourneyProps = {
   setBoardingInfo: (boarding: Boarding[]) => void;
 }
 
-const boarding = [
-  {
-      "stopID": 103,
-      "name": "樹林區公所",
-      "passengers": [],
-      "address": "新北市博愛街198-5號對側",
-      "latitude": 24.93555000000000000,
-      "longitude": 121.71021000000000000,
-      "boardTime": "2023-12-21T12:06:29.000Z"
-  },
-  {
-      "stopID": 13,
-      "name": "中國醫藥大學新竹附設醫院",
-      "passengers": [],
-      "address": "新竹縣博愛南路/興隆路一段口(東北側)",
-      "latitude": 24.7342000000000000,
-      "longitude": 121.88381000000000000,
-      "boardTime": "2023-12-21T14:07:29.000Z"
-  },
-  {
-      "stopID": 20,
-      "name": "台積電",
-      "passengers": [],
-      "address": "新竹縣寶山鄉園區二路168號",
-      "latitude": 24.13535000000000000,
-      "longitude": 121.72321000000000000,
-      "boardTime": "2023-12-21T15:25:20.000Z"
-  }
-]
-
 const theme = createTheme({
   palette: {
     primary: {
@@ -64,7 +34,7 @@ const theme = createTheme({
 });
 
 export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
-  const { boardingInfo, setDriverStatus, setBoardingInfo } = props; // TODO: Replace boarding with boardingInfo
+  const { boardingInfo, setDriverStatus, setBoardingInfo } = props;
   const [modalAddress, setModalAddress] = useState<string>("")
   const [passengers, setPassengers] = useState<Passenger[]>([])
   const [open, setOpen] = React.useState(false);
@@ -75,9 +45,9 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
   }
   const handleClose = () => setOpen(false);
   
-  const toDriverHome = () => {
-    setDriverStatus('start')
-  }
+  // const toDriverHome = () => {
+  //   setDriverStatus('start')
+  // }
 
   const toDriverJourney = async () => {
     try {
@@ -88,7 +58,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
     catch (error: any){
       console.log(error);
     }
-    setDriverStatus('onJourney'); // TODO: remove this line
   }
 
   const getBoardingInfo = async () => {
@@ -219,15 +188,6 @@ const Backdrop = React.forwardRef<
     />
   );
 });
-
-const blue = {
-  200: '#99CCFF',
-  300: '#66B2FF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0066CC',
-};
 
 const grey = {
   50: '#F3F6F9',

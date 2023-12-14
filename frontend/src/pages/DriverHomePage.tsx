@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { DriverStart } from '../components/driver/DriverStart';
 import { DriverStops } from '../components/driver/DriverStops';
 import { DriverWaitJourney } from '../components/driver/DriverWaitJourney';
