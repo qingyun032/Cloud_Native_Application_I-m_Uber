@@ -2,9 +2,10 @@ import { useState, useRef, RefObject } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
-import { userInfo } from '../../../models/user.model';
+import { useUserContext } from '../../../contexts/UserContext';
+import { infoBarType } from '../../../models/user.model';
+import { updatePassengerInfo } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -21,33 +22,33 @@ const HalfButton = styled(Button)({
   width: "130px"
 });
 
-const SelectItem = styled(MenuItem)({
-  fontSize: "14px"
-})
-
 type UserProps = {
-  setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const User = (props: UserProps) => {
-  const { setStatus, user, setUser } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ topUp, setTopUp ] = useState<boolean>(false);
+  const { user, setUser, setProfileStatus } = useUserContext();
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     home: useRef<HTMLDivElement>(null),
     company: useRef<HTMLDivElement>(null),
     wallet: useRef<HTMLDivElement>(null),
   }
+  const genderMap = (s: string) => {
+    if(s === "M") return "Male";
+    else if(s === "F") return "Female";
+    else if(s === "O") return "Other";
+  }
   const textMap = [
-    {id: "name", label: "User name", user: user.name},
-    {id: "email", label: "Email", user: user.email},
-    {id: "phone", label: "Phone number", user: user.phone},
-    {id: "gender", label: "Gender", user: user.gender},
-    {id: "home", label: "Home address", user: user.home},
-    {id: "company", label: "Company address", user: user.company},
-    {id: "wallet", label: "Wallet", user: user.wallet}
+    {id: "name", label: "User name", user: (user === null)? null : user.name},
+    {id: "email", label: "Email", user: (user === null)? null : user.email},
+    {id: "phone", label: "Phone number", user: (user === null)? null : user.phone},
+    {id: "gender", label: "Gender", user: (user === null)? null : genderMap(user.gender)},
+    {id: "home", label: "Home address", user: (user === null)? null : user.home},
+    {id: "company", label: "Company address", user: (user === null)? null : user.company},
+    {id: "wallet", label: "Wallet", user: (user === null)? null : user.wallet}
   ]
 
   const Text = styled(TextField)({
@@ -82,18 +83,28 @@ export const User = (props: UserProps) => {
     }
   }
 
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
-      setUser({
-        ...user,
-        home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
-        company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
-      })
+      if(user !== null){
+        const newUser = {
+          ...user,
+          home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
+          company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
+        };
+        try{
+          const response = await updatePassengerInfo(user);
+          setUser(newUser);
+          setInfoBar({open: true, type: "success", message: response.message});
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error});
+        }
+      }
     }
     setEdit(!edit);
   }
 
   const topUpClick = () => {
+    // TODO: call api
     if(topUp)
       refs["wallet"].current?.getElementsByTagName("input")[0].focus();
     setTopUp(!topUp);
@@ -129,7 +140,7 @@ export const User = (props: UserProps) => {
         <HalfButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</HalfButton>
         <HalfButton variant="contained" onClick={() => topUpClick()}>{(topUp)? "Comfirm" : "Top up"}</HalfButton>
       </div>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

@@ -4,8 +4,10 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
-import { userInfo } from '../../../models/user.model';
-import { brand } from '../../../models/carBrand';
+import { brandList } from '../../../models/carBrand';
+import { useUserContext } from '../../../contexts/UserContext';
+import { infoBarType } from '../../../models/user.model';
+import { updateCarInfo, updateDriverInfo } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -16,15 +18,14 @@ const MidButton = styled(Button)({
 });
 
 type CarProps = {
-  setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const Car = (props: CarProps) => {
-  const { setStatus, user, setUser } = props;
+  const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
-  const [ newBrand, setNewBrand ] = useState<Number | null>();
+  const { user, setUser, setProfileStatus } = useUserContext();
+  console.log(user);
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     brand: useRef<HTMLDivElement>(null),
     type: useRef<HTMLDivElement>(null),
@@ -32,10 +33,10 @@ export const Car = (props: CarProps) => {
     license: useRef<HTMLDivElement>(null),
   }
   const textMap = [
-    {id: "brand", label: "Brand", user: user.car.brand},
-    {id: "type", label: "Type", user: user.car.type},
-    {id: "seat", label: "Number of seats", user: user.car.seat},
-    {id: "license", label: "License plate", user: user.car.license},
+    {id: "brand", label: "Brand", user: (user === null || user.car === null)? null : user.car.brand},
+    {id: "type", label: "Type", user: (user === null || user.car === null)? null : user.car.type},
+    {id: "seat", label: "Number of seats", user: (user === null || user.car === null)? null : user.car.seat},
+    {id: "license", label: "License plate", user: (user === null || user.car === null)? null : user.car.carPlate},
   ]
 
   const Text = styled(TextField)({
@@ -67,47 +68,66 @@ export const Car = (props: CarProps) => {
   }
 
   const alertStyle = {
-    display: (user.driver)? "none" : "flex",
+    display: (user != null && user.driver)? "none" : "flex",
     marginBottom: "10px",
   }
 
-  const brandChange = (e: any) => {
-    console.log(Number(e.target.id))
-    setNewBrand(Number(e.target.id))
-  }
-
-  const editClick = () => {
+  const editClick = async () => {
     if(edit){
-      setUser({
-        ...user,
-        car: {
-          ...user.car,
-          brand: refs["brand"].current?.getElementsByTagName("input")[0].value ?? user.car.brand,
-          type: refs["type"].current?.getElementsByTagName("input")[0].value ?? user.car.type,
-          seat: refs["seat"].current?.getElementsByTagName("input")[0].value ?? user.car.seat,
-          license: refs["license"].current?.getElementsByTagName("input")[0].value ?? user.car.license,
+      const brand = refs["brand"].current?.getElementsByTagName("input")[0].value;
+      const type = refs["type"].current?.getElementsByTagName("input")[0].value;
+      const seat = refs["seat"].current?.getElementsByTagName("input")[0].value;
+      const license = refs["license"].current?.getElementsByTagName("input")[0].value;
+      if(brand === "" && type === "" && seat === "" && license === ""){
+      }else if(brand !== "" && type !== "" && seat !== "" && license !== ""){
+        if(user === null){
+          setInfoBar({open: true, type: "error", message: "Please sign in first."});
+        }else{
+          const newUser = {
+            ...user,
+            driver: true,
+            car: {
+              ...user.car,
+              brand: brandList.findIndex((i) => i === brand) ?? user.car.brand,
+              type: type ?? user.car.type,
+              seat: Number(seat) ?? user.car.seat,
+              carPlate: license ?? user.car.carPlate,
+            }
+          }
+          try{
+            const response = await updateDriverInfo(newUser);
+            setInfoBar({open: true, type: "success", message: response.message});
+            setUser(newUser);
+          }catch(error: any){
+            if(error.response.data.error === "Please specify carPlate"){
+
+            }
+            setInfoBar({open: true, type: "error", message: error.response.data.error});
+          }
         }
-      })
+      }else{
+        setInfoBar({open: true, type: "error", message: "All fields need to be filled."});
+      }
     }
     setEdit(!edit);
   }
 
   return (
     <>
-      <Alert severity="error" style={alertStyle}>You are not a driver!</Alert>
+      <Alert severity="error" style={alertStyle}>Please fill in below informations to become a driver.</Alert>
       {textMap.map(({ id, label, user }) => (
         (id === "brand")?
         <Text
           select
           id={id}
           label={label}
-          defaultValue={user}
+          defaultValue={(user === null)? null : brandList[Number(user)]}
           ref={refs[id]}
           variant="standard"
           InputProps={inputProps}
         >
-          {brand.map((option, i) => (
-            <MenuItem id={i.toString()} key={option} value={option} onChange={(e) => brandChange(e)}>
+          {brandList.map((option, i) => (
+            <MenuItem id={i.toString()} key={option} value={option}>
               {option}
             </MenuItem>
           ))}
@@ -131,7 +151,7 @@ export const Car = (props: CarProps) => {
           key={id}
           id={id}
           label={label}
-          type={(id === "seat")? "number" : "initial"}
+          type={(id === "seat")? "number" : "text"}
           defaultValue={user}
           ref={refs[id]}
           variant="standard"
@@ -139,7 +159,7 @@ export const Car = (props: CarProps) => {
         />
       ))}
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
-      <MidButton variant="contained" onClick={() => setStatus("home")}>Back</MidButton>
+      <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
   );
 }

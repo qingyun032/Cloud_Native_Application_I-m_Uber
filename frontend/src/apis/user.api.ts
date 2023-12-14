@@ -19,19 +19,19 @@ export const getUserInfo = async (): Promise<userInfo> => {
     wallet: response.data.Wallet.balance,
     driver: response.data.isDriver,       // Whether driver is verified
     mode: userMode.Passenger,             // Which mode is this user use (userMode.Passenger/userMode.Driver)
-    favRoute: response.data.favRoute,
+    favRoute: response.data.favorRoute,
     car: response.data.CarInfo,
     nCancel: response.data.nCancel,
     rating: response.data.rating,
   }
 };
 
-export const updateCarInfo = async (user: userInfo): Promise<userInfo> => {
+export const updateCarInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateCarInfo",
     data: {
-      "carPlate": user.car.license,
+      "carPlate": user.car.carPlate,
       "color": user.car.color,
       "brand": user.car.brand,
       "type": user.car.type,
@@ -43,7 +43,7 @@ export const updateCarInfo = async (user: userInfo): Promise<userInfo> => {
   return response.data;
 };
 
-export const updateDriverInfo = async (user: userInfo): Promise<userInfo> => {
+export const updateDriverInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateDriver",
@@ -53,7 +53,7 @@ export const updateDriverInfo = async (user: userInfo): Promise<userInfo> => {
       "phone": user.phone,
       "addressHome": user.home,
       "addressCompany": user.company,
-      "carPlate": user.car.license,
+      "carPlate": user.car.carPlate,
       "color": user.car.color,
       "brand": user.car.brand,
       "type": user.car.type,
@@ -65,7 +65,7 @@ export const updateDriverInfo = async (user: userInfo): Promise<userInfo> => {
   return response.data;
 };
 
-export const updatePassengerInfo = async (user: userInfo): Promise<userInfo> => {
+export const updatePassengerInfo = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updatePassenger",
@@ -77,6 +77,37 @@ export const updatePassengerInfo = async (user: userInfo): Promise<userInfo> => 
       "addressCompany": user.company,
     }
   };
+  const response = await axios(config);
+  return response.data;
+};
+
+export const updateDriverFav = async (user: userInfo): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/users/updateDriverFavor",
+    data: user.favRoute.driver
+  };
+  const response = await axios(config);
+  return response.data;
+};
+
+export const updatePassengerFav = async (user: userInfo): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/users/updatePassengerFavor",
+    data: user.favRoute.passenger
+  };
+  const response = await axios(config);
+  return response.data;
+};
+
+export const showStops = async (query: {isGo: boolean, address: string}): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: path + "/api/v1/route/showStops",
+    params: query,
+  };
+  console.log(query)
   const response = await axios(config);
   return response.data;
 };
