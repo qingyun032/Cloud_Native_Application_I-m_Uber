@@ -105,6 +105,7 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
+                        {/* <p>{stop.boardTime}</p>  TODO: show the time here?*/} 
                         <Avatar>
                         <img src={carImage} style={{width: 50}}/>
                         </Avatar>

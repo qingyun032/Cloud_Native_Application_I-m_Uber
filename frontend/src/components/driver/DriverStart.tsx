@@ -129,7 +129,7 @@ export const DriverStart = (props: driverStartProps) => {
                     }}
                 >
                     <Button onClick={toWork}>Go to Work</Button>
-                    <Button onClick={toHome}>Back to Home</Button>
+                    <Button onClick={toHome}>Back Home</Button>
                 </ButtonGroup>
                 <Button variant="contained" 
                   sx={{

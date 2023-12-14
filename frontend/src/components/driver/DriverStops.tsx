@@ -9,7 +9,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import CommentIcon from '@mui/icons-material/Comment';
 import { Modal as BaseModal } from '@mui/base/Modal';
@@ -19,6 +18,11 @@ import { Stop } from '../../models/stop.model';
 import { createRoute } from "../../apis/driver.journey.api"
 import { ItineraryData } from '../../models/journey.model';
 import dayjs, { Dayjs } from 'dayjs';
+import Checkbox from '@mui/material/Checkbox';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+import { DriverRoute, DriverFav } from '../../models/journey.model';
+import { updateDriverFav } from '../../apis/driver.journey.api';
 
 type DriverStopsProps = {
   setDriverStatus: (status: string) => void;
@@ -86,6 +90,7 @@ export const DriverStops = (props: DriverStopsProps) => {
   const [checked, setChecked] = useState<number[]>([0]);
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
+  const [saveFavRoute, setSaveFavRoute] = useState<boolean>(false);
   const handleOpen = (idx: number) => {
     setModalAddress(stops[idx].address);
     setOpen(true);
@@ -109,8 +114,13 @@ export const DriverStops = (props: DriverStopsProps) => {
   const toDriverHome = () => {
     setDriverStatus('start')
   }
-  const toDriverWaitJourney = async () => {
-    const selectedStopIDs = checked.sort((a, b) => a - b).map(index => sortedStopIDs[index]);
+
+  const handleCheckboxChange = () => {
+    setSaveFavRoute((prevValue) => !prevValue);
+  };
+
+  const getStopsIDs = () => {
+    const selectedStopIDs: number[] = checked.sort((a, b) => a - b).map(index => sortedStopIDs[index]);
     if (isGo) {
       if (selectedStopIDs[selectedStopIDs.length - 1] !== 111) {
         selectedStopIDs.unshift(111);
@@ -121,6 +131,38 @@ export const DriverStops = (props: DriverStopsProps) => {
         selectedStopIDs.unshift(111);
       }
     }
+    return selectedStopIDs;
+  }
+
+  const updateDriverFavRoute = async () => {
+    const formattedTimeString: string | null =
+      itineraryData.time &&
+      itineraryData.time.format('HH:mm:ss') || null;
+    const selectedStopIDs = getStopsIDs();
+    
+    const favDate: DriverFav = {
+      GO: {
+        address: isGo ? itineraryData.start : null,
+        time: isGo ? formattedTimeString : null,
+        stopIDs: isGo ? selectedStopIDs : [],
+      },
+      BACK: {
+        address: isGo ? null : itineraryData.destination,
+        time: isGo ? null : formattedTimeString,
+        stopIDs: isGo ? [] : selectedStopIDs,
+      }
+    }
+    try {
+      const response = await updateDriverFav(favDate);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+    }
+  }
+
+  const toDriverWaitJourney = async () => {
+    const selectedStopIDs = getStopsIDs();
     
     const combinedDateTimeString: string | null =
       itineraryData.date &&
@@ -135,7 +177,7 @@ export const DriverStops = (props: DriverStopsProps) => {
         .millisecond(itineraryData.time.millisecond())
         .format('YYYY-MM-DDTHH:mm:ss.SSSZ') || null;
     
-    const routeData: {startTime: string, start: number, destination: number, stopIDs: number[], available: number, type: string} = {
+    const routeData: DriverRoute = {
       startTime: combinedDateTimeString ? combinedDateTimeString : "",
       start: selectedStopIDs[0],
       destination: selectedStopIDs[selectedStopIDs.length - 1],
@@ -144,6 +186,7 @@ export const DriverStops = (props: DriverStopsProps) => {
       type: isGo ? "GO" : "BACK",
     }
     try {
+        const facResponse = await updateDriverFavRoute();
         const response = await createRoute(routeData);
         console.log(response);
         setDriverStatus('waitJourney')
@@ -209,6 +252,10 @@ export const DriverStops = (props: DriverStopsProps) => {
                 })}
               </List>
             </Box>
+            <Box sx={{mt:2}}>
+              <Checkbox checked={saveFavRoute} onChange={handleCheckboxChange} icon={<FavoriteBorder />} checkedIcon={<Favorite />} />
+              Save to favorite route
+            </Box>
             <Modal
               aria-labelledby="unstyled-modal-title"
               aria-describedby="unstyled-modal-description"
@@ -228,7 +275,7 @@ export const DriverStops = (props: DriverStopsProps) => {
               sx={{
                 backgroundColor : "secondary.main",
                 textTransform : "none",
-                mb: 2, mt: 5,
+                mb: 2, mt: 2,
                 height: 40,
               }}
               onClick={toDriverHome}
