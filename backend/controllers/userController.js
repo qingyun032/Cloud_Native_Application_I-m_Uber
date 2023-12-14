@@ -96,26 +96,27 @@ async function getMyInfoV2(req, res) {
             }
         }
         if (returnUser.isDriver) {
-            const GO_stopIDs = returnDriverFavor.GO_stops.split(',').map(Number);
-            const BACK_stopIDs = returnDriverFavor.BACK_stops.split(',').map(Number)
-            const GO_stops = await stopService.getAllStops(GO_stopIDs);
-            const BACK_stops = await stopService.getAllStops(BACK_stopIDs);
-            const GO_names = GO_stops.map(item => item.Name);
-            const BACK_names = BACK_stops.map(item => item.Name);
-            returnUser.favorRoute.driver = {
-                "GO": {
+            if (returnDriverFavor.GO_stops) {
+                const GO_stopIDs = returnDriverFavor.GO_stops.split(',').map(Number);
+                const GO_stops = await stopService.getAllStops(GO_stopIDs);
+                const GO_names = GO_stops.map(item => item.Name);
+                returnUser.favorRoute.driver.GO = {
                     "address": returnDriverFavor.GO_start,
                     "time": returnDriverFavor.GO_TIME,
                     "stopIDs": GO_stopIDs,
                     "stopNames": GO_names
-                },
-                "BACK": {
+                }
+            }
+            if (returnDriverFavor.BACK_stops) {
+                const BACK_stopIDs = returnDriverFavor.BACK_stops.split(',').map(Number)
+                const BACK_stops = await stopService.getAllStops(BACK_stopIDs);
+                const BACK_names = BACK_stops.map(item => item.Name);
+                returnUser.favorRoute.driver.BACK = {
                     "address": returnDriverFavor.BACK_dest,
                     "time": returnDriverFavor.BACK_TIME,
                     "stopIDs": BACK_stopIDs,
                     "stopNames": BACK_names
-                }  
-                
+                }
             }
         }
 
