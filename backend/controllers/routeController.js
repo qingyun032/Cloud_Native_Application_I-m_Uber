@@ -33,7 +33,7 @@ const getRouteById = async (req, res) => {
 const createRoute = async (req, res) => {
     const driverId = req.session.userId;
     if(!driverId){
-        res.status(401).json({ error: "Wrong sign in information"})
+        res.status(401).json({ error: "Please sign in first"})
         return;
     }
     // I need frontend to send:
@@ -95,7 +95,6 @@ const createRoute = async (req, res) => {
       }
 
       res.status(201).json(route);
-      
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: error.message });
@@ -178,7 +177,6 @@ const showBoardingInfo = async (req, res) => {
       route => 
       route.driverID === driverId
     );
-    console.log(`route nums: ${routeInfo.length}`);
     routeInfo = routeInfo[0]
     
     let boardings = await boardingService.getAllBoardings();
@@ -199,7 +197,7 @@ const showBoardingInfo = async (req, res) => {
       const stop = await stopService.getStopById(boardings[i].stopID);
       let stopInfo = {}
       stopInfo.stopID = stop.stopID;
-      stopInfo.name = stop.name;
+      stopInfo.name = stop.Name;
       stopInfo.address = stop.address;
       stopInfo.boardTime = boardings[i].boardTime;
       stopInfo.latitude = stop.latitude;
@@ -230,6 +228,32 @@ const showBoardingInfo = async (req, res) => {
   }
 }
 
+const finishRoute = async (req, res) => {
+  const driverId = req.session.userId;
+  if(!driverId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+  
+  try{
+    // delete all data related to this route
+    let routeInfo = await routeService.getAllRoutes();
+    routeInfo = routeInfo.filter(
+      route =>
+      route.driverID === driverId
+    );
+
+    routeInfo = routeInfo[0];
+    const routeId = routeInfo.routeID;
+    await routeService.deleteRoute(routeId);
+    
+    res.status(200).send({message: "Finish route successfully"})
+  } catch (error){
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
     getAllRoutes,
     getRouteById,
@@ -238,5 +262,6 @@ module.exports = {
     updateRoute,
     deleteRoute,
     showStops, 
-    showBoardingInfo
+    showBoardingInfo,
+    finishRoute
 };

@@ -14,4 +14,7 @@ router.post('/confirmRoute', routeController.confirmRoute);
 // Show boarding information to driver
 router.get('/showBoardingInfo', routeController.showBoardingInfo);
 
+// Finish route when driver arrives at destination
+router.post('/finishRoute', routeController.finishRoute);
+
 module.exports = router;

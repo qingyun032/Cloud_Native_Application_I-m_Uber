@@ -97,9 +97,10 @@ async function getArrivalTime(req, res) {
             boarding.stopID === passengerInfo.dropOFFStopID;
         });
         // console.log(driverInfo.CarInfo.dataValues)
-        let reutrnInfo = {CarInfo:driverInfo.CarInfo.dataValues,
-        stop_arrival_time: stopBoardings[0].boardTime,
-        dest_arrival_time: destinationBoardings[0].boardTime
+        let reutrnInfo = {
+            CarInfo:driverInfo.CarInfo.dataValues,
+            stop_arrival_time: stopBoardings[0].boardTime,
+            dest_arrival_time: destinationBoardings[0].boardTime
         }
         // console.log(reutrnInfo)
         res.status(200).json(reutrnInfo);

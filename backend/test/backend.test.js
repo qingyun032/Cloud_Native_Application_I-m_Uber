@@ -611,14 +611,14 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").send({
-            "startTime": '2021-06-01 11:00:00:000Z',
+            "startTime": '2021-06-01 11:00:00',
             "stopIds": [1, 2, 3, 4, 5, 6, 7, 9],
             "available": 3,
             "type": "GO",
             "state": "PROCESSING"
         });
         expect(res.statusCode).toBe(401);
-        expect(res.body.error).toBe("Wrong sign in information");
+        expect(res.body.error).toBe("Please sign in first");
     });
     
     test("Try to create a route with invalid data", async () => {
@@ -628,7 +628,7 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00:000Z',
+            "startTime": '2021-06-01 11:00:00',
             "stopIds": [1, 9],
             "available": 3,
             "type": "GO",
@@ -636,7 +636,6 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         expect(res.statusCode).toBe(400);
         expect(res.body.error).toBe("You should include at least 1 intermediate stop");
-
     });
 
     test("Create a route successfully", async () => {
@@ -646,8 +645,8 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00:000Z',
-            "stopIds": [1, 2, 3, 4, 5, 6, 7, 9],
+            "startTime": '2021-06-01 11:00:00',
+            "stopIds": [111, 2, 3, 4, 5, 6, 7, 9],
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -656,9 +655,9 @@ describe("POST /api/v1/route/createRoute", () => {
         expect(res.body).toEqual({
             "routeID": 1,
             "driverID": 1,
-            "start": 9,
-            "destination": 1,
-            "startTime": "2021-06-01T11:00:00.000Z",
+            "start": 111,
+            "destination": 9,
+            "startTime": "2021-06-01 11:00:00",
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -672,7 +671,7 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2023-12-21 08:23:00:000Z',
+            "startTime": '2023-12-21 08:23:00',
             "stopIds": [88, 11, 33, 111],
             "available": 4,
             "type": "GO",
@@ -846,6 +845,7 @@ describe("GET /api/v1/route/showBoardingInfo", () => {
         expect(res.body.stops[5]).toEqual(
             {
                 stopID: 111,
+                name: "台積電",
                 address: '新竹縣寶山鄉園區二路168號',
                 boardTime: '2023-12-21T12:24:35.000Z',
                 latitude: '24.77134000000000000',
@@ -853,6 +853,20 @@ describe("GET /api/v1/route/showBoardingInfo", () => {
                 passengers: [ { count: 1, type: 'dropOff' } ]
             }
         );
+    });
+});
+
+describe("POST /api/v1/route/finishRoute", () => {
+    test("Finish route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
+
+        res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Finish route successfully");
     });
 });
 
