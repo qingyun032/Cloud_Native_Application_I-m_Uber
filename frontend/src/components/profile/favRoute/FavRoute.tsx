@@ -16,12 +16,14 @@ type FavRouteProps = {
 
 export const FavRoute = (props: FavRouteProps) => {
   const { setInfoBar } = props;
-  // const [value, setValue] = useState("passenger");
-  const { profileStatus, setProfileStatus } = useUserContext();
+  const { user, profileStatus, setProfileStatus } = useUserContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    // setValue(newValue);
-    setProfileStatus([profileStatus[0], newValue]);
+    if(user !== null && user.driver === false && newValue === "driver"){
+      setInfoBar({open: true, type: "error", message: "Please go to User Info to sign up car information first."});
+    }else{
+      setProfileStatus([profileStatus[0], newValue]);
+    }
   };
 
   return (

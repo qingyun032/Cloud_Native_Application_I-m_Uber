@@ -23,6 +23,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
   const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const { user, setUser, setProfileStatus } = useUserContext();
+  console.log(user);
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
     time: useRef<HTMLDivElement>(null),
@@ -59,26 +60,27 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        setUser({
+        const newUser = {
           ...user,
           favRoute: {
             passenger: {
-              Go: {
-                address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.Go.address,
-                time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.Go.time,
-                passengerCnt: Number(goRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.Go.passengerCnt,
+              GO: {
+                address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.GO.address,
+                time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.GO.time,
+                passengerCnt: Number(goRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.GO.passengerCnt,
               },
-              Back: {
-                address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.Back.address,
-                time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.Back.time,
-                passengerCnt: Number(backRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.Back.passengerCnt,
+              BACK: {
+                address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.BACK.address,
+                time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.BACK.time,
+                passengerCnt: Number(backRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.BACK.passengerCnt,
               }
             },
             driver: {...user.favRoute.driver}
-          },
-        });
+          }
+        };
         try{
-          const response = await updatePassengerFav(user);
+          const response = await updatePassengerFav(newUser);
+          setUser(newUser);
           setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
           setInfoBar({open: true, type: "error", message: error.response.data.error});
@@ -90,10 +92,11 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
 
   return (
     <>
+      <div style={{fontWeight: "bold"}}>Go to work</div>
       <Text
         id="start"
         label="Start"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Go.address}
+        defaultValue={(user === null)? null : user.favRoute.passenger.GO.address}
         ref={goRefs["start"]}
         variant="standard"
         InputProps={inputProps}
@@ -102,7 +105,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Go.time}
+        defaultValue={(user === null)? null : user.favRoute.passenger.GO.time}
         ref={goRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -111,16 +114,17 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="people"
         label="Number of people"
         type="number"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Go.passengerCnt}
+        defaultValue={(user === null)? null : user.favRoute.passenger.GO.passengerCnt}
         ref={goRefs["people"]}
         variant="standard"
         InputProps={inputProps}
       />
       <Divider color="#313944" sx={{marginBottom: "15px", marginTop: "10px", padding: "1px"}}/>
+      <div style={{fontWeight: "bold"}}>Back to home</div>
       <Text
         id="destination"
         label="Destination"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Back.address}
+        defaultValue={(user === null)? null : user.favRoute.passenger.BACK.address}
         ref={backRefs["destination"]}
         variant="standard"
         InputProps={inputProps}
@@ -129,7 +133,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Back.time}
+        defaultValue={(user === null)? null : user.favRoute.passenger.BACK.time}
         ref={backRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -138,7 +142,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="people"
         label="Number of people"
         type="number"
-        defaultValue={(user === null || user.favRoute === null)? null : user.favRoute.passenger.Back.passengerCnt}
+        defaultValue={(user === null)? null : user.favRoute.passenger.BACK.passengerCnt}
         ref={backRefs["people"]}
         variant="standard"
         InputProps={inputProps}

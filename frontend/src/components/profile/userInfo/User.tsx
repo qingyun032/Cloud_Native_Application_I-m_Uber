@@ -85,16 +85,15 @@ export const User = (props: UserProps) => {
 
   const editClick = async () => {
     if(edit){
-      setUser((user === null)? null :
-        {
+      if(user !== null){
+        const newUser = {
           ...user,
           home: refs["home"].current?.getElementsByTagName("input")[0].value ?? user.home,
           company: refs["company"].current?.getElementsByTagName("input")[0].value ?? user.company,
-        }
-      )
-      if(user !== null){
+        };
         try{
           const response = await updatePassengerInfo(user);
+          setUser(newUser);
           setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
           setInfoBar({open: true, type: "error", message: error.response.data.error});

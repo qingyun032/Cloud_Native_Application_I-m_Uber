@@ -38,12 +38,12 @@ type driverRoute = {
 
 export type favRoute = {
     passenger: {
-        Go: passengerRoute,
-        Back: passengerRoute
+        GO: passengerRoute,
+        BACK: passengerRoute
     },
     driver: {
-        Go: driverRoute,
-        Back: driverRoute
+        GO: driverRoute,
+        BACK: driverRoute
     }
 };
 
@@ -51,7 +51,7 @@ export type car = {
     brand: number,
     type: string,
     seat: number,
-    license: string // to be changed to carPlate
+    carPlate: string
     color: number,
     electric: boolean
 };

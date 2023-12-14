@@ -25,6 +25,7 @@ export const Car = (props: CarProps) => {
   const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const { user, setUser, setProfileStatus } = useUserContext();
+  console.log(user);
   const refs: { [key:string]: RefObject<HTMLDivElement> } = {
     brand: useRef<HTMLDivElement>(null),
     type: useRef<HTMLDivElement>(null),
@@ -35,7 +36,7 @@ export const Car = (props: CarProps) => {
     {id: "brand", label: "Brand", user: (user === null || user.car === null)? null : user.car.brand},
     {id: "type", label: "Type", user: (user === null || user.car === null)? null : user.car.type},
     {id: "seat", label: "Number of seats", user: (user === null || user.car === null)? null : user.car.seat},
-    {id: "license", label: "License plate", user: (user === null || user.car === null)? null : user.car.license},
+    {id: "license", label: "License plate", user: (user === null || user.car === null)? null : user.car.carPlate},
   ]
 
   const Text = styled(TextField)({
@@ -90,7 +91,7 @@ export const Car = (props: CarProps) => {
               brand: brandList.findIndex((i) => i === brand) ?? user.car.brand,
               type: type ?? user.car.type,
               seat: Number(seat) ?? user.car.seat,
-              license: license ?? user.car.license,
+              license: license ?? user.car.carPlate,
             }
           }
           try{
@@ -150,7 +151,7 @@ export const Car = (props: CarProps) => {
           key={id}
           id={id}
           label={label}
-          type={(id === "seat")? "number" : "initial"}
+          type={(id === "seat")? "number" : "text"}
           defaultValue={user}
           ref={refs[id]}
           variant="standard"
