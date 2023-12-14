@@ -29,7 +29,10 @@ type driverStartProps = {
 
 export const DriverStart = (props: driverStartProps) => {
   const { setDriverStatus, setStops, itineraryData, setItineraryData, isGo, setIsGo } = props;
-
+  const currentDate = dayjs().startOf('day');
+  const currentTime = dayjs().startOf('minute');
+  const selectedDate = itineraryData.date?.startOf('day');
+  const selectedTime = itineraryData.time?.startOf('minute');
   const toDriverStopsPage = async () => {
     const queryData = {
         isGo: isGo,
@@ -46,7 +49,7 @@ export const DriverStart = (props: driverStartProps) => {
     setDriverStatus('stops') // TODO: remove this line after API worked
   }
 
-  const driverFavRouteToWork: ItineraryData = {
+  const driverFavRouteToWork: ItineraryData = { // TODO: get driver favRoute
     start: '台大',
     destination: '台積電',
     passengerCount : '4',
@@ -66,7 +69,7 @@ export const DriverStart = (props: driverStartProps) => {
     const updatedItineraryData = {
         ...itineraryData,
         [field]: value,
-      };
+    };
     setItineraryData(updatedItineraryData);
   };
 
@@ -98,7 +101,6 @@ export const DriverStart = (props: driverStartProps) => {
     }
     setItineraryData(updatedItineraryData);
   }
-
 
   return (
     <>
@@ -186,6 +188,7 @@ export const DriverStart = (props: driverStartProps) => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={itineraryData.date}
+                          minDate={dayjs()}
                           onChange={(newDate) => handleInputChange('date', newDate)}
                         />
                       </Box>
@@ -196,6 +199,7 @@ export const DriverStart = (props: driverStartProps) => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={itineraryData.time}
+                          minTime={itineraryData.date?.isSame(dayjs(), 'day') ? dayjs() : null}
                           onChange={(newTime) => handleInputChange('time', newTime)}
                         />
                       </Box>
@@ -207,7 +211,7 @@ export const DriverStart = (props: driverStartProps) => {
                       backgroundColor : "secondary.main",
                       mb: 1, mt: 3,
                     }}
-                    disabled={itineraryData.start === "" || itineraryData.destination === ""}
+                    disabled={itineraryData.start === "" || itineraryData.destination === "" || (selectedDate?.isSame(currentDate) && selectedTime?.isBefore(currentTime))}
                   >
                     Select Stops
                   </Button>

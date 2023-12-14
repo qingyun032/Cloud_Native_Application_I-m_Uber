@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -63,6 +64,11 @@ export const PassengerHomePage = () => {
     date: dayjs(),
     time: dayjs(),
   });
+
+  const currentDate = dayjs().startOf('day');
+  const currentTime = dayjs().startOf('minute');
+  const selectedDate = itineraryData.date?.startOf('day');
+  const selectedTime = itineraryData.time?.startOf('minute');
 
   const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
     setItineraryData((prevItineraryData) => ({
@@ -151,6 +157,7 @@ export const PassengerHomePage = () => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={itineraryData.date}
+                          minDate={dayjs()}
                           onChange={(newDate) => handleInputChange('date', newDate)}
                         />
                       </Box>
@@ -161,6 +168,7 @@ export const PassengerHomePage = () => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={itineraryData.time}
+                          minTime={itineraryData.date?.isSame(dayjs(), 'day') ? dayjs() : null}
                           onChange={(newTime) => handleInputChange('time', newTime)}
                         />
                       </Box>
@@ -172,6 +180,7 @@ export const PassengerHomePage = () => {
                       backgroundColor : "secondary.main",
                       mb: 1, mt: 3,
                     }}
+                    disabled={itineraryData.start === "" || itineraryData.destination === "" || (selectedDate?.isSame(currentDate) && selectedTime?.isBefore(currentTime))}
                   >
                     Search
                   </Button>
