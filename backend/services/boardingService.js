@@ -20,7 +20,6 @@ const getBoardingById = async (id) => {
 
 const createBoarding = async (boardingData) => {
     try {
-        console.log('ishere', boardingData)
         const boarding = await boardingTable.create(boardingData);
         return boarding;
     } catch (error) {
