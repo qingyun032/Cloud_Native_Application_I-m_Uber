@@ -17,7 +17,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../../contexts/UserContext'; 
 import { infoBarType } from '../../../models/user.model';
-import { updateDriverFav } from '../../../apis/user.api';
+import { updateDriverFav, showStops } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -35,7 +35,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ goStopOpen, setGoStopOpen ] = useState<boolean>(false);
-  const [ goCheck, setGoCheck ] = useState<number[]>([0]);
+  const [ goCheck, setGoCheck ] = useState<number[]>([]);
+  const [ backCheck, setBackCheck ] = useState<number[]>([]);
+  const [ goStops, setGoStops ] = useState<Array<any>>([]);
+  const [ backStops, setBackStops ] = useState<Array<any>>([]);
   const { user, setUser, setProfileStatus } = useUserContext();
   const goRefs: { [key:string]: RefObject<HTMLDivElement> } = {
     start: useRef<HTMLDivElement>(null),
@@ -49,7 +52,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
   }
   // TODO: call api
   const stopList = [{stopID: 0, Name: "台灣大學", address: "11111"}, {stopID: 1, Name: "家樂福新店店", address: "11111"}, {stopID: 2, Name: "家樂福北大店", address: "11111"}, {stopID: 3, Name: "1", address: "11111"}, {stopID: 4, Name: "2", address: "11111"}, {stopID: 5, Name: "3", address: "11111"}];
-
   const Text = styled(TextField)({
     width: "275px",
     paddingBottom: "10px",
@@ -72,47 +74,75 @@ export const DriverRoute = (props: DriverRouteProps) => {
     marginBottom: "5px",
   }
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = goCheck.indexOf(value);
-    const newChecked = [...goCheck];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  const openStop = async (isGo: boolean) => {
+    const address = (isGo)? goRefs["start"].current?.getElementsByTagName("input")[0].value : backRefs["destination"].current?.getElementsByTagName("input")[0].value;
+    if(address === "" || address === undefined){
+      setGoStopOpen(false);
+      setGoCheck([]);
+      setGoStops([]);
+      setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
+    }else{
+      try{
+        const response = await showStops({isGo: true, address: address});
+        setGoStops(response.Stops);
+        setGoCheck([]);
+        setGoStopOpen(true);
+      }catch(error: any){
+        setInfoBar({open: true, type: "error", message: error.response.data.error})
+      }
     }
+  }
 
-    setGoCheck(newChecked);
-    console.log(goCheck)
+  const handleToggle = (idx: number, isGo: boolean) => () => {
+    const newChecked = (isGo)? [...goCheck] : [...backCheck];
+    const exist = newChecked.indexOf(idx);
+    if(exist !== -1)
+      newChecked.splice(exist, 1);
+    else{
+      const newIndex = newChecked.findIndex((v) => {return v > idx});
+      if(newIndex === -1)
+        newChecked.push(idx);
+      else
+        newChecked.splice(newIndex, 0, idx);
+    }
+    console.log(newChecked);
+    if(isGo)
+      setGoCheck(newChecked);
+    else
+      setBackCheck(newChecked);
   };
 
   const editClick = async () => {
     if(edit){
       if(user !== null){
+        const GOStopIDs = goCheck.map((val) => {return stopList[val].stopID});
+        const GOStopNames = goCheck.map((val) => {return stopList[val].Name});
+        const BACKStopIDs = backCheck.map((val) => {return stopList[val].stopID});
+        const BACKStopNames = backCheck.map((val) => {return stopList[val].Name});
         const newUser = {
           ...user,
           favRoute:{
             driver: {
               GO: {
                 address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.GO.address,
-                time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.GO.time,
-                stopIDs: user.favRoute.driver.GO.stopIDs,
-                stopNames: user.favRoute.driver.GO.stopNames,
+                boardTime: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.GO.boardTime,
+                stopIDs: GOStopIDs,
+                stopNames: GOStopNames,
               },
               BACK: {
                 address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.BACK.address,
-                time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.BACK.time,
-                stopIDs: user.favRoute.driver.BACK.stopIDs,
-                stopNames: user.favRoute.driver.BACK.stopNames,
+                boardTime: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.driver.BACK.boardTime,
+                stopIDs: BACKStopIDs,
+                stopNames: BACKStopNames,
               }
             },
             passenger: {...user.favRoute.passenger},
           },
         };
         try{
-          const response = await updateDriverFav(newUser);
+          // const response = await updateDriverFav(newUser);
           setUser(newUser);
-          setInfoBar({open: true, type: "success", message: response.message});
+          // setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
           setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
@@ -136,7 +166,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null)? null : user.favRoute.driver.GO.time}
+        defaultValue={(user === null)? null : user.favRoute.driver.GO.boardTime}
         ref={goRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -144,11 +174,12 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Autocomplete
         multiple
         id="stops"
-        options={stopList.map<string>((item) => {return item.Name})}
+        options={goStops.map((item) => {return item.Name})}
         defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
+        value={goCheck.map((val) => {return goStops[val].Name})}
         disabled={!edit}
         readOnly={true}
-        onFocus={() => setGoStopOpen(true)}
+        onFocus={() => openStop(true)}
         renderInput={(params) => (
           <Text
             {...params}
@@ -177,7 +208,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
                     key={stopID}
                     disablePadding
                   >
-                    <ListItemButton role={undefined} onClick={handleToggle(idx)} dense>
+                    <ListItemButton role={undefined} onClick={handleToggle(idx, true)} dense>
                       <ListItemIcon>
                         {stopID !== 111 ?
                           <Checkbox
@@ -198,7 +229,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setGoStopOpen(false)}>Cancel</Button>
+          <Button onClick={() => setGoStopOpen(false)}>Finish</Button>
         </DialogActions>
       </Dialog>
       <Divider color="#313944" sx={{marginBottom: "15px", marginTop: "10px", padding: "1px"}}/>
@@ -215,7 +246,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null)? null : user.favRoute.driver.BACK.time}
+        defaultValue={(user === null)? null : user.favRoute.driver.BACK.boardTime}
         ref={backRefs["time"]}
         variant="standard"
         InputProps={inputProps}

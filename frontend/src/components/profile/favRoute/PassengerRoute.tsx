@@ -66,12 +66,12 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
             passenger: {
               GO: {
                 address: goRefs["start"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.GO.address,
-                time: goRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.GO.time,
+                boardTime: goRefs["time"].current?.getElementsByTagName("input")[0].value + ":00" ?? user.favRoute.passenger.GO.boardTime,
                 passengerCnt: Number(goRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.GO.passengerCnt,
               },
               BACK: {
                 address: backRefs["destination"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.BACK.address,
-                time: backRefs["time"].current?.getElementsByTagName("input")[0].value ?? user.favRoute.passenger.BACK.time,
+                boardTime: backRefs["time"].current?.getElementsByTagName("input")[0].value + ":00" ?? user.favRoute.passenger.BACK.boardTime,
                 passengerCnt: Number(backRefs["people"].current?.getElementsByTagName("input")[0].value) ?? user.favRoute.passenger.BACK.passengerCnt,
               }
             },
@@ -105,7 +105,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null)? null : user.favRoute.passenger.GO.time}
+        defaultValue={(user === null)? null : user.favRoute.passenger.GO.boardTime}
         ref={goRefs["time"]}
         variant="standard"
         InputProps={inputProps}
@@ -133,7 +133,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue={(user === null)? null : user.favRoute.passenger.BACK.time}
+        defaultValue={(user === null)? null : user.favRoute.passenger.BACK.boardTime}
         ref={backRefs["time"]}
         variant="standard"
         InputProps={inputProps}

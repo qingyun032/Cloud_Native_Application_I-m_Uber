@@ -26,12 +26,12 @@ export type userSignUp = {
 type passengerRoute = {
     address: string,
     passengerCnt: number,
-    time: string
+    boardTime: string
 }
 
 type driverRoute = {
     address: string,
-    time: string,
+    boardTime: string,
     stopIDs: Array<number>,
     stopNames: Array<string>
 }

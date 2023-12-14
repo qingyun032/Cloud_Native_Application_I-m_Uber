@@ -100,3 +100,14 @@ export const updatePassengerFav = async (user: userInfo): Promise<any> => {
   const response = await axios(config);
   return response.data;
 };
+
+export const showStops = async (query: {isGo: boolean, address: string}): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: path + "/api/v1/route/showStops",
+    params: query,
+  };
+  console.log(query)
+  const response = await axios(config);
+  return response.data;
+};
