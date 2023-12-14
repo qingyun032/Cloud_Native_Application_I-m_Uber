@@ -235,7 +235,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
                           />:<></>
                         }
                       </ListItemIcon>
-                      <ListItemText id={`label-${idx}`} primary={Name} secondary={address} />
+                      <ListItemText id={`go-label-${idx}`} primary={Name} secondary={address} />
                     </ListItemButton>
                   </ListItem>
                 );
@@ -314,7 +314,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
                           />:<></>
                         }
                       </ListItemIcon>
-                      <ListItemText id={`label-${idx}`} primary={Name} secondary={address} />
+                      <ListItemText id={`back-label-${idx}`} primary={Name} secondary={address} />
                     </ListItemButton>
                   </ListItem>
                 );
