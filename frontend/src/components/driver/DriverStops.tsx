@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import carImage from '../../blue_car.png';
 import Container from '@mui/material/Container';
@@ -15,7 +15,6 @@ import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
 import { Stop } from '../../models/stop.model';
-import dayjs, { Dayjs } from 'dayjs';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
@@ -32,61 +31,8 @@ type DriverStopsProps = {
   isGo: boolean;
 }
 
-const stops = [
-  {
-      "stopID": 3,
-      "Name": "National Taiwan University",
-      "address": "台北市中正區blablabla"
-  },
-  {
-      "stopID": 7,
-      "Name": "Taipei 101",
-      "address": "台北市信義區blablabla"
-  },
-  {
-    "stopID": 2,
-    "Name": "heu",
-    "address": "blablabla"
-  },
-  {
-      "stopID": 4,
-      "Name": "4",
-      "address": "信義區"
-  },
-  {
-      "stopID": 5,
-      "Name": "5",
-      "address": "龍潭區"
-  },
-  {
-    "stopID": 6,
-    "Name": "6",
-    "address": "台"
-  },
-  {
-    "stopID": 77,
-    "Name": "7",
-    "address": "北"
-  },
-  {
-    "stopID": 8,
-    "Name": "8",
-    "address": "市"
-  },
-  {
-    "stopID": 10,
-    "Name": "10",
-    "address": "龍潭"
-  },
-  {
-    "stopID": 111,
-    "Name": "TSMC",
-    "address": "桃園市龍潭區blablabla"
-  },
-]
-
 export const DriverStops = (props: DriverStopsProps) => {
-  const { setDriverStatus, isGo, itineraryData, setBoardingInfo, stops } = props; // TODO: add stops
+  const { setDriverStatus, isGo, itineraryData, setBoardingInfo, stops } = props;
   const [checked, setChecked] = useState<number[]>([0]);
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
@@ -165,11 +111,10 @@ export const DriverStops = (props: DriverStopsProps) => {
         .minute(itineraryData.time.minute())
         .second(itineraryData.time.second())
         .millisecond(itineraryData.time.millisecond())
-        .format('YYYY-MM-DDTHH:mm:ss.SSSZ') || null;
+        .format('YYYY-MM-DD HH:mm:ss') || null;
     
     const routeData: DriverRoute = {
-      startTime: combinedDateTimeString ? combinedDateTimeString : "", //TODO: change time format
-      // startTime: "2023-12-21T15:00:00.000Z",
+      startTime: combinedDateTimeString ? combinedDateTimeString : "",
       state: "PROCESSING",
       stopIds: selectedStopIDs,
       available: parseInt(itineraryData.passengerCount, 10),
@@ -204,18 +149,7 @@ export const DriverStops = (props: DriverStopsProps) => {
         stopIDs: isGo ? [] : selectedStopIDs,
       }
     }
-    // const favData: DriverFav = {
-    //   "GO": {
-    //       "address": "台北市大安區羅斯福路四段一號",
-    //       "time": "07:00:00",
-    //       "stopIDs": [12, 24, 63, 7, 2, 111] // 最後一個是台積電
-    //   },
-    //   "BACK": {
-    //       "address": "台北市大安區羅斯福路四段一號", // null
-    //       "time": "23:07:20",
-    //       "stopIDs": [111, 2, 7, 63, 24, 12]
-    //   }  
-    // }
+
     try {
       const response = await updateDriverFav(favData);
       return response;
@@ -230,7 +164,6 @@ export const DriverStops = (props: DriverStopsProps) => {
     try {
       const response = await showBoardingInfo();
       setBoardingInfo(response.stops);
-      console.log(response)
       return response;
     }
     catch (error: any) {
@@ -246,13 +179,11 @@ export const DriverStops = (props: DriverStopsProps) => {
           const facResponse = await updateDriverFavRoute();
         }
         const boardingResponse = await getBoardingInfo();
-        console.log(boardingResponse)
         setDriverStatus('waitJourney')
     }
     catch (error: any) {
         console.log(error);
     }
-    // setDriverStatus('waitJourney') // TODO: remove this line
   }
 
   return (
@@ -383,15 +314,6 @@ const Backdrop = React.forwardRef<
     />
   );
 });
-
-const blue = {
-  200: '#99CCFF',
-  300: '#66B2FF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0066CC',
-};
 
 const grey = {
   50: '#F3F6F9',
