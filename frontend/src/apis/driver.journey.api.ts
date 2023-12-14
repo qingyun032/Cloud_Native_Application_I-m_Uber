@@ -31,8 +31,8 @@ export const updateDriverFav = async (route: DriverFav): Promise<string> => {
     url: path + "/api/v1/users/updateDriverFavor",
     data: route,
   };
-  console.log(route)
   const response = await axios(config);
+  console.log(response)
   return response.data;
 }
 

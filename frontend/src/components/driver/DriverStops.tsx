@@ -228,9 +228,7 @@ export const DriverStops = (props: DriverStopsProps) => {
 
   const getBoardingInfo = async () => {
     try {
-      console.log(2)
       const response = await showBoardingInfo();
-      console.log(3)
       setBoardingInfo(response.stops);
       console.log(response)
       return response;
@@ -247,7 +245,6 @@ export const DriverStops = (props: DriverStopsProps) => {
         if (saveFavRoute) {
           const facResponse = await updateDriverFavRoute();
         }
-        console.log(1)
         const boardingResponse = await getBoardingInfo();
         console.log(boardingResponse)
         setDriverStatus('waitJourney')
