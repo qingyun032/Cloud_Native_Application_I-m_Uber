@@ -110,11 +110,11 @@ export const NavigationBar = () => {
         setProfileStatus(["userInfo", "car"]);
         myNav("/profile");
       }else{
-        setUser({...user, mode: (user.mode === userMode.Driver)? userMode.Passenger : userMode.Driver});
-        if(user.mode === userMode.Driver)
+        if(user.mode === userMode.Passenger)
           myNav("/driverHome");
         else
           myNav("/passengerHome");
+        setUser({...user, mode: (user.mode === userMode.Driver)? userMode.Passenger : userMode.Driver});
       }
     }
   }

@@ -91,7 +91,7 @@ export const Car = (props: CarProps) => {
               brand: brandList.findIndex((i) => i === brand) ?? user.car.brand,
               type: type ?? user.car.type,
               seat: Number(seat) ?? user.car.seat,
-              license: license ?? user.car.carPlate,
+              carPlate: license ?? user.car.carPlate,
             }
           }
           try{

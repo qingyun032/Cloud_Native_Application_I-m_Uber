@@ -35,6 +35,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const { setInfoBar } = props;
   const [ edit, setEdit ] = useState<boolean>(false);
   const [ goStopOpen, setGoStopOpen ] = useState<boolean>(false);
+  const [ backStopOpen, setBackStopOpen ] = useState<boolean>(false);
   const [ goCheck, setGoCheck ] = useState<number[]>([]);
   const [ backCheck, setBackCheck ] = useState<number[]>([]);
   const [ goStops, setGoStops ] = useState<Array<any>>([]);
@@ -76,19 +77,37 @@ export const DriverRoute = (props: DriverRouteProps) => {
 
   const openStop = async (isGo: boolean) => {
     const address = (isGo)? goRefs["start"].current?.getElementsByTagName("input")[0].value : backRefs["destination"].current?.getElementsByTagName("input")[0].value;
-    if(address === "" || address === undefined){
-      setGoStopOpen(false);
-      setGoCheck([]);
-      setGoStops([]);
-      setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
-    }else{
-      try{
-        const response = await showStops({isGo: true, address: address});
-        setGoStops(response.Stops);
+    if(isGo){
+      if(address === "" || address === undefined){
+        setGoStopOpen(false);
         setGoCheck([]);
-        setGoStopOpen(true);
-      }catch(error: any){
-        setInfoBar({open: true, type: "error", message: error.response.data.error})
+        setGoStops([]);
+        setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
+      }else{
+        try{
+          const response = await showStops({isGo: true, address: address});
+          setGoStops(response.Stops);
+          setGoCheck([]);
+          setGoStopOpen(true);
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error})
+        }
+      }
+    }else{
+      if(address === "" || address === undefined){
+        setBackStopOpen(false);
+        setBackCheck([]);
+        setBackStops([]);
+        setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
+      }else{
+        try{
+          const response = await showStops({isGo: false, address: address});
+          setBackStops(response.Stops);
+          setBackCheck([]);
+          setBackStopOpen(true);
+        }catch(error: any){
+          setInfoBar({open: true, type: "error", message: error.response.data.error})
+        }
       }
     }
   }
@@ -115,10 +134,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        const GOStopIDs = goCheck.map((val) => {return stopList[val].stopID});
-        const GOStopNames = goCheck.map((val) => {return stopList[val].Name});
-        const BACKStopIDs = backCheck.map((val) => {return stopList[val].stopID});
-        const BACKStopNames = backCheck.map((val) => {return stopList[val].Name});
+        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID});
+        const GOStopNames = goCheck.map((val) => {return goStops[val].Name});
+        const BACKStopIDs = backCheck.map((val) => {return backStops[val].stopID});
+        const BACKStopNames = backCheck.map((val) => {return backStops[val].Name});
         const newUser = {
           ...user,
           favRoute:{
@@ -140,9 +159,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
           },
         };
         try{
-          // const response = await updateDriverFav(newUser);
+          const response = await updateDriverFav(newUser);
           setUser(newUser);
-          // setInfoBar({open: true, type: "success", message: response.message});
+          setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
           setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
@@ -197,11 +216,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
         <DialogTitle>Stops</DialogTitle>
         <DialogContent dividers={true}>
           <DialogContentText
-            // ref={descriptionElementRef}
             tabIndex={-1}
           >
             <List>
-              {stopList.map((stop, idx) => {
+              {goStops.map((stop, idx) => {
                 const { stopID, Name, address } = stop;
                 return (
                   <ListItem
@@ -254,9 +272,12 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Autocomplete
         multiple
         id="stops"
-        options={stopList.map<string>((item) => {return item.Name})}
+        options={backStops.map<string>((item) => {return item.Name})}
         defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
+        value={backCheck.map((val) => {return backStops[val].Name})}
         disabled={!edit}
+        readOnly={true}
+        onFocus={() => openStop(false)}
         renderInput={(params) => (
           <Text
             {...params}
@@ -265,6 +286,49 @@ export const DriverRoute = (props: DriverRouteProps) => {
           />
         )}
       />
+      <Dialog
+        open={backStopOpen}
+        onClose={() => setBackStopOpen(false)}
+        fullWidth
+        scroll="paper"
+      >
+        <DialogTitle>Stops</DialogTitle>
+        <DialogContent dividers={true}>
+          <DialogContentText
+            tabIndex={-1}
+          >
+            <List>
+              {backStops.map((stop, idx) => {
+                const { stopID, Name, address } = stop;
+                return (
+                  <ListItem
+                    key={stopID}
+                    disablePadding
+                  >
+                    <ListItemButton role={undefined} onClick={handleToggle(idx, false)} dense>
+                      <ListItemIcon>
+                        {stopID !== 111 ?
+                          <Checkbox
+                            edge="start"
+                            checked={backCheck.indexOf(idx) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ 'aria-labelledby': `${idx}` }}
+                          />:<></>
+                        }
+                      </ListItemIcon>
+                      <ListItemText id={`label-${idx}`} primary={Name} secondary={address} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBackStopOpen(false)}>Finish</Button>
+        </DialogActions>
+      </Dialog>
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
       <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
