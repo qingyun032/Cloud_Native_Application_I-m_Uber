@@ -3,9 +3,17 @@ const Stop = require('../db/models/Stops');
 const addressToLatLon = require('../utils/transformAddr')
 const distanceCalculator = require('../utils/distance')
 
-const getAllStops = async () => {
+const getAllStops = async (stopIDs) => {
     try {
-        const stops = await Stop.findAll();
+        const stops = await Stop.findAll({
+            where: {
+                stopID: stopIDs
+            },
+            order: [
+                [Stop.sequelize.literal(`FIELD(stopID, ${stopIDs.join(',')})`)]
+            ],
+            raw: true
+        });
         return stops;
     } catch (error) {
         throw new Error('An error occurred while getting all stops');

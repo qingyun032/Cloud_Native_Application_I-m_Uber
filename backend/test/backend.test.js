@@ -175,7 +175,7 @@ describe("GET /api/v1/users/myInfo", () => {
             "password": "Leopassword"
         });
         const { header } = loginRes;
-        const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        const res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Leo",
@@ -206,7 +206,7 @@ describe("GET /api/v1/users/myInfo", () => {
             "password": "Chupassword"
         });
         const { header } = loginRes;
-        const res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        const res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Chu",
@@ -248,7 +248,7 @@ describe("POST /api/v1/users/rating", () => {
             "password": "Leopassword"
         });
         const { header } = loginRes;
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "userName": "Leo",
@@ -291,7 +291,7 @@ describe("PUT /api/v1/users/updatePassenger", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update passenger successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Chu",
             "email": "Imchuchu@gamil.com",
@@ -332,7 +332,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Chu",
             "email": "driverchuchu@gamil.com",
@@ -377,7 +377,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -422,7 +422,7 @@ describe("PUT /api/v1/users/updateDriver", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -466,7 +466,7 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -506,7 +506,7 @@ describe("PUT /api/v1/users/updateCarInfo", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe("Update driver successfully");
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -554,7 +554,7 @@ describe("PUT /api/v1/wallet/topUp", () => {
         expect(res.body).toEqual({
             "balance": 12633
         });
-        res = await request(app).get("/api/v1/users/myInfo").set("Cookie", [...header["set-cookie"]]);
+        res = await request(app).get("/api/v1/users/myInfoV1").set("Cookie", [...header["set-cookie"]]);
         expect(res.body).toEqual({
             "userName": "Leo",
             "email": "leo@gamil.com",
@@ -601,29 +601,6 @@ describe("Test transformAddr", () => {
         });
     });
 })
-
-// describe("createBoarding", () => {
-//     test("Create a boarding", async () => {
-//         Routes.destroy({
-//             truncate: {cascade: true}
-//         });
-        
-//         const boardingData = {
-//             "routeID": 1,
-//             "stopID": 9,
-//             "boardTime": "2021-06-01 11:00:00:000Z",
-//         }
-
-//         const boarding = await boardingService.createBoarding(boardingData);
-//         console.log(boarding);
-//         expect(boarding).toEqual({
-//             "boardingID": 9,
-//             "routeID": 1,
-//             "stopID": 20,
-//             "boardTime": "2021-06-01T11:00:00.000Z",
-//         });
-//     });
-// })
 
 describe("POST /api/v1/route/createRoute", () => {
 
@@ -742,14 +719,14 @@ describe("POST /api/v1/route/createRoute", () => {
     // Add more test cases as needed
 });
 
-
-describe("show and select Candidates then get arrival time", () => {
+describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/selectCandidates", () => {
     test("Show route candidates and select", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Alice",
             "password": "Alicepassword"
         });
         const { header } = res;
+
         const passenger_pref = {
             "Go": true,
             "address": "新竹縣竹東鎮光武街2號",
@@ -803,7 +780,17 @@ describe("show and select Candidates then get arrival time", () => {
             route_selected_info
         );
         expect(res.statusCode).toBe(201);
-        expect(res.body.message).toBe("Select Route Successfully!");
+        console.log(res.body);
+        expect(res.body).toEqual(
+            {
+                "userID": 4,
+                "routeID": 3,
+                "pickUpStopID": 23,
+                "dropOFFStopID": '111',
+                "passengerCnt": 1,
+                "price": 116
+            }
+        );
     });
 
     test("getArrivalTime", async () => {
@@ -828,10 +815,10 @@ describe("show and select Candidates then get arrival time", () => {
             dest_arrival_time: "2023-12-21T12:24:35.000Z"
         });
     });
-})
+});
 
-describe("show and select Candidates then get arrival time", () => {
-    test("Show route candidates and select", async () => {
+describe("POST /api/v1/route/confirmRoute", () => {
+    test("confirmRoute", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Wei",
             "password": "Weipassword"
@@ -843,3 +830,135 @@ describe("show and select Candidates then get arrival time", () => {
         expect(res.body.message).toBe("Comfirm Route Successfully!");
     });
 })
+
+describe("GET /api/v1/route/showBoardingInfo", () => {
+    test("Get boarding info", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+          "userName": "Wei",
+          "password": "Weipassword"
+        }); 
+        const { header } = res;
+
+        res = await request(app).get("/api/v1/route/showBoardingInfo").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+
+        expect(res.body.stops.length).toEqual(6);
+        expect(res.body.stops[5]).toEqual(
+            {
+                stopID: 111,
+                address: '新竹縣寶山鄉園區二路168號',
+                boardTime: '2023-12-21T12:24:35.000Z',
+                latitude: '24.77134000000000000',
+                longitude: '121.01209000000000000',
+                passengers: [ { count: 1, type: 'dropOff' } ]
+            }
+        );
+    });
+});
+
+describe("Update favorite", () => {
+    test("Update Leo driver driver GO favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"time": "07:00:00",
+				"stopIDs": [12, 24, 63, 7, 2, 111]
+            },
+            "BACK": {
+				"address": null,
+				"time": null,
+				"stopIDs": null
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updateDriverFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update driver favorite route successfully");
+    });
+
+    test("Update Leo driver driver BACK favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": null,
+				"time": null,
+				"stopIDs": null
+            },
+            "BACK": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"time": "23:07:20",
+				"stopIDs": [111, 2, 7, 63, 24, 12]
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updateDriverFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update driver favorite route successfully");
+    });
+
+    test("Update Leo passenger GO favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"boardTime": "07:00:00",
+				"passengerCnt": 1
+            },
+            "BACK": {
+				"address": null,
+				"boardTime": null,
+				"passengerCnt": null
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updatePassengerFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update passenger favorite route successfully");
+    });
+
+    test("Update Leo passenger BACK favorite", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+
+        const newData = {
+            "GO": {
+				"address": null,
+				"boardTime": null,
+				"passengerCnt": null
+            },
+            "BACK": {
+				"address": "台北市大安區羅斯福路四段一號",
+				"boardTime": "22:07:20",
+				"passengerCnt": 1
+		    } 
+        }
+        res = await request(app).put("/api/v1/users/updatePassengerFavor").set("Cookie", [...header["set-cookie"]]).send(
+            newData
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toEqual("Update passenger favorite route successfully");
+
+    });
+});

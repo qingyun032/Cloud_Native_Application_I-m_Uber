@@ -17,6 +17,7 @@ module.exports = ((sequelize, DataTypes) => {
         pickUpStopID: DataTypes.INTEGER,
         dropOFFStopID: DataTypes.INTEGER,
         passengerCnt: DataTypes.INTEGER,
+        price: DataTypes.INTEGER
     }, {
         freezeTableName: true,
         timestamps: false,

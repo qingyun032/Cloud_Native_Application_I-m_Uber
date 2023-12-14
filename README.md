@@ -87,17 +87,4 @@ You will get "hello world" from the server.
 
 ### set .env
 
-You can define your own environment variables in backend/.env (Note)
-
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_DATABASE=myUber_database
-DB_PORT=8080
-PORT=4000
-SECRET_KEY=mysecretkey
-```
-
-
- that .env should not be pushed to the remote github)
+You can define your own environment variables in backend/.env (Note that .env should not be pushed to the remote github)

@@ -5,6 +5,7 @@ const stopService = require('../services/stopService');
 const coordinate2grid = require('../utils/coordinate2grid');
 const transformAddr = require('../utils/transformAddr');
 const gridService = require('../services/gridService');
+const passengerService = require('../services/passengerService');
 
 const getAllRoutes = async (req, res) => {
   try {
@@ -78,8 +79,6 @@ const createRoute = async (req, res) => {
           
           boardingInfo.stopID = routeData.stopIds[i];
           boardingInfo.boardTime = arriveTime;
-
-          console.log(boardingInfo);
           
           // await can make sure that the boarding is created before the next iteration
           await boardingService.createBoarding(boardingInfo);
@@ -88,13 +87,10 @@ const createRoute = async (req, res) => {
             const nextStopId = await stopService.getStopById(routeData.stopIds[i + 1]);
             const distance = await distanceCalculator(stop.latitude, stop.longitude, nextStopId.latitude, nextStopId.longitude);
             total_distance += distance;
-            // console.log(`distance: ${distance} ${total_distance}`);
             var intervalTime = new Date((distance / 40) * 60 * 60 * 1000); // 40 km/h
-            
-            // console.log('I am here')
+
             arriveTime = new Date(arriveTime.getTime() + intervalTime.getTime());
           }
-          // console.log(`time: ${arriveTime}`);
         }
       }
 
@@ -176,8 +172,59 @@ const showBoardingInfo = async (req, res) => {
       return;
   }
 
-  try {
-  } catch (error) {
+  try{
+    let routeInfo = await routeService.getAllRoutes();
+    routeInfo = routeInfo.filter(
+      route => 
+      route.driverID === driverId
+    );
+    console.log(`route nums: ${routeInfo.length}`);
+    routeInfo = routeInfo[0]
+    
+    let boardings = await boardingService.getAllBoardings();
+    boardings = boardings.filter(
+      boarding => 
+      boarding.routeID === routeInfo.routeID
+    );
+
+    // Get the passengers in the routes
+    let passengers = await passengerService.getAllPassengers();
+    passengers = passengers.filter(
+      passnger =>
+      passnger.routeID === routeInfo.routeID
+    );
+    // Get the boardings in the routes
+    let boardingInfo = {"stops": []};
+    for (let i = 0; i < boardings.length; i++) {
+      const stop = await stopService.getStopById(boardings[i].stopID);
+      let stopInfo = {}
+      stopInfo.stopID = stop.stopID;
+      stopInfo.name = stop.name;
+      stopInfo.address = stop.address;
+      stopInfo.boardTime = boardings[i].boardTime;
+      stopInfo.latitude = stop.latitude;
+      stopInfo.longitude = stop.longitude;
+
+      stopInfo.passengers = [];
+      for (let j = 0; j < passengers.length; j++) {
+        let passengerInfo = {};
+        if (passengers[j].pickUpStopID === stop.stopID) {
+          passengerInfo.name = passengers[j].name;
+          passengerInfo.count = passengers[j].passengerCnt;
+          passengerInfo.type = "pickUp";
+          stopInfo.passengers.push(passengerInfo);
+        } else if (passengers[j].dropOFFStopID === stop.stopID) {
+          passengerInfo.name = passengers[j].name;
+          passengerInfo.count = passengers[j].passengerCnt;
+          passengerInfo.type = "dropOff";
+          stopInfo.passengers.push(passengerInfo);
+        }
+      }
+      boardingInfo.stops.push(stopInfo);
+    }
+
+    res.status(200).json(boardingInfo);
+  } catch (error){
     console.error(error);
     res.status(500).json({ error: error.message });
   }
