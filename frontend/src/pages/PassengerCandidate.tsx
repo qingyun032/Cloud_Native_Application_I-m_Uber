@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import CandidateDetail from '../components/CandidateDetail';
 import { NavigationBar } from '../components/navigation/NavigationBar';
+import { candidateInfo } from '../models/trip';
 
 const theme = createTheme({
   palette: {
@@ -41,8 +42,16 @@ export interface CandidateInfo {
   arrivalTime : string;
 }
 
+type PassengerCandidateProps = {
+  passengerStatus: string;
+  setPassengerStatus: (status: string) => void;
+  candidates: candidateInfo[];
+  setCandidates: (candidates: candidateInfo[]) => void
+}
 
-function PassengerCandidatePage() {
+function PassengerCandidate( props: PassengerCandidateProps) {
+
+  const { passengerStatus, setPassengerStatus, candidates, setCandidates } = props;
 
   const [driverIsShown, setDriverIsShown] = useState(false);
   const [Drivers, setDrivers] = useState([
@@ -63,7 +72,7 @@ function PassengerCandidatePage() {
   
   const navigate = useNavigate()
   const toPassengerHomePage = () => {
-    navigate('/passengerHome')
+    setPassengerStatus('home')
   }
 
   const showDriverDetail = (id: number) => {
@@ -124,7 +133,7 @@ function PassengerCandidatePage() {
                 </Button>
             </Box>
           }
-          {driverIsShown === true && <CandidateDetail setDriverIsShown={setDriverIsShown} candidate={shownCandidate} />}    
+          {driverIsShown === true && <CandidateDetail setDriverIsShown={setDriverIsShown} candidate={shownCandidate} passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus}/>}    
           </Container>
         </Container>
       </ThemeProvider>
@@ -132,4 +141,4 @@ function PassengerCandidatePage() {
   )
 }
 
-export default PassengerCandidatePage
+export default PassengerCandidate

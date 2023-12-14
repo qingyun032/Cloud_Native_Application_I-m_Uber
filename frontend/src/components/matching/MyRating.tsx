@@ -7,17 +7,18 @@ import { useNavigate } from 'react-router-dom';
 
 type RatingProps = {
   setIsRating: (status: boolean) => void;
+  setPassengerStatus: (status: string) => void;
 }
 
 function MyRating( props: RatingProps ) {
-  const { setIsRating } = props;
+  const { setIsRating, setPassengerStatus } = props;
 
   const navigate = useNavigate();
   const [tripRating, setTripRating] = React.useState<number | null>(2);
 
   const handleClick = () => {
     setIsRating(false);
-    navigate('/passengerHome');
+    setPassengerStatus('home')
   }
 
   return (

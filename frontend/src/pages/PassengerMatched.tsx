@@ -6,7 +6,7 @@ import carImage from '../blue_car.png';
 import React, { useState } from 'react'
 import Arrival from '../components/matching/Arrival';
 import Departure from '../components/matching/Departure';
-import MyRating from '../components/matching/Rating';
+import MyRating from '../components/matching/MyRating';
 import { NavigationBar } from '../components/navigation/NavigationBar';
 
 
@@ -26,7 +26,14 @@ const theme = createTheme({
   }
 });
 
-function PassengerMatchedpage() {
+type PassengerMatchedProps = {
+  passengerStatus: string;
+  setPassengerStatus: (status: string) => void;
+}
+
+function PassengerMatched( props: PassengerMatchedProps ) {
+
+  const { passengerStatus, setPassengerStatus } = props;
 
   const [isDeparture, setIsDeparture] = useState(true);
   const [isArrival, setIsArrival] = useState(false);
@@ -49,7 +56,7 @@ function PassengerMatchedpage() {
             <img src={carImage}/>
             {isDeparture === true && <Departure setIsArrival={setIsArrival} setIsDeparture={setIsDeparture}/>}
             {isArrival === true && <Arrival setIsArrival={setIsArrival} setIsRating={setIsRating}/>}
-            {isRating === true && <MyRating setIsRating={setIsRating} />}
+            {isRating === true && <MyRating setIsRating={setIsRating} setPassengerStatus={setPassengerStatus}/>}
 
             {/* <Button variant='contained' fullWidth sx={{backgroundColor: 'secondary.main', textTransform: 'none'}}>I'm in the Car</Button> */}
           </Container>
@@ -59,5 +66,5 @@ function PassengerMatchedpage() {
   )
 }
 
-export default PassengerMatchedpage
+export default PassengerMatched
 

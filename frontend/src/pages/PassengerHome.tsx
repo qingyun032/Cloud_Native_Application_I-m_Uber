@@ -15,6 +15,9 @@ import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { NavigationBar } from '../components/navigation/NavigationBar';
+import { itineraryData } from "../models/trip";
+import { getCandidate } from '../apis/passenger.api';
+
 
 const theme = createTheme({
     palette: {
@@ -32,22 +35,24 @@ const theme = createTheme({
     }
 });
 
-interface ItineraryData {
-  start: string;
-  destination: string;
-  passengerCount: string;
-  date: Dayjs | null;
-  time: Dayjs | null;
+type PassengerHomeProps = {
+  passengerStatus: string;
+  setPassengerStatus: (status: string) => void;
+  passengerItineraryData: itineraryData;
+  setPassengerItineraryData: (status: itineraryData) => void;
 }
 
-export const PassengerHomePage = () => {
+export const PassengerHome = ( props: PassengerHomeProps ) => {
 
+  const { passengerStatus, setPassengerStatus, passengerItineraryData, setPassengerItineraryData } = props;
   const navigate = useNavigate()
-  const toPassengerCandidatePage = () => {
-    navigate('/passengerCandidate')
+  const toPassengerCandidatePage = async () => {
+    // add API to search candidate
+    const candidateList = await getCandidate(itineraryData);
+    setPassengerStatus('candidate')
   }
 
-  const passengerFavRoute: ItineraryData = {
+  const passengerFavRoute: itineraryData = {
     start: '管二104',
     destination: '德田101',
     passengerCount : '2',
@@ -55,8 +60,8 @@ export const PassengerHomePage = () => {
     time: dayjs('15:00:00', "HH:mm:ss"),
   }
 
-  // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
   const [itineraryData, setItineraryData] = useState({
+    toTSMC: true,
     start: "",
     destination: "",
     passengerCount: "1",
@@ -64,15 +69,15 @@ export const PassengerHomePage = () => {
     time: dayjs(),
   });
 
-  const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
+  const handleInputChange = (field: keyof itineraryData, value: string | number | Dayjs | null) => {
     setItineraryData((prevItineraryData) => ({
         ...prevItineraryData,
         [field]: value,
     }));
-    console.log(itineraryData.time)
   };
 
   const useFavoriteRoute = () => {
+    // add API for favorite route
     handleInputChange('start', passengerFavRoute.start);
     handleInputChange('destination', passengerFavRoute.destination);
     handleInputChange('passengerCount', passengerFavRoute.passengerCount);

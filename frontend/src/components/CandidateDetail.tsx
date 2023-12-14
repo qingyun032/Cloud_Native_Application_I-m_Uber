@@ -3,7 +3,7 @@ import { Button, Card, Container, Divider, Paper, Typography } from '@mui/materi
 import Box from '@mui/material/Box';
 import createTheme from '@mui/material/styles/createTheme';
 import React from 'react'
-import { CandidateInfo } from '../pages/PassengerCandidatePage';
+import { CandidateInfo } from '../pages/PassengerCandidate';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
@@ -27,10 +27,12 @@ const theme = createTheme({
 type CandidateProps = {
   setDriverIsShown: (status: boolean) => void;
   candidate: CandidateInfo;
+  passengerStatus: string;
+  setPassengerStatus: (status: string) => void;
 }
 
 const CandidateDetail = ( props: CandidateProps ) => {
-  const { setDriverIsShown, candidate } = props;
+  const { setDriverIsShown, candidate, passengerStatus, setPassengerStatus } = props;
 
   const closeDriverDetail = () => {
     setDriverIsShown(false);
@@ -38,7 +40,8 @@ const CandidateDetail = ( props: CandidateProps ) => {
 
   const navigate = useNavigate();
   const toPassengerMatched = () => {
-    navigate('/passengerMatched')
+    setPassengerStatus('matched')
+    // navigate('/passengerMatched')
   }
 
   return (
