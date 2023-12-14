@@ -13,9 +13,13 @@ import Avatar from '@mui/material/Avatar';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
+import { Boarding } from "../../models/journey.model"
+import { showBoardingInfo, confirmRoute } from "../../apis/driver.journey.api"
 
 type DriverWaitJourneyProps = {
+  boardingInfo: Boarding[] | null;
   setDriverStatus: (status: string) => void;
+  setBoardingInfo: (boarding: Boarding[] | null) => void;
 }
 
 const boarding = [
@@ -60,6 +64,7 @@ const theme = createTheme({
 });
 
 export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
+  const { boardingInfo, setDriverStatus, setBoardingInfo } = props; // TODO: Replace boarding with boardingInfo
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const handleOpen = (idx: number) => {
@@ -69,10 +74,30 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
   const handleClose = () => setOpen(false);
   
   const toDriverHome = () => {
-    props.setDriverStatus('start')
+    setDriverStatus('start')
   }
-  const toDriverJourney = () => {
-    props.setDriverStatus('onJourney')
+
+  const toDriverJourney = async () => {
+    try {
+      const boardingResponse = await getBoardingInfo();
+      const response = await confirmRoute();
+      setDriverStatus('onJourney');
+    } 
+    catch (error: any){
+      console.log(error);
+    }
+    setDriverStatus('onJourney'); // TODO: remove this line
+  }
+
+  const getBoardingInfo = async () => {
+    try {
+      const response = await showBoardingInfo();
+      setBoardingInfo(response.stops);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+    }
   }
 
   return (
@@ -105,11 +130,11 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 mb: 2, mt: 2,
                 height: 40,
               }}
-              onClick={()=>console.log(1)}
+              onClick={getBoardingInfo}
             >
               Refresh
             </Button>
-            <Box sx={{ width: '100%', height: '300px', overflowY: 'auto' }}>
+            <Box sx={{ width: '100%', height: '400px', overflowY: 'auto' }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {boarding.map((stop, idx) => {
                   return (
@@ -139,7 +164,7 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 </p>
               </ModalContent>
             </Modal>
-            <Button            
+            {/* <Button            
               variant="contained"
               fullWidth
               sx={{
@@ -152,14 +177,14 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
               onClick={toDriverHome}
             >
               Cancel Journey if no passengers
-            </Button>
+            </Button> */}
             <Button            
               variant="contained"
               fullWidth
               sx={{
                 backgroundColor : "secondary.main",
                 textTransform : "none",
-                mb: 2, mt: 1,
+                mb: 2, mt: 5,
                 height: 40,
               }}
               onClick={toDriverJourney}

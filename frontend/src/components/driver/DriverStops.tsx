@@ -15,17 +15,18 @@ import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
 import { Stop } from '../../models/stop.model';
-import { createRoute } from "../../apis/driver.journey.api"
-import { ItineraryData } from '../../models/journey.model';
 import dayjs, { Dayjs } from 'dayjs';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
-import { DriverRoute, DriverFav } from '../../models/journey.model';
-import { updateDriverFav } from '../../apis/driver.journey.api';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { ItineraryData, DriverRoute, DriverFav, Boarding } from '../../models/journey.model';
+import { createRoute, updateDriverFav, showBoardingInfo } from '../../apis/driver.journey.api';
 
 type DriverStopsProps = {
   setDriverStatus: (status: string) => void;
+  setBoardingInfo: (boarding: Boarding[] | null) => void;
   itineraryData: ItineraryData;
   stops: Stop[];
   isGo: boolean;
@@ -85,14 +86,15 @@ const stops = [
 ]
 
 export const DriverStops = (props: DriverStopsProps) => {
-  const { setDriverStatus, isGo, itineraryData } = props; // TODO: add stops
-  const sortedStopIDs = stops.map(stop => stop.stopID);
+  const { setDriverStatus, isGo, itineraryData, setBoardingInfo, stops } = props; // TODO: add stops
   const [checked, setChecked] = useState<number[]>([0]);
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const [saveFavRoute, setSaveFavRoute] = useState<boolean>(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleOpen = (idx: number) => {
-    setModalAddress(stops[idx].address);
+    const [ stopID, Name, address ] = Object.values(stops[idx]);
+    setModalAddress(String(address));
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -108,7 +110,6 @@ export const DriverStops = (props: DriverStopsProps) => {
     }
 
     setChecked(newChecked);
-    console.log(checked)
   };
 
   const toDriverHome = () => {
@@ -119,11 +120,27 @@ export const DriverStops = (props: DriverStopsProps) => {
     setSaveFavRoute((prevValue) => !prevValue);
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  
+  const showError = () => {
+    setSnackbarOpen(true);
+  };
+
   const getStopsIDs = () => {
+    if (checked.length === 0) {
+      showError();
+      throw new Error('No stop selected');
+    }
+    const sortedStopIDs = stops.map(stop => {
+      const stopID = Object.values(stop)[0];
+      return typeof stopID === 'string' ? parseInt(stopID, 10) : stopID as number;
+    });
     const selectedStopIDs: number[] = checked.sort((a, b) => a - b).map(index => sortedStopIDs[index]);
     if (isGo) {
       if (selectedStopIDs[selectedStopIDs.length - 1] !== 111) {
-        selectedStopIDs.unshift(111);
+        selectedStopIDs.push(111);
       }
     }
     else {
@@ -134,36 +151,9 @@ export const DriverStops = (props: DriverStopsProps) => {
     return selectedStopIDs;
   }
 
-  const updateDriverFavRoute = async () => {
-    const formattedTimeString: string | null =
-      itineraryData.time &&
-      itineraryData.time.format('HH:mm:ss') || null;
+  const createDriverRoute = async () => {
     const selectedStopIDs = getStopsIDs();
-    
-    const favDate: DriverFav = {
-      GO: {
-        address: isGo ? itineraryData.start : null,
-        time: isGo ? formattedTimeString : null,
-        stopIDs: isGo ? selectedStopIDs : [],
-      },
-      BACK: {
-        address: isGo ? null : itineraryData.destination,
-        time: isGo ? null : formattedTimeString,
-        stopIDs: isGo ? [] : selectedStopIDs,
-      }
-    }
-    try {
-      const response = await updateDriverFav(favDate);
-      return response;
-    }
-    catch (error: any) {
-      console.log(error);
-    }
-  }
 
-  const toDriverWaitJourney = async () => {
-    const selectedStopIDs = getStopsIDs();
-    
     const combinedDateTimeString: string | null =
       itineraryData.date &&
       itineraryData.time &&
@@ -179,22 +169,92 @@ export const DriverStops = (props: DriverStopsProps) => {
     
     const routeData: DriverRoute = {
       startTime: combinedDateTimeString ? combinedDateTimeString : "",
-      start: selectedStopIDs[0],
-      destination: selectedStopIDs[selectedStopIDs.length - 1],
-      stopIDs: selectedStopIDs,
+      state: "PROCESSING",
+      stopIds: selectedStopIDs,
       available: parseInt(itineraryData.passengerCount, 10),
       type: isGo ? "GO" : "BACK",
     }
+
     try {
-        const facResponse = await updateDriverFavRoute();
-        const response = await createRoute(routeData);
-        console.log(response);
+      const response = await createRoute(routeData);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  const updateDriverFavRoute = async () => {
+    const formattedTimeString: string | null =
+      itineraryData.time &&
+      itineraryData.time.format('HH:mm:ss') || null;
+    const selectedStopIDs = getStopsIDs();
+    
+    const favData: DriverFav = {
+      GO: {
+        address: isGo ? itineraryData.start : null,
+        time: isGo ? formattedTimeString : null,
+        stopIDs: isGo ? selectedStopIDs : [],
+      },
+      BACK: {
+        address: isGo ? null : itineraryData.destination,
+        time: isGo ? null : formattedTimeString,
+        stopIDs: isGo ? [] : selectedStopIDs,
+      }
+    }
+    // const favData: DriverFav = {
+    //   "GO": {
+    //       "address": "台北市大安區羅斯福路四段一號",
+    //       "time": "07:00:00",
+    //       "stopIDs": [12, 24, 63, 7, 2, 111] // 最後一個是台積電
+    //   },
+    //   "BACK": {
+    //       "address": "台北市大安區羅斯福路四段一號", // null
+    //       "time": "23:07:20",
+    //       "stopIDs": [111, 2, 7, 63, 24, 12]
+    //   }  
+    // }
+    try {
+      const response = await updateDriverFav(favData);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  const getBoardingInfo = async () => {
+    try {
+      console.log(2)
+      const response = await showBoardingInfo();
+      console.log(3)
+      setBoardingInfo(response.stops);
+      console.log(response)
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  const toDriverWaitJourney = async () => {
+    try {
+        const routeResponse = await createDriverRoute();
+        if (saveFavRoute) {
+          const facResponse = await updateDriverFavRoute();
+        }
+        console.log(1)
+        const boardingResponse = await getBoardingInfo();
+        console.log(boardingResponse)
         setDriverStatus('waitJourney')
     }
     catch (error: any) {
         console.log(error);
     }
-    setDriverStatus('waitJourney') // TODO: remove this line
+    // setDriverStatus('waitJourney') // TODO: remove this line
   }
 
   return (
@@ -222,7 +282,7 @@ export const DriverStops = (props: DriverStopsProps) => {
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto' }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {stops.map((stop, idx) => {
-                  const { stopID, Name, address } = stop;
+                  const [ stopID, Name, address ] = Object.values(stop);
                   return (
                     <ListItem
                       key={stopID}
@@ -295,6 +355,17 @@ export const DriverStops = (props: DriverStopsProps) => {
             >
               Confirm and Start
             </Button>
+            <Box>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+              >
+                <Alert onClose={handleSnackbarClose} severity="error">
+                  No stop selected!
+                </Alert>
+              </Snackbar>
+            </Box>
           </Container>
         </Container>
     </>

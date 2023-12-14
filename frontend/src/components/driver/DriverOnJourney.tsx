@@ -2,7 +2,6 @@ import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import carImage from '../../blue_car.png';
 import Container from '@mui/material/Container';
-import createTheme from '@mui/material/styles/createTheme';
 import React, { useState } from 'react'
 import { NavigationBar } from '../navigation/NavigationBar';
 import List from '@mui/material/List';
@@ -13,8 +12,11 @@ import Avatar from '@mui/material/Avatar';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import { styled, css } from '@mui/system';
 import clsx from 'clsx';
+import { Boarding } from "../../models/journey.model"
+import { finishRoute } from "../../apis/driver.journey.api"
 
 type DriverOnJourneyProps = {
+  boardingInfo: Boarding[] | null;
   setDriverStatus: (status: string) => void;
 }
 
@@ -65,6 +67,7 @@ const boarding = [
 ]
 
 export const DriverOnJourney = (props: DriverOnJourneyProps) => {
+  const { setDriverStatus, boardingInfo } = props; // TODO: Replace boarding with boardingInfo
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const handleOpen = (idx: number) => {
@@ -73,8 +76,16 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
   }
   const handleClose = () => setOpen(false);
   
-  const toDriverEndJourney = () => {
-    props.setDriverStatus('endJourney')
+  const toDriverEndJourney = async () => {
+    try {
+        const response = await finishRoute();
+        console.log(response);
+        setDriverStatus('endJourney')
+    }
+    catch (error: any) {
+        console.log(error);
+    }
+    setDriverStatus('endJourney') // TODO: remove this line after API worked
   }
 
   return (
@@ -99,7 +110,7 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
                 On the way!
               </Typography>
             </Box>
-            <Box sx={{ width: '100%', height: '400px', overflowY: 'auto' }}>
+            <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', mt: 9 }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {boarding.map((stop, idx) => {
                   return (

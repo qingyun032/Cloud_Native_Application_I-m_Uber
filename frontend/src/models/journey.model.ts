@@ -10,9 +10,8 @@ export type ItineraryData = {
 
 export type DriverRoute = {
     startTime: string,
-    start: number,
-    destination: number,
-    stopIDs: number[],
+    state: string,
+    stopIds: number[],
     available: number,
     type: string
 }
@@ -29,3 +28,23 @@ export type DriverFav = {
         stopIDs: number[] | null,
     }
 }
+
+export type Passenger = {
+    name: string;
+    count: number;
+    type?: "pickUp" | "dropOff";
+};
+
+export type Boarding = {
+    stopID: number;
+    name: string;
+    passengers: Passenger[];
+    address: string;
+    latitude: number;
+    longitude: number;
+    boardTime: string;
+};
+
+export type BoardingInfo = {
+    stops: Boarding[];
+};

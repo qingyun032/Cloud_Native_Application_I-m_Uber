@@ -2,17 +2,7 @@ import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import carImage from '../../blue_car.png';
 import Container from '@mui/material/Container';
-import createTheme from '@mui/material/styles/createTheme';
-import React, { useState } from 'react'
 import { NavigationBar } from '../navigation/NavigationBar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import { Modal as BaseModal } from '@mui/base/Modal';
-import { styled, css } from '@mui/system';
-import clsx from 'clsx';
 
 type DriverEndJourneyProps = {
   setDriverStatus: (status: string) => void;

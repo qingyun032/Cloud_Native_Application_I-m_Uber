@@ -3,3 +3,7 @@ export type Stop = {
     Name: string,
     address: string,
 }
+
+export type StopsData = {
+    Stops: Stop[];
+};

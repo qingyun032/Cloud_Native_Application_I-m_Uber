@@ -29,6 +29,7 @@ type driverStartProps = {
 
 export const DriverStart = (props: driverStartProps) => {
   const { setDriverStatus, setStops, itineraryData, setItineraryData, isGo, setIsGo } = props;
+
   const toDriverStopsPage = async () => {
     const queryData = {
         isGo: isGo,
@@ -36,9 +37,8 @@ export const DriverStart = (props: driverStartProps) => {
     }
     try {
         const response = await showStops(queryData);
-        setStops(response);
+        setStops(response.Stops);
         setDriverStatus('stops');
-        console.log(response);
     }
     catch (error: any) {
         console.log(error);

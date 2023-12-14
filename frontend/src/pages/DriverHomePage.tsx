@@ -7,7 +7,7 @@ import { DriverWaitJourney } from '../components/driver/DriverWaitJourney';
 import { DriverOnJourney } from '../components/driver/DriverOnJourney';
 import { DriverEndJourney } from '../components/driver/DriverEndJourney';
 import { Stop } from "../models/stop.model"
-import { ItineraryData } from "../models/journey.model"
+import { ItineraryData, Boarding } from "../models/journey.model"
 import dayjs from 'dayjs';
 
 const theme = createTheme({
@@ -31,15 +31,16 @@ export const DriverHomePage = () => {
         passengerCount: "4",
         date: dayjs(),
         time: dayjs(),
-      });
+    });
+    const [boardingInfo, setBoardingInfo] = useState<Boarding[] | null>([]);
 
     return (
         <>
             <ThemeProvider theme={theme}>
                 {driverStatus === 'start' && <DriverStart setDriverStatus={setDriverStatus} setStops={setStops} itineraryData={itineraryData} setItineraryData={setItineraryData} isGo={isGo} setIsGo={setIsGo} />}
-                {driverStatus === 'stops' && <DriverStops setDriverStatus={setDriverStatus} itineraryData={itineraryData} stops={stops} isGo={isGo} />}
-                {driverStatus === 'waitJourney' && <DriverWaitJourney setDriverStatus={setDriverStatus} />}
-                {driverStatus === 'onJourney' && <DriverOnJourney setDriverStatus={setDriverStatus} />}
+                {driverStatus === 'stops' && <DriverStops setDriverStatus={setDriverStatus} itineraryData={itineraryData} stops={stops} isGo={isGo} setBoardingInfo={setBoardingInfo}/>}
+                {driverStatus === 'waitJourney' && <DriverWaitJourney setDriverStatus={setDriverStatus} boardingInfo={boardingInfo} setBoardingInfo={setBoardingInfo}/>}
+                {driverStatus === 'onJourney' && <DriverOnJourney setDriverStatus={setDriverStatus} boardingInfo={boardingInfo} />}
                 {driverStatus === 'endJourney' && <DriverEndJourney setDriverStatus={setDriverStatus} />}
             </ThemeProvider>
         </>
