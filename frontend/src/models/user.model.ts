@@ -31,7 +31,7 @@ type passengerRoute = {
 
 type driverRoute = {
     address: string,
-    boardTime: string,
+    time: string,
     stopIDs: Array<number>,
     stopNames: Array<string>
 }

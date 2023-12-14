@@ -49,9 +49,9 @@ export const DriverStart = (props: driverStartProps) => {
         console.log(error);
     }
   }
-    const goBoardTime = user?.favRoute.driver.GO.boardTime;
+    const goBoardTime = user?.favRoute.driver.GO.time;
     const goBoardTimeDayjs = goBoardTime ? dayjs(goBoardTime) : null;
-    const backBoardTime = user?.favRoute.driver.BACK.boardTime;
+    const backBoardTime = user?.favRoute.driver.BACK.time;
     const backBoardTimeDayjs = backBoardTime ? dayjs(backBoardTime) : null;
     const driverFavRouteToWork: ItineraryData = { // TODO: boardTime to time
         start: user?.favRoute.driver.GO.address || "",

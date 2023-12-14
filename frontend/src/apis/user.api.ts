@@ -54,10 +54,10 @@ export const updateDriverInfo = async (user: userInfo): Promise<any> => {
       "addressHome": user.home,
       "addressCompany": user.company,
       "carPlate": user.car.carPlate,
-      "color": user.car.color,
+      "color": 0, //user.car.color,
       "brand": user.car.brand,
       "type": user.car.type,
-      "electric": user.car.electric,
+      "electric": false, //user.car.electric,
       "seat": user.car.seat
     }
   };
@@ -85,7 +85,18 @@ export const updateDriverFav = async (user: userInfo): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'PUT',
     url: path + "/api/v1/users/updateDriverFavor",
-    data: user.favRoute.driver
+    data: {
+      "GO": {
+          "address": (user.favRoute.driver.GO.address === null)? "" : user.favRoute.driver.GO.address,
+          "time": user.favRoute.driver.GO.time,
+          "stopIDs": user.favRoute.driver.GO.stopIDs
+       },
+       "BACK": {
+          "address": user.favRoute.driver.BACK.address,
+          "time": user.favRoute.driver.BACK.time,
+          "stopIDs": user.favRoute.driver.BACK.stopIDs
+       }  
+   }
   };
   const response = await axios(config);
   return response.data;

@@ -80,6 +80,8 @@ export const NavigationBar = () => {
   const logOut = async () => {
     setOpen(false);
     const response = await signOut();
+    setLastHome("/passengerHome");
+    setProfileStatus(["home", ""]);
     myNav("/");
   }
 
