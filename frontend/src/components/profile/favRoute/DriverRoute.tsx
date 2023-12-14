@@ -17,6 +17,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../../contexts/UserContext'; 
 import { infoBarType } from '../../../models/user.model';
+import { Stop } from '../../../models/stop.model';
 import { updateDriverFav, showStops } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
@@ -39,10 +40,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const [ backStopOpen, setBackStopOpen ] = useState<boolean>(false);
   const [ goCheck, setGoCheck ] = useState<number[]>([]);
   const [ backCheck, setBackCheck ] = useState<number[]>([]);
-  const [ goStops, setGoStops ] = useState<Array<any>>([]);
-  const [ backStops, setBackStops ] = useState<Array<any>>([]);
-  const [ goFav, setGoFav ] = useState<[string, string]>((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.boardTime]);
-  const [ backFav, setBackFav ] = useState<[string, string]>((user === null)? ["", ""] : [user.favRoute.driver.BACK.address, user.favRoute.driver.BACK.boardTime]);
+  const [ goStops, setGoStops ] = useState<Array<Stop>>([]);
+  const [ backStops, setBackStops ] = useState<Array<Stop>>([]);
+  const [ goFav, setGoFav ] = useState<[string, string]>((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.time]);
+  const [ backFav, setBackFav ] = useState<[string, string]>((user === null)? ["", ""] : [user.favRoute.driver.BACK.address, user.favRoute.driver.BACK.time]);
   
   // TODO: call api
   const stopList = [{stopID: 0, Name: "台灣大學", address: "11111"}, {stopID: 1, Name: "家樂福新店店", address: "11111"}, {stopID: 2, Name: "家樂福北大店", address: "11111"}, {stopID: 3, Name: "1", address: "11111"}, {stopID: 4, Name: "2", address: "11111"}, {stopID: 5, Name: "3", address: "11111"}];
@@ -137,14 +138,14 @@ export const DriverRoute = (props: DriverRouteProps) => {
           favRoute:{
             driver: {
               GO: {
-                address: (goFav[0] === "")? user.favRoute.driver.GO.address : goFav[0],
-                boardTime: (goFav[1] === "")? user.favRoute.driver.GO.boardTime : goFav[1],
+                address: (goFav[0] === null)? user.favRoute.driver.GO.address : goFav[0],
+                time: (goFav[1] === null)? user.favRoute.driver.GO.time : goFav[1] + ":00",
                 stopIDs: GOStopIDs,
                 stopNames: GOStopNames,
               },
               BACK: {
-                address: (backFav[0] === "")? user.favRoute.driver.BACK.address : backFav[0],
-                boardTime: (backFav[1] === "")? user.favRoute.driver.BACK.boardTime : backFav[1],
+                address: (backFav[0] === null)? user.favRoute.driver.BACK.address : backFav[0],
+                time: (backFav[1] === null)? user.favRoute.driver.BACK.time : backFav[1] + ":00",
                 stopIDs: BACKStopIDs,
                 stopNames: BACKStopNames,
               }
@@ -158,8 +159,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
           setUser(newUser);
           setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
-          setGoFav((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.boardTime]);
-          setBackFav((user === null)? ["", ""] : [user.favRoute.driver.BACK.address, user.favRoute.driver.BACK.boardTime]);
+          setGoFav((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.time]);
+          setBackFav((user === null)? ["", ""] : [user.favRoute.driver.BACK.address, user.favRoute.driver.BACK.time]);
           setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
       }
@@ -174,7 +175,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="start"
         label="Start"
         value={goFav[0]}
-        onChange={(e) => {setGoFav([e.target.value, goFav[1]])}}
+        onBlur={(e) => {setGoFav([e.target.value, goFav[1]])}}
+        // onChange={(e) => {setGoFav([e.target.value, goFav[1]])}}
         variant="standard"
         InputProps={inputProps}
       />
@@ -217,7 +219,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
           >
             <List>
               {goStops.map((stop, idx) => {
-                const { stopID, Name, address } = stop;
+                // const { stopID, Name, address } = stop;
+                const [ stopID, Name, address ] = Object.values(stop);
                 return (
                   <ListItem
                     key={stopID}
