@@ -50,10 +50,10 @@ export const DriverStart = (props: driverStartProps) => {
     }
   }
     const goBoardTime = user?.favRoute.driver.GO.time;
-    const goBoardTimeDayjs = goBoardTime ? dayjs(goBoardTime) : null;
+    const goBoardTimeDayjs = goBoardTime ? dayjs(goBoardTime, "HH:mm:ss") : null;
     const backBoardTime = user?.favRoute.driver.BACK.time;
-    const backBoardTimeDayjs = backBoardTime ? dayjs(backBoardTime) : null;
-    const driverFavRouteToWork: ItineraryData = { // TODO: boardTime to time
+    const backBoardTimeDayjs = backBoardTime ? dayjs(backBoardTime, "HH:mm:ss") : null;
+    const driverFavRouteToWork: ItineraryData = {
         start: user?.favRoute.driver.GO.address || "",
         destination: '台積電',
         passengerCount : String(user?.car.seat),
