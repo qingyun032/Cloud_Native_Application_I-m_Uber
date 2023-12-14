@@ -32,7 +32,7 @@ export const DriverHomePage = () => {
         date: dayjs(),
         time: dayjs(),
     });
-    const [boardingInfo, setBoardingInfo] = useState<Boarding[] | null>([]);
+    const [boardingInfo, setBoardingInfo] = useState<Boarding[]>([]);
 
     return (
         <>

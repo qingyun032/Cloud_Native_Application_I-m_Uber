@@ -26,7 +26,7 @@ import { createRoute, updateDriverFav, showBoardingInfo } from '../../apis/drive
 
 type DriverStopsProps = {
   setDriverStatus: (status: string) => void;
-  setBoardingInfo: (boarding: Boarding[] | null) => void;
+  setBoardingInfo: (boarding: Boarding[]) => void;
   itineraryData: ItineraryData;
   stops: Stop[];
   isGo: boolean;
@@ -168,7 +168,8 @@ export const DriverStops = (props: DriverStopsProps) => {
         .format('YYYY-MM-DDTHH:mm:ss.SSSZ') || null;
     
     const routeData: DriverRoute = {
-      startTime: combinedDateTimeString ? combinedDateTimeString : "",
+      startTime: combinedDateTimeString ? combinedDateTimeString : "", //TODO: change time format
+      // startTime: "2023-12-21T15:00:00.000Z",
       state: "PROCESSING",
       stopIds: selectedStopIDs,
       available: parseInt(itineraryData.passengerCount, 10),

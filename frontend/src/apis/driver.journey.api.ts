@@ -41,9 +41,7 @@ export const showBoardingInfo = async (): Promise<BoardingInfo> => {
     method: 'GET',
     url: path + "/api/v1/route/showBoardingInfo",
   };
-  console.log(4)
   const response = await axios(config);
-  console.log(5)
   console.log(response)
   return response.data;
 }

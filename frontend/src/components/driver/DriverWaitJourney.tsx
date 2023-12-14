@@ -17,9 +17,9 @@ import { Boarding } from "../../models/journey.model"
 import { showBoardingInfo, confirmRoute } from "../../apis/driver.journey.api"
 
 type DriverWaitJourneyProps = {
-  boardingInfo: Boarding[] | null;
+  boardingInfo: Boarding[];
   setDriverStatus: (status: string) => void;
-  setBoardingInfo: (boarding: Boarding[] | null) => void;
+  setBoardingInfo: (boarding: Boarding[]) => void;
 }
 
 const boarding = [
@@ -68,7 +68,9 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const handleOpen = (idx: number) => {
-    setModalAddress(boarding[idx].address);
+    // TODO: name missing
+     const [ stopID, address, boardTime, latitude, lontitude, passengers ] = Object.values(boardingInfo[idx]);
+    setModalAddress(String(address));
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -136,7 +138,9 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
             </Button>
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto' }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {boarding.map((stop, idx) => {
+                {boardingInfo.map((stop, idx) => {
+                  const [ stopID, address, boardTime, latitude, lontitude, passengers ] = Object.values(stop);
+                  console.log(Object.values(stop))
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
@@ -173,7 +177,7 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 mb: 2, mt: 5,
                 height: 40,
               }}
-              disabled={boarding.reduce((sum, stop) => sum + stop.passengers.length, 0)!== 0}
+              disabled={boardingInfo.reduce((sum, stop) => sum + stop.passengers.length, 0)!== 0}
               onClick={toDriverHome}
             >
               Cancel Journey if no passengers
