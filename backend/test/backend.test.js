@@ -813,8 +813,8 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                 "type": "SUV",
                 "electric": false
             },
-            stop_arrival_time: "2023-12-21 12:06:29",
-            dest_arrival_time: "2023-12-21 12:24:35"
+            "stop_arrival_time": "2023-12-21 12:06:29",
+            "dest_arrival_time": "2023-12-21 12:24:35"
         });
     });
 
