@@ -1,9 +1,9 @@
-import { useState, useRef, RefObject } from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Divider from '@mui/material/Divider';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
+import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -73,7 +73,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
     const address = (isGo)? goFav[0] : backFav[0];
     console.log(address);
     if(isGo){
-      if(address === "" || address === undefined){
+      if(address === "" || address === undefined || address === null){
         setGoStopOpen(false);
         setGoCheck([]);
         setGoStops([]);
@@ -89,11 +89,11 @@ export const DriverRoute = (props: DriverRouteProps) => {
         }
       }
     }else{
-      if(address === "" || address === undefined){
+      if(address === "" || address === undefined || address === null){
         setBackStopOpen(false);
         setBackCheck([]);
         setBackStops([]);
-        setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
+        setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
           const response = await showStops({isGo: false, address: address});
@@ -174,9 +174,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="start"
         label="Start"
-        value={goFav[0]}
+        defaultValue={goFav[0]}
         onBlur={(e) => {setGoFav([e.target.value, goFav[1]])}}
-        // onChange={(e) => {setGoFav([e.target.value, goFav[1]])}}
         variant="standard"
         InputProps={inputProps}
       />
@@ -192,7 +191,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Autocomplete
         multiple
         id="stops"
-        options={[]}
+        options={goStops.map((s) => {return s.Name})}
+        getOptionLabel={(option) => {return option}}
         defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
         value={goCheck.map((val) => {return goStops[val].Name})}
         disabled={!edit}
@@ -219,7 +219,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
           >
             <List>
               {goStops.map((stop, idx) => {
-                // const { stopID, Name, address } = stop;
                 const [ stopID, Name, address ] = Object.values(stop);
                 return (
                   <ListItem
@@ -238,7 +237,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
                           />:<></>
                         }
                       </ListItemIcon>
-                      <ListItemText id={`go-label-${idx}`} primary={Name} secondary={address} />
+                      <ListItemText id={`go-label-${idx}`} primaryTypographyProps={{color: "#313944", fontWeight: "bold"}} primary={Name} secondary={address} />
                     </ListItemButton>
                   </ListItem>
                 );
@@ -255,8 +254,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Text
         id="destination"
         label="Destination"
-        value={backFav[0]}
-        onChange={(e) => setBackFav([e.target.value, backFav[1]])}
+        defaultValue={backFav[0]}
+        onBlur={(e) => setBackFav([e.target.value, backFav[1]])}
         variant="standard"
         InputProps={inputProps}
       />
@@ -272,7 +271,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Autocomplete
         multiple
         id="stops"
-        options={[]}
+        options={goStops.map((s) => {return s.Name})}
+        getOptionLabel={(option) => {return option}}
         defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
         value={backCheck.map((val) => {return backStops[val].Name})}
         disabled={!edit}
@@ -317,7 +317,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
                           />:<></>
                         }
                       </ListItemIcon>
-                      <ListItemText id={`back-label-${idx}`} primary={Name} secondary={address} />
+                      <ListItemText id={`back-label-${idx}`} primaryTypographyProps={{color: "#313944", fontWeight: "bold"}} primary={Name} secondary={address} />
                     </ListItemButton>
                   </ListItem>
                 );
