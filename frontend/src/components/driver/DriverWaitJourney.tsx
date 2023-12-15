@@ -111,11 +111,12 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
-                        <Avatar>
-                        <img src={carImage} style={{width: 50}}/>
+                        <Avatar sx={{scale: '80%', mb: -2.5, mt: 1}}>
+                          <img src={carImage} style={{width: 50}}/>
                         </Avatar>
+                        <p>{stop.boardTime.split(' ')[1].slice(0, stop.boardTime.split(' ')[1].indexOf(':', stop.boardTime.split(' ')[1].indexOf(':') + 1))}</p>
                       </ListItemAvatar>
-                      <ListItemText primary={`${stop.name} ${stop.boardTime}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "people" : "person"}`}
+                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "people" : "person"}`}
  />
                     </ListItem>
                   )})
