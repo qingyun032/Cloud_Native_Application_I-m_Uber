@@ -22,6 +22,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useUserContext } from '../../contexts/UserContext';
 import { userMode } from '../../models/user.model';
 import { signOut } from '../../apis/sign.api';
+import { ifDriverOnRoute, showBoardingInfo } from '../../apis/driver.journey.api';
 
 const drawerWidth = 240;
 
@@ -106,14 +107,22 @@ export const NavigationBar = () => {
     myNav("/profile");
   }
 
-  const switchMode = () => {
+  const switchMode = async () => {
     if(user !== null){
       if(user.mode === userMode.Passenger && user.driver === false){
         setProfileStatus(["userInfo", "car"]);
         myNav("/profile");
       }else{
-        if(user.mode === userMode.Passenger)
+        if(user.mode === userMode.Passenger) {
+          // try {
+          //   const response = await ifDriverOnRoute();
+          //   console.log(response);
+          // }
+          // catch (error: any) {
+          //   console.log(error);
+          // }
           myNav("/driverHome");
+        }
         else
           myNav("/passengerHome");
         setUser({...user, mode: (user.mode === userMode.Driver)? userMode.Passenger : userMode.Driver});

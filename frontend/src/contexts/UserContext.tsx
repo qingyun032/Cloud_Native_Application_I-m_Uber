@@ -8,6 +8,8 @@ interface UserContextType {
   setProfileStatus: (profileStatus: [string, string]) => void;
   lastHome: string;
   setLastHome: (lastHome: string) => void;
+  driverStatus: string;
+  setDriverStatus: (driverStatus: string) => void;
 }
 
 enum ProfileStatus {
@@ -21,10 +23,11 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<userInfo | null>(null);
   const [ profileStatus, setProfileStatus ] = useState<[string, string]>(["home", ""]);
+  const [driverStatus, setDriverStatus] = useState<string>('start')
   const [ lastHome, setLastHome ] = useState<string>("/passengerHome");
 
   return (
-    <UserContext.Provider value={{ user, setUser, profileStatus, setProfileStatus, lastHome, setLastHome }}>
+    <UserContext.Provider value={{ user, setUser, profileStatus, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus }}>
       {children}
     </UserContext.Provider>
   );

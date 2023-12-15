@@ -65,3 +65,13 @@ export const finishRoute = async (): Promise<string> => {
   console.log(response)
   return response.data;
 }
+
+export const ifDriverOnRoute = async (): Promise<boolean> => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: path + "/api/v1/route/ifDriverOnRoute",
+  };
+  const response = await axios(config);
+  console.log(response)
+  return response.data;
+}
