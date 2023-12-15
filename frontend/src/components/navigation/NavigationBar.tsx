@@ -62,7 +62,7 @@ export const NavigationBar = () => {
   // console.log(location);
   const [open, setOpen] = useState(false);
   // const [lastHome, setLastHome] = useState<string>("");
-  const { user, setUser, setProfileStatus, lastHome, setLastHome } = useUserContext();
+  const { user, setUser, setProfileStatus, lastHome, setLastHome, setDriverStatus, setBoardingInfo } = useUserContext();
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
@@ -82,6 +82,7 @@ export const NavigationBar = () => {
     setOpen(false);
     const response = await signOut();
     setLastHome("/passengerHome");
+    setDriverStatus('start');
     setProfileStatus(["home", ""]);
     myNav("/");
   }
@@ -114,13 +115,17 @@ export const NavigationBar = () => {
         myNav("/profile");
       }else{
         if(user.mode === userMode.Passenger) {
-          // try {
-          //   const response = await ifDriverOnRoute();
-          //   console.log(response);
-          // }
-          // catch (error: any) {
-          //   console.log(error);
-          // }
+          try {
+            const driverOnRoute = await ifDriverOnRoute();
+            if (driverOnRoute) {
+              const boardingResponse = await showBoardingInfo();
+              setBoardingInfo(boardingResponse.stops);
+              setDriverStatus('onJourney');
+            }
+          }
+          catch (error: any) {
+            console.log(error);
+          }
           myNav("/driverHome");
         }
         else

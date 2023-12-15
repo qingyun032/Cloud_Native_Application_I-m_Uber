@@ -31,8 +31,7 @@ export const DriverHomePage = () => {
         date: dayjs(),
         time: dayjs().add(1, 'hour'),
     });
-    const [boardingInfo, setBoardingInfo] = useState<Boarding[]>([]);
-    const { driverStatus, setDriverStatus } = useUserContext();
+    const { driverStatus, setDriverStatus, boardingInfo, setBoardingInfo } = useUserContext();
 
     return (
         <>
