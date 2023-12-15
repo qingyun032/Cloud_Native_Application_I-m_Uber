@@ -131,10 +131,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID});
-        const GOStopNames = goCheck.map((val) => {return goStops[val].Name});
-        const BACKStopIDs = backCheck.map((val) => {return backStops[val].stopID});
-        const BACKStopNames = backCheck.map((val) => {return backStops[val].Name});
+        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID}).concat(111);
+        const GOStopNames = goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
+        const BACKStopIDs = [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
+        const BACKStopNames = ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
         const newUser = {
           ...user,
           favRoute:{
