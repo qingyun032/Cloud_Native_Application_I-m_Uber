@@ -82,7 +82,7 @@ export const DriverStart = (props: driverStartProps) => {
         ? user.favRoute.driver.GO.stopIDs.map((stopID, index) => ({
             stopID,
             Name: user?.favRoute.driver.GO.stopNames?.[index] || '',
-            address: '',
+            address: user?.favRoute.driver.GO.stopAddresses?.[index] || '',
             }))
         : [];
 
@@ -90,7 +90,7 @@ export const DriverStart = (props: driverStartProps) => {
         ? user.favRoute.driver.BACK.stopIDs.map((stopID, index) => ({
             stopID,
             Name: user?.favRoute.driver.BACK.stopNames?.[index] || '',
-            address: '',
+            address: user?.favRoute.driver.BACK.stopAddresses?.[index] || '',
             }))
         : [];
 
