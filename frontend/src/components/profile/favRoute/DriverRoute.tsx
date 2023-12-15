@@ -131,8 +131,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
       if(user !== null){
         const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID});
         const GOStopNames = goCheck.map((val) => {return goStops[val].Name});
+        const GOStopAddress = goCheck.map((val) => {return goStops[val].address});
         const BACKStopIDs = backCheck.map((val) => {return backStops[val].stopID});
         const BACKStopNames = backCheck.map((val) => {return backStops[val].Name});
+        const BACKStopAddress = backCheck.map((val) => {return backStops[val].address});
         const newUser = {
           ...user,
           favRoute:{
@@ -142,12 +144,14 @@ export const DriverRoute = (props: DriverRouteProps) => {
                 time: (goFav[1] === null)? user.favRoute.driver.GO.time : goFav[1] + ":00",
                 stopIDs: GOStopIDs,
                 stopNames: GOStopNames,
+                stopAddresses: GOStopAddress,
               },
               BACK: {
                 address: (backFav[0] === null)? user.favRoute.driver.BACK.address : backFav[0],
                 time: (backFav[1] === null)? user.favRoute.driver.BACK.time : backFav[1] + ":00",
                 stopIDs: BACKStopIDs,
                 stopNames: BACKStopNames,
+                stopAddresses: BACKStopAddress,
               }
             },
             passenger: {...user.favRoute.passenger},

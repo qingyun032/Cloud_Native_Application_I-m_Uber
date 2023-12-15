@@ -33,7 +33,8 @@ type driverRoute = {
     address: string,
     time: string,
     stopIDs: Array<number>,
-    stopNames: Array<string>
+    stopNames: Array<string>,
+    stopAddresses: Array<string>
 }
 
 export type favRoute = {
