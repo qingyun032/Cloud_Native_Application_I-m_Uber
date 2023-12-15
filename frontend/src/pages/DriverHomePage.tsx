@@ -29,7 +29,7 @@ export const DriverHomePage = () => {
         destination: "台積電",
         passengerCount: "4",
         date: dayjs(),
-        time: dayjs(),
+        time: dayjs().add(1, 'hour'),
     });
     const [boardingInfo, setBoardingInfo] = useState<Boarding[]>([]);
 

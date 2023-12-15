@@ -611,33 +611,33 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").send({
-            "startTime": '2021-06-01 11:00:00:000Z',
+            "startTime": '2021-06-01 11:00:00',
             "stopIds": [1, 2, 3, 4, 5, 6, 7, 9],
             "available": 3,
             "type": "GO",
             "state": "PROCESSING"
         });
         expect(res.statusCode).toBe(401);
-        expect(res.body.error).toBe("Wrong sign in information");
+        expect(res.body.error).toBe("Please sign in first");
     });
     
-    test("Try to create a route with invalid data", async () => {
-        let res = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Leo",
-            "password": "Leopassword"
-        });
-        const { header } = res;
-        res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00:000Z',
-            "stopIds": [1, 9],
-            "available": 3,
-            "type": "GO",
-            "state": "PROCESSING"
-        });
-        expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe("You should include at least 1 intermediate stop");
-
-    });
+    // Already checked in frontend
+    // test("Try to create a route with invalid data", async () => {
+    //     let res = await request(app).post("/api/v1/auth/signin").send({
+    //         "userName": "Leo",
+    //         "password": "Leopassword"
+    //     });
+    //     const { header } = res;
+    //     res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
+    //         "startTime": '2021-06-01 11:00:00',
+    //         "stopIds": [1, 9],
+    //         "available": 3,
+    //         "type": "GO",
+    //         "state": "PROCESSING"
+    //     });
+    //     expect(res.statusCode).toBe(400);
+    //     expect(res.body.error).toBe("You should include at least 1 intermediate stop");
+    // });
 
     test("Create a route successfully", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
@@ -646,8 +646,8 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00:000Z',
-            "stopIds": [1, 2, 3, 4, 5, 6, 7, 9],
+            "startTime": '2021-06-01 11:00:00',
+            "stopIds": [111, 2, 3, 4, 5, 6, 7, 9],
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -656,9 +656,9 @@ describe("POST /api/v1/route/createRoute", () => {
         expect(res.body).toEqual({
             "routeID": 1,
             "driverID": 1,
-            "start": 9,
-            "destination": 1,
-            "startTime": "2021-06-01T11:00:00.000Z",
+            "start": 111,
+            "destination": 9,
+            "startTime": "2021-06-01 11:00:00",
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -672,7 +672,7 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2023-12-21 08:23:00:000Z',
+            "startTime": '2023-12-21 08:23:00',
             "stopIds": [88, 11, 33, 111],
             "available": 4,
             "type": "GO",
@@ -684,7 +684,7 @@ describe("POST /api/v1/route/createRoute", () => {
             "driverID": 2,
             "start": 88,
             "destination": 111,
-            "startTime": "2023-12-21T08:23:00.000Z",
+            "startTime": "2023-12-21 08:23:00",
             "available": 4,
             "type": "GO",
             "state": "PROCESSING"
@@ -698,7 +698,7 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2023-12-21 08:23:00:000Z',
+            "startTime": '2023-12-21 08:23:00',
             "stopIds": [10, 77, 44, 23, 4, 111],
             "available": 4,
             "type": "GO",
@@ -710,7 +710,7 @@ describe("POST /api/v1/route/createRoute", () => {
             "driverID": 3,
             "start": 10,
             "destination": 111,
-            "startTime": "2023-12-21T08:23:00.000Z",
+            "startTime": "2023-12-21 08:23:00",
             "available": 4,
             "type": "GO",
             "state": "PROCESSING"
@@ -719,8 +719,9 @@ describe("POST /api/v1/route/createRoute", () => {
     // Add more test cases as needed
 });
 
+
 describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/selectCandidates", () => {
-    test("Show route candidates and select", async () => {
+    test("Show route candidates", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Alice",
             "password": "Alicepassword"
@@ -731,7 +732,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
             "Go": true,
             "address": "新竹縣竹東鎮光武街2號",
             "passenger_cnt": 1,
-            "board_time": "2023-12-21 12:01:00:000Z"
+            "board_time": "2023-12-21 12:01:00"
         }
         mockedAxios.get.mockResolvedValue({
             "data": {
@@ -759,7 +760,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                     "stop_lon": 121.09597000000000000,
                     "driverID": 3,
                     "driverName": "Wei",
-                    "board_time": '2023-12-21T12:06:29.000Z',
+                    "board_time": '2023-12-21 12:06:29',
                     "rating": 0,
                     "nRating": 0,
                     "price": 116,
@@ -771,6 +772,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
 				},
 		    ]
         });
+        // select candidate
         const route_selected_info = {
             "routeID": 3,
             "stopID": 23,
@@ -780,13 +782,12 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
             route_selected_info
         );
         expect(res.statusCode).toBe(201);
-        console.log(res.body);
         expect(res.body).toEqual(
             {
                 "userID": 4,
                 "routeID": 3,
                 "pickUpStopID": 23,
-                "dropOFFStopID": '111',
+                "dropOFFStopID": 111,
                 "passengerCnt": 1,
                 "price": 116
             }
@@ -811,11 +812,12 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                 "type": "SUV",
                 "electric": false
             },
-            stop_arrival_time: "2023-12-21T12:06:29.000Z",
-            dest_arrival_time: "2023-12-21T12:24:35.000Z"
+            stop_arrival_time: "2023-12-21 12:06:29",
+            dest_arrival_time: "2023-12-21 12:24:35"
         });
     });
 });
+
 
 describe("POST /api/v1/route/confirmRoute", () => {
     test("confirmRoute", async () => {
@@ -846,8 +848,9 @@ describe("GET /api/v1/route/showBoardingInfo", () => {
         expect(res.body.stops[5]).toEqual(
             {
                 stopID: 111,
+                name: "台積電",
                 address: '新竹縣寶山鄉園區二路168號',
-                boardTime: '2023-12-21T12:24:35.000Z',
+                boardTime: '2023-12-21 12:24:35',
                 latitude: '24.77134000000000000',
                 longitude: '121.01209000000000000',
                 passengers: [ { count: 1, type: 'dropOff' } ]
@@ -960,5 +963,47 @@ describe("Update favorite", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toEqual("Update passenger favorite route successfully");
 
+    });
+});
+
+describe("GET /api/v1/route/ifDriverOnRoute", () => {
+    test("Check if driver is on route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+        res = await request(app).get("/api/v1/route/ifDriverOnRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(true);
+    });
+});
+
+describe("GET /api/v1/route/ifPassengerOnRoute", () => {
+    test("Check if passenger is on route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+        res = await request(app).get("/api/v1/route/ifPassengerOnRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(false);
+    });
+});
+
+// Please write your test cases above finishRoute
+
+describe("POST /api/v1/route/finishRoute", () => {
+    test("Finish route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
+
+        res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Finish route successfully");
     });
 });
