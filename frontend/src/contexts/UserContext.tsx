@@ -1,5 +1,6 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
 import { userInfo } from '../models/user.model';
+import { Boarding } from '../models/journey.model';
 
 interface UserContextType {
   user: userInfo | null;
@@ -9,7 +10,9 @@ interface UserContextType {
   lastHome: string;
   setLastHome: (lastHome: string) => void;
   driverStatus: string;
-  setDriverStatus: (lastHome: string) => void;
+  setDriverStatus: (driverStatus: string) => void;
+  boardingInfo: Boarding[];
+  setBoardingInfo: (boarding: Boarding[]) => void;
 }
 
 enum ProfileStatus {
@@ -22,13 +25,13 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<userInfo | null>(null);
+  const [boardingInfo, setBoardingInfo] = useState<Boarding[]>([]);
   const [ profileStatus, setProfileStatus ] = useState<[string, string]>(["home", ""]);
+  const [driverStatus, setDriverStatus] = useState<string>('start')
   const [ lastHome, setLastHome ] = useState<string>("/passengerHome");
-  // const [ driverStatus, setDriverStatus ] = useState<string>("start");
-  const [ driverStatus, setDriverStatus ] = useState<string>("start");
 
   return (
-    <UserContext.Provider value={{ user, setUser, profileStatus, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus }}>
+    <UserContext.Provider value={{ user, setUser, profileStatus, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus, boardingInfo, setBoardingInfo }}>
       {children}
     </UserContext.Provider>
   );

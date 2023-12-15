@@ -22,6 +22,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useUserContext } from '../../contexts/UserContext';
 import { userMode } from '../../models/user.model';
 import { signOut } from '../../apis/sign.api';
+import { ifDriverOnRoute, showBoardingInfo } from '../../apis/driver.journey.api';
 
 const drawerWidth = 240;
 
@@ -61,7 +62,7 @@ export const NavigationBar = () => {
   // console.log(location);
   const [open, setOpen] = useState(false);
   // const [lastHome, setLastHome] = useState<string>("");
-  const { user, setUser, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus } = useUserContext();
+  const { user, setUser, setProfileStatus, lastHome, setLastHome, setDriverStatus, setBoardingInfo } = useUserContext();
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
@@ -81,8 +82,8 @@ export const NavigationBar = () => {
     setOpen(false);
     const response = await signOut();
     setLastHome("/passengerHome");
+    setDriverStatus('start');
     setProfileStatus(["home", ""]);
-    // setDriverStatus("start");
     myNav("/");
   }
 
@@ -112,14 +113,26 @@ export const NavigationBar = () => {
     myNav("/profile");
   }
 
-  const switchMode = () => {
+  const switchMode = async () => {
     if(user !== null){
       if(user.mode === userMode.Passenger && user.driver === false){
         setProfileStatus(["userInfo", "car"]);
         myNav("/profile");
       }else{
-        if(user.mode === userMode.Passenger)
+        if(user.mode === userMode.Passenger) {
+          try {
+            const driverOnRoute = await ifDriverOnRoute();
+            if (driverOnRoute) {
+              const boardingResponse = await showBoardingInfo();
+              setBoardingInfo(boardingResponse.stops);
+              setDriverStatus('onJourney');
+            }
+          }
+          catch (error: any) {
+            console.log(error);
+          }
           myNav("/driverHome");
+        }
         else
           myNav("/passengerHome");
         setUser({...user, mode: (user.mode === userMode.Driver)? userMode.Passenger : userMode.Driver});

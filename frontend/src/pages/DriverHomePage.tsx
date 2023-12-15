@@ -7,7 +7,7 @@ import { DriverOnJourney } from '../components/driver/DriverOnJourney';
 import { DriverEndJourney } from '../components/driver/DriverEndJourney';
 import { Stop } from "../models/stop.model"
 import { ItineraryData, Boarding } from "../models/journey.model"
-
+import { useUserContext } from '../contexts/UserContext';
 import dayjs from 'dayjs';
 
 const theme = createTheme({
@@ -22,7 +22,6 @@ const theme = createTheme({
 });
 
 export const DriverHomePage = () => {
-    const [driverStatus, setDriverStatus] = useState<string>('start')
     const [isGo, setIsGo] = useState<boolean>(true)
     const [stops, setStops] = useState<Stop[]>([])
     const [itineraryData, setItineraryData] = useState<ItineraryData>({
@@ -32,7 +31,7 @@ export const DriverHomePage = () => {
         date: dayjs(),
         time: dayjs().add(1, 'hour'),
     });
-    const [boardingInfo, setBoardingInfo] = useState<Boarding[]>([]);
+    const { driverStatus, setDriverStatus, boardingInfo, setBoardingInfo } = useUserContext();
 
     return (
         <>
