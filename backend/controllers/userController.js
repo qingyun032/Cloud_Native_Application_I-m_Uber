@@ -99,10 +99,12 @@ async function getMyInfoV2(req, res) {
                 const GO_stopIDs = returnDriverFavor.GO_stops.split(',').map(Number);
                 const GO_stops = await stopService.getAllStops(GO_stopIDs);
                 const GO_names = GO_stops.map(item => item.Name);
+                const GO_addresses = GO_stops.map(item => item.address);
                 returnUser.favorRoute.driver.GO = {
                     "address": returnDriverFavor.GO_start,
                     "time": returnDriverFavor.GO_TIME,
                     "stopIDs": GO_stopIDs,
+                    "stopAddresses": GO_addresses,
                     "stopNames": GO_names
                 }
             }
@@ -110,10 +112,12 @@ async function getMyInfoV2(req, res) {
                 const BACK_stopIDs = returnDriverFavor.BACK_stops.split(',').map(Number)
                 const BACK_stops = await stopService.getAllStops(BACK_stopIDs);
                 const BACK_names = BACK_stops.map(item => item.Name);
+                const BACK_addresses = BACK_stops.map(item => item.address);
                 returnUser.favorRoute.driver.BACK = {
                     "address": returnDriverFavor.BACK_dest,
                     "time": returnDriverFavor.BACK_TIME,
                     "stopIDs": BACK_stopIDs,
+                    "stopAddresses": BACK_addresses,
                     "stopNames": BACK_names
                 }
             }
