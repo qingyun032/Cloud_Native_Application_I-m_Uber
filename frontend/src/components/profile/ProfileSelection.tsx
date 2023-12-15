@@ -1,14 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { NavigationBar } from '../navigation/NavigationBar';
-
-type ProfileSelectionProps = {
-  setStatus: (status: string) => void;
-}
+import { useUserContext } from '../../contexts/UserContext';
 
 const BigButton = styled(Button)({
   textTransform: 'none',
@@ -17,12 +12,8 @@ const BigButton = styled(Button)({
   width: "275px"
 });
 
-export const ProfileSelection = (props: ProfileSelectionProps) => {
-  const { setStatus } = props;
-  const navigate = useNavigate()
-  const onClick = () => {
-    navigate('/home', { state: { isDriver: false, name: 'Joey' }})
-  }
+export const ProfileSelection = () => {
+  const { setProfileStatus } = useUserContext();
   return (
     <>
       <NavigationBar></NavigationBar>
@@ -40,8 +31,8 @@ export const ProfileSelection = (props: ProfileSelectionProps) => {
           minHeight: "50vh"
         }}
       >
-        <BigButton variant='contained' onClick={() => setStatus("userInfo")}>User Info</BigButton>
-        <BigButton variant='contained' onClick={() => setStatus("favRoute")}>Favorite Route</BigButton>
+        <BigButton variant='contained' onClick={() => setProfileStatus(["userInfo", "user"])}>User Info</BigButton>
+        <BigButton variant='contained' onClick={() => setProfileStatus(["favRoute", "passenger"])}>Favorite Route</BigButton>
       </Box>
     </>
   );

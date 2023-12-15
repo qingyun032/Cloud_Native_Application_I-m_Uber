@@ -19,6 +19,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useUserContext } from '../../contexts/UserContext';
+import { userMode } from '../../models/user.model';
+import { signOut } from '../../apis/sign.api';
+import { ifDriverOnRoute, showBoardingInfo } from '../../apis/driver.journey.api';
 
 const drawerWidth = 240;
 
@@ -57,8 +61,8 @@ export const NavigationBar = () => {
   const location = useLocation();
   // console.log(location);
   const [open, setOpen] = useState(false);
-  // TODO: get isDriver from user infomation
-  const [isDriver, setIsDriver] = useState(false);
+  // const [lastHome, setLastHome] = useState<string>("");
+  const { user, setUser, setProfileStatus, lastHome, setLastHome, setDriverStatus, setBoardingInfo } = useUserContext();
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
@@ -69,11 +73,65 @@ export const NavigationBar = () => {
     setOpen(false);
   };
 
-  const onClick = (url: string, args: any) => {
-    if(url === location.pathname){
+  const myNav = (url: string) => {
+    setOpen(false);
+    navigate(url);
+  }
+
+  const logOut = async () => {
+    setOpen(false);
+    const response = await signOut();
+    setLastHome("/passengerHome");
+    setDriverStatus('start');
+    setProfileStatus(["home", ""]);
+    myNav("/");
+  }
+
+  const navHome = () => {
+    if(location.pathname !== "/profile"){
       setOpen(false);
-    }else{
-      navigate(url, args);
+    }else if(user !== null){
+      console.log(lastHome);
+      myNav(lastHome);
+      // if(user.mode === userMode.Driver)
+      //   myNav("/driverHome");
+      // else
+      //   myNav("/passengerHome");
+    }
+  }
+
+  const navProfile = () => {
+    if(location.pathname !== "/profile")
+      setLastHome(location.pathname);
+    console.log(location);
+    console.log(lastHome);
+    myNav("/profile");
+  }
+
+  const switchMode = async () => {
+    if(user !== null){
+      if(user.mode === userMode.Passenger && user.driver === false){
+        setProfileStatus(["userInfo", "car"]);
+        myNav("/profile");
+      }else{
+        if(user.mode === userMode.Passenger) {
+          try {
+            const driverOnRoute = await ifDriverOnRoute();
+            if (driverOnRoute) {
+              const boardingResponse = await showBoardingInfo();
+              setBoardingInfo(boardingResponse.stops);
+              setDriverStatus('onJourney');
+            }
+          }
+          catch (error: any) {
+            console.log(error);
+          }
+          myNav("/driverHome");
+        }
+        else
+          myNav("/passengerHome");
+        setUser({...user, mode: (user.mode === userMode.Driver)? userMode.Passenger : userMode.Driver});
+      }
     }
   }
 
@@ -121,7 +179,7 @@ export const NavigationBar = () => {
             <ListItem key="Home" disablePadding>
               <ListItemButton
                 sx={{ margin: "10px", borderRadius: "5px", backgroundColor: (location.pathname === "/profile")? "inherit":"#9C694C" }}
-                onClick={() => onClick('/passengerHome', { state: { isDriver: false, name: 'Joey' }})}
+                onClick={() => navHome()}
               >
                 <ListItemIcon>
                   <HomeIcon sx={{ color: "#ffffff" }}/>
@@ -132,7 +190,7 @@ export const NavigationBar = () => {
             <ListItem key="Profile" disablePadding>
               <ListItemButton
                 sx={{ margin: "10px", borderRadius: "5px", backgroundColor: (location.pathname === "/profile")? "#9C694C":"inherit" }}
-                onClick={() => onClick('/profile', {})}
+                onClick={() => navProfile()}
               >
                 <ListItemIcon>
                   <AccountCircleIcon sx={{ color: "#ffffff" }}/>
@@ -144,19 +202,19 @@ export const NavigationBar = () => {
           <Divider />
         </div>
         <List sx={{ margin: "10px" }}>
-          <ListItem key="Switch" disablePadding>
+          <ListItem key="Switch" style={{display: (location.pathname === "/passengerMatched" || location.pathname === "/driverMatched")? "none" : "flex"}} disablePadding>
             <ListItemButton
               sx={{ borderRadius: "5px" }}
-              onClick={() => setIsDriver(!isDriver)}    // TODO: need to modify user infomation
+              onClick={() => switchMode()}
             >
               {/* TODO: need to check location to decide visibility */}
-              <ListItemText sx={{ textAlign: 'center' }} primary={(isDriver)? "Switch to passenger" : "Switch to Driver"} />
+              <ListItemText sx={{ textAlign: 'center' }} primary={(user !== null && user.mode === userMode.Driver)? "Switch to passenger" : "Switch to Driver"} />
             </ListItemButton>
           </ListItem>
           <ListItem key="LogOut" disablePadding>
             <ListItemButton
               sx={{ borderRadius: "5px" }}
-              onClick={() => onClick("/", {})}          // TODO: pass args if any
+              onClick={() => logOut()}
             >
               <ListItemText primaryTypographyProps={{ textAlign: 'center', color: '#86744C', fontWeight: 'bold' }} primary="Log out" />
             </ListItemButton>

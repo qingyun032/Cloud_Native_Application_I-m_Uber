@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +18,6 @@ import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { NavigationBar } from '../components/navigation/NavigationBar';
 import { candidateInfo, itineraryData } from "../models/trip";
 import { getCandidate } from '../apis/passenger.api';
-import ButtonGroup from '@mui/material/ButtonGroup';
 
 
 
@@ -87,9 +87,14 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     time: dayjs(),
   });
 
+  const currentDate = dayjs().startOf('day');
+  const currentTime = dayjs().startOf('minute');
+  const selectedDate = passengerItineraryData.date?.startOf('day');
+  const selectedTime = passengerItineraryData.time?.startOf('minute');
+
   const handleInputChange = (field: keyof itineraryData, value: string | number | Dayjs | null) => {
-    setPassengerItineraryData((prevPassengerItineraryData) => ({
-        ...prevPassengerItineraryData,
+    setPassengerItineraryData((prevItineraryData) => ({
+        ...prevItineraryData,
         [field]: value,
     }));
   };
@@ -206,6 +211,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={passengerItineraryData.date}
+                          minDate={dayjs()}
                           onChange={(newDate) => handleInputChange('date', newDate)}
                         />
                       </Box>
@@ -216,6 +222,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
                           value={passengerItineraryData.time}
+                          minTime={passengerItineraryData.date?.isSame(dayjs(), 'day') ? dayjs() : null}
                           onChange={(newTime) => handleInputChange('time', newTime)}
                         />
                       </Box>
@@ -227,6 +234,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                       backgroundColor : "secondary.main",
                       mb: 1, mt: 3,
                     }}
+                    disabled={passengerItineraryData.start === "" || passengerItineraryData.destination === "" || (selectedDate?.isSame(currentDate) && selectedTime?.isBefore(currentTime))}
                   >
                     Search
                   </Button>

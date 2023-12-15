@@ -6,7 +6,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { candidateInfo } from '../models/trip';
-import { brand } from '../models/carBrand';
+import { brandList } from '../models/carBrand';
 import { selectCandidate } from '../apis/passenger.api';
 
 
@@ -129,7 +129,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
               <Typography sx={{ mt:2 }}>Car Model</Typography>
               <Typography variant='h5'>
                 {/* need to map to string */}
-                {brand[candidate.carbrand]} 
+                {brandList[candidate.carbrand]} 
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Cost</Typography>

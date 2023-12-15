@@ -1,27 +1,29 @@
-import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { userInfo } from '../../../models/user.model';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { PassengerRoute } from './PassengerRoute';
 import { DriverRoute } from './DriverRoute';
+import { infoBarType } from '../../../models/user.model';
+import { useUserContext } from '../../../contexts/UserContext';
 
 type FavRouteProps = {
-  setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
+  setInfoBar: (infoBar: infoBarType) => void;
 }
 
 export const FavRoute = (props: FavRouteProps) => {
-  const { setStatus, user, setUser } = props;
-  const [value, setValue] = useState("passenger");
+  const { setInfoBar } = props;
+  const { user, profileStatus, setProfileStatus } = useUserContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    if(user !== null && user.driver === false && newValue === "driver"){
+      setInfoBar({open: true, type: "error", message: "Please go to User Info to sign up car information first."});
+    }else{
+      setProfileStatus([profileStatus[0], newValue]);
+    }
   };
 
   return (
@@ -40,15 +42,15 @@ export const FavRoute = (props: FavRouteProps) => {
           minHeight: "75vh"
         }}
       >
-        <TabContext value={value}>
+        <TabContext value={profileStatus[1]}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="FavRoute label">
               <Tab label="As a passenger" value="passenger" sx={{textTransform: 'none'}}/>
               <Tab label="As a driver" value="driver" sx={{textTransform: 'none'}}/>
             </TabList>
           </Box>
-          <TabPanel value="passenger"><PassengerRoute setStatus={setStatus} user={user} setUser={setUser}/></TabPanel>
-          <TabPanel value="driver"><DriverRoute setStatus={setStatus} user={user} setUser={setUser}/></TabPanel>
+          <TabPanel value="passenger"><PassengerRoute setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="driver"><DriverRoute setInfoBar={setInfoBar}/></TabPanel>
         </TabContext>
       </Box>
     </>

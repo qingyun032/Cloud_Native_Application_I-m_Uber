@@ -1,27 +1,25 @@
-import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { userInfo } from '../../../models/user.model';
 import { NavigationBar } from '../../navigation/NavigationBar';
 import { User } from './User';
 import { Car } from './Car';
+import { infoBarType } from '../../../models/user.model';
+import { useUserContext } from '../../../contexts/UserContext';
 
 type UserInfoProps = {
-  setStatus: (status: string) => void;
-  user: userInfo;
-  setUser: (user: userInfo) => void;
+  setInfoBar: (infobar: infoBarType) => void;
 }
 
 export const UserInfo = (props: UserInfoProps) => {
-  const { setStatus, user, setUser } = props;
-  const [value, setValue] = useState("user");
+  const { setInfoBar } = props;
+  const { profileStatus, setProfileStatus } = useUserContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    setProfileStatus([profileStatus[0], newValue]);
   };
 
   return (
@@ -40,15 +38,15 @@ export const UserInfo = (props: UserInfoProps) => {
           minHeight: "75vh"
         }}
       >
-        <TabContext value={value}>
+        <TabContext value={profileStatus[1]}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="UserInfo label">
               <Tab label="User" value="user" sx={{textTransform: 'none'}}/>
               <Tab label="Car" value="car" sx={{textTransform: 'none'}}/>
             </TabList>
           </Box>
-          <TabPanel value="user"><User setStatus={setStatus} user={user} setUser={setUser}/></TabPanel>
-          <TabPanel value="car"><Car setStatus={setStatus} user={user} setUser={setUser}/></TabPanel>
+          <TabPanel value="user"><User setInfoBar={setInfoBar}/></TabPanel>
+          <TabPanel value="car"><Car setInfoBar={setInfoBar}/></TabPanel>
         </TabContext>
       </Box>
     </>

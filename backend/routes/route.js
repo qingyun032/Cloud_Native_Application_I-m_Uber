@@ -14,4 +14,13 @@ router.post('/confirmRoute', routeController.confirmRoute);
 // Show boarding information to driver
 router.get('/showBoardingInfo', routeController.showBoardingInfo);
 
+// Finish route when driver arrives at destination
+router.post('/finishRoute', routeController.finishRoute);
+
+// Check if driver is on route
+router.get('/ifDriverOnRoute', routeController.ifDriverOnRoute);
+
+// Check if passenger is on route
+router.get('/ifPassengerOnRoute', routeController.ifPassengerOnRoute);
+
 module.exports = router;

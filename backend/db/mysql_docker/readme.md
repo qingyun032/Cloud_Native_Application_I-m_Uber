@@ -30,6 +30,7 @@ docker pull mysql:8.0.35
 
 ## Loads Stops And Grids Manually
 ```mysql=
-mysql> source backend/db/mysql_docker/stops.sql
-mysql> source backend/db/mysql_docker/grids.sql
+mysql> USE myUber_database;
+mysql> source stops.sql;
+mysql> source grids.sql;
 ```
