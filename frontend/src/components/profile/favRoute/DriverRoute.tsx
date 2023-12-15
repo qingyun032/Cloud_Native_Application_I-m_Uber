@@ -82,6 +82,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         try{
           const response = await showStops({isGo: true, address: address});
           setGoStops(response.Stops);
+          // setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -98,6 +99,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         try{
           const response = await showStops({isGo: false, address: address});
           setBackStops(response.Stops);
+          // setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -191,7 +193,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
       <Autocomplete
         multiple
         id="stops"
-        options={goStops.map((s) => {return s.Name})}
+        options={goStops.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
         getOptionLabel={(option) => {return option}}
         defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
         value={goCheck.map((val) => {return goStops[val].Name})}
@@ -274,7 +276,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
         options={goStops.map((s) => {return s.Name})}
         getOptionLabel={(option) => {return option}}
         defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
-        value={backCheck.map((val) => {return backStops[val].Name})}
+        value={backCheck.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
         disabled={!edit}
         readOnly={true}
         onFocus={() => openStop(false)}
