@@ -67,6 +67,25 @@ export const SignUp = (props: SignUpProps) => {
             [field]: value,
         }));
     };
+
+    const isValidEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    const isValidPhoneNumber = (phoneNumber: string) => {
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+    const isValidAddress = (address: string) => {
+        const addressRegex = /^[a-zA-Z0-9\s,.'-]+$/;
+        return addressRegex.test(address);
+    }
+    const isValidPassword = (password: string) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        return passwordRegex.test(password);
+    }
+
     
     const handleRegister = async () => {
         const missingFields = Object.keys(userData).filter((field) => userData[field as keyof typeof userData] === '');
@@ -78,7 +97,34 @@ export const SignUp = (props: SignUpProps) => {
                 setErrorMessage(`Please fill in the following required fields: ${missingFieldLabels}`);
             return;
         }
-        
+        if (userData.userName.length < 4) {
+            setErrorMessage('User Name must be at least 4 characters');
+            return;
+        }
+        if (!isValidEmail(userData.email)) {
+            setErrorMessage('Invalid Email');
+            return;
+        }
+        if (!isValidPhoneNumber(userData.phone)) {
+            setErrorMessage('Invalid Phone Number');
+            return;
+        }
+        if (!isValidAddress(userData.addressHome)) {
+            setErrorMessage('Invalid Home Address');
+            return;
+        }
+        if (!isValidAddress(userData.addressCompany)) {
+            setErrorMessage('Invalid Company Address');
+            return;
+        }
+        if (userData.addressHome === userData.addressCompany) {
+            setErrorMessage('Home Address and Company Address cannot be the same');
+            return;
+        }
+        if (!isValidPassword(userData.password)) {
+            setErrorMessage('Invalid Password: It should be at least 8 characters long and contain at least one letter and one number');
+            return;
+        }
         if (userData.password !== userData.passwordConfirm) {
             setErrorMessage('Password and Confirm Password do not match');
             return;
@@ -113,7 +159,7 @@ export const SignUp = (props: SignUpProps) => {
             <Box sx={{ mt: 1 }}>
                 {isFirstPage ? (
                     <>
-                        User Name
+                        User Name (At least 4 characters)
                         <TextField
                             margin="normal"
                             required

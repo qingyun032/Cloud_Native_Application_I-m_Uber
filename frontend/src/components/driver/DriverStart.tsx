@@ -29,26 +29,31 @@ type driverStartProps = {
 }
 
 export const DriverStart = (props: driverStartProps) => {
-  const { setDriverStatus, setStops, itineraryData, setItineraryData, isGo, setIsGo } = props;
-  const { user } = useUserContext();
-  const currentDate = dayjs().startOf('day');
-  const currentTime = dayjs().startOf('minute');
-  const selectedDate = itineraryData.date?.startOf('day');
-  const selectedTime = itineraryData.time?.startOf('minute');
-  const toDriverStopsPage = async () => {
-    const queryData = {
-        isGo: isGo,
-        address: isGo ? itineraryData.start : itineraryData.destination,
+    const { setDriverStatus, setStops, itineraryData, setItineraryData, isGo, setIsGo } = props;
+    const { user } = useUserContext();
+    const [favUsed, setFavUsed] = React.useState<boolean>(false);
+    const currentDate = dayjs().startOf('day');
+    const currentTime = dayjs().startOf('minute');
+    const selectedDate = itineraryData.date?.startOf('day');
+    const selectedTime = itineraryData.time?.startOf('minute');
+    const toDriverStopsPage = async () => {
+        if (favUsed) {
+            setDriverStatus('stops');
+            return;
+        }
+        const queryData = {
+            isGo: isGo,
+            address: isGo ? itineraryData.start : itineraryData.destination,
+        }
+        try {
+            const response = await showStops(queryData);
+            setStops(response.Stops);
+            setDriverStatus('stops');
+        }
+        catch (error: any) {
+            console.log(error);
+        }
     }
-    try {
-        const response = await showStops(queryData);
-        setStops(response.Stops);
-        setDriverStatus('stops');
-    }
-    catch (error: any) {
-        console.log(error);
-    }
-  }
     const goBoardTime = user?.favRoute.driver.GO.time;
     const goBoardTimeDayjs = goBoardTime ? dayjs(goBoardTime, "HH:mm:ss") : null;
     const backBoardTime = user?.favRoute.driver.BACK.time;
@@ -73,42 +78,83 @@ export const DriverStart = (props: driverStartProps) => {
         time: backBoardTimeDayjs || null,
     }
 
-  const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
-    const updatedItineraryData = {
-        ...itineraryData,
-        [field]: value,
+    const favStopsToWork: Stop[] = user?.favRoute.driver.GO.stopIDs
+        ? user.favRoute.driver.GO.stopIDs.map((stopID, index) => ({
+            stopID,
+            Name: user?.favRoute.driver.GO.stopNames?.[index] || '',
+            address: '',
+            }))
+        : [];
+
+    const favStopsToHome: Stop[] = user?.favRoute.driver.BACK.stopIDs
+        ? user.favRoute.driver.BACK.stopIDs.map((stopID, index) => ({
+            stopID,
+            Name: user?.favRoute.driver.BACK.stopNames?.[index] || '',
+            address: '',
+            }))
+        : [];
+
+    const handleInputChange = (field: keyof ItineraryData, value: string | number | Dayjs | null) => {
+        const updatedItineraryData = {
+            ...itineraryData,
+            [field]: value,
+        };
+        setItineraryData(updatedItineraryData);
     };
-    setItineraryData(updatedItineraryData);
-  };
 
-  const useFavoriteRoute = () => {
-    if (isGo) {
-        setItineraryData(driverFavRouteToWork);
+    const useFavoriteRoute = () => {
+        if (isGo) {
+            console.log(user?.favRoute.driver.GO)
+            if (user?.favRoute.driver.GO.address) {
+                setItineraryData(driverFavRouteToWork);
+                setStops(favStopsToWork)
+                setFavUsed(true);
+            }
+        }
+        else {
+            if (user?.favRoute.driver.BACK.address) {
+                setItineraryData(driverFavRouteToHome);
+                setStops(favStopsToHome)
+                setFavUsed(true);
+            }
+        }
     }
-    else {
-        setItineraryData(driverFavRouteToHome);
-    }
-  }
 
-  const toWork = () => {
-    setIsGo(true);
-    const updatedItineraryData = {
-        ...itineraryData,
-        ["start"]: "",
-        ["destination"]: "台積電",
+    const clearFavRoute = () => {
+        if (isGo) {
+            toWork();
+        }
+        else {
+            toHome();
+        }
+        setStops([]);
     }
-    setItineraryData(updatedItineraryData);
-  }
 
-  const toHome = () => {
-    setIsGo(false);
-    const updatedItineraryData = {
-        ...itineraryData,
-        ["start"]: "台積電",
-        ["destination"]: "",
+    const toWork = () => {
+        setIsGo(true);
+        setFavUsed(false);
+        const updatedItineraryData = {
+            start: "",
+            destination: "台積電",
+            passengerCount: "4",
+            date: dayjs(),
+            time: dayjs().add(1, 'hour'),
+        }
+        setItineraryData(updatedItineraryData);
     }
-    setItineraryData(updatedItineraryData);
-  }
+
+    const toHome = () => {
+        setIsGo(false);
+        setFavUsed(false);
+        const updatedItineraryData = {
+            start: "台積電",
+            destination: "",
+            passengerCount: "4",
+            date: dayjs(),
+            time: dayjs().add(1, 'hour'),
+        }
+        setItineraryData(updatedItineraryData);
+    }
 
   return (
     <>
@@ -150,6 +196,15 @@ export const DriverStart = (props: driverStartProps) => {
                 >
                   Use favorite route
                 </Button>
+                <Button variant="contained" 
+                  sx={{
+                    textTransform : "none",
+                    mb: 2, mt: 2, ml: 'auto', float: 'right',
+                  }}
+                  onClick={clearFavRoute}
+                >
+                  Clear
+                </Button>
                 <div>
                   Start
                   <TextField
@@ -159,7 +214,7 @@ export const DriverStart = (props: driverStartProps) => {
                     sx={{ mb: 1.5, mt: 1 }}
                     value={itineraryData.start}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('start', e.target.value)}
-                    disabled={!isGo}
+                    disabled={!isGo || favUsed}
                   />
                   Destination
                   <TextField
@@ -169,7 +224,7 @@ export const DriverStart = (props: driverStartProps) => {
                     sx={{ mb: 1.5, mt: 1 }}
                     value={itineraryData.destination}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('destination', e.target.value)}
-                    disabled={isGo}
+                    disabled={isGo || favUsed}
                   />
                   Passenger Count
                   <Select

@@ -44,10 +44,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
-  
-  // const toDriverHome = () => {
-  //   setDriverStatus('start')
-  // }
 
   const toDriverJourney = async () => {
     try {
@@ -111,11 +107,12 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
-                        <Avatar>
-                        <img src={carImage} style={{width: 50}}/>
+                        <Avatar sx={{scale: '80%', mb: -2.5, mt: 1}}>
+                          <img src={carImage} style={{width: 50}}/>
                         </Avatar>
+                        <p>{stop.boardTime.split(' ')[1].slice(0, stop.boardTime.split(' ')[1].indexOf(':', stop.boardTime.split(' ')[1].indexOf(':') + 1))}</p>
                       </ListItemAvatar>
-                      <ListItemText primary={`${stop.name} ${stop.boardTime}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "people" : "person"}`}
+                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "people" : "person"}`}
  />
                     </ListItem>
                   )})
@@ -142,20 +139,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 })}
               </ModalContent>
             </Modal>
-            {/* <Button            
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor : "secondary.main",
-                textTransform : "none",
-                mb: 2, mt: 5,
-                height: 40,
-              }}
-              disabled={boardingInfo.reduce((sum, stop) => sum + stop.passengers.length, 0)!== 0}
-              onClick={toDriverHome}
-            >
-              Cancel Journey if no passengers
-            </Button> */}
             <Button            
               variant="contained"
               fullWidth
