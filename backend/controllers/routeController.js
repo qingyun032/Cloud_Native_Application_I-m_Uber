@@ -50,42 +50,40 @@ const createRoute = async (req, res) => {
       // create route
       var route = {};
       // routeData.stopIds = routeData.stopIds.sort();
-      if (routeData.stopIds.length < 3) {
-        res.status(400).json({ error: "You should include at least 1 intermediate stop" });
-        return;
-      } else {
-        // TODO
-        routeInfo.start = routeData.stopIds[0];
-        routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
-        routeInfo.startTime = routeData.startTime;
-        routeInfo.available = routeData.available;
-        routeInfo.type = routeData.type;
-        routeInfo.state = routeData.state;
-  
-        route = await routeService.createRoute(routeInfo);
-  
-        // create boardings
-        var total_distance = 0;
-        var arriveTime = new Date(routeData.startTime);
-        var boardingInfo = {'routeID': route.routeID}; // when create a 
-        // for loop to create each boarding
-        for (let i = 0; i < routeData.stopIds.length; i++) {
-          const stop = await stopService.getStopById(routeData.stopIds[i]);
-          
-          boardingInfo.stopID = routeData.stopIds[i];
-          boardingInfo.boardTime = toCorrectString(arriveTime);
-          
-          // await can make sure that the boarding is created before the next iteration
-          await boardingService.createBoarding(boardingInfo);
+      // if (routeData.stopIds.length < 3) {
+      //   res.status(400).json({ error: "You should include at least 1 intermediate stop" });
+      //   return;
+      // } 
+      routeInfo.start = routeData.stopIds[0];
+      routeInfo.destination = routeData.stopIds[routeData.stopIds.length - 1];
+      routeInfo.startTime = routeData.startTime;
+      routeInfo.available = routeData.available;
+      routeInfo.type = routeData.type;
+      routeInfo.state = routeData.state;
 
-          if (i < routeData.stopIds.length - 1) {
-            const nextStopId = await stopService.getStopById(routeData.stopIds[i + 1]);
-            const distance = await distanceCalculator(stop.latitude, stop.longitude, nextStopId.latitude, nextStopId.longitude);
-            total_distance += distance;
-            var intervalTime = new Date((distance / 40) * 60 * 60 * 1000); // 40 km/h
+      route = await routeService.createRoute(routeInfo);
 
-            arriveTime = new Date(arriveTime.getTime() + intervalTime.getTime());
-          }
+      // create boardings
+      var total_distance = 0;
+      var arriveTime = new Date(routeData.startTime);
+      var boardingInfo = {'routeID': route.routeID}; // when create a 
+      // for loop to create each boarding
+      for (let i = 0; i < routeData.stopIds.length; i++) {
+        const stop = await stopService.getStopById(routeData.stopIds[i]);
+        
+        boardingInfo.stopID = routeData.stopIds[i];
+        boardingInfo.boardTime = toCorrectString(arriveTime);
+        
+        // await can make sure that the boarding is created before the next iteration
+        await boardingService.createBoarding(boardingInfo);
+
+        if (i < routeData.stopIds.length - 1) {
+          const nextStopId = await stopService.getStopById(routeData.stopIds[i + 1]);
+          const distance = await distanceCalculator(stop.latitude, stop.longitude, nextStopId.latitude, nextStopId.longitude);
+          total_distance += distance;
+          var intervalTime = new Date((distance / 40) * 60 * 60 * 1000); // 40 km/h
+
+          arriveTime = new Date(arriveTime.getTime() + intervalTime.getTime());
         }
       }
       let returnRoute = {
@@ -262,6 +260,60 @@ const finishRoute = async (req, res) => {
   }
 };
 
+const ifDriverOnRoute = async (req, res) => {
+  const userId = req.session.userId;
+  if(!userId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+  
+  try{
+    // check if there is an active route of this user
+    let allRoutes = await routeService.getAllRoutes();
+    let routeInfo = allRoutes.filter(
+      route =>
+      route.driverID === userId && route.state === "PROCESSING"
+    )
+    
+    if (routeInfo.length === 0) {
+      res.status(200).json(false);
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (error){
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const ifPassengerOnRoute = async (req, res) => {
+  const passengerId = req.session.userId;
+  if(!passengerId){
+      res.status(401).json({ error: "Wrong sign in information"})
+      return;
+  }
+  
+  try{
+    const passengerInfo = await passengerService.getPassengerById(passengerId);
+    if (!passengerInfo) {
+      res.status(200).json(false);
+      return;
+    }
+    // check if there is an active route of this user
+    let allRoutes = await routeService.getAllRoutes();
+    let routeInfo = allRoutes.filter(
+      route =>
+      route.routeID === passengerInfo.routeID && route.state === "PROCESSING"
+    )
+    
+    res.status(200).json(true);
+  } catch (error){
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
     getAllRoutes,
     getRouteById,
@@ -271,5 +323,7 @@ module.exports = {
     deleteRoute,
     showStops, 
     showBoardingInfo,
-    finishRoute
+    finishRoute, 
+    ifDriverOnRoute,
+    ifPassengerOnRoute
 };

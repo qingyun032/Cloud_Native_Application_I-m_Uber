@@ -621,22 +621,23 @@ describe("POST /api/v1/route/createRoute", () => {
         expect(res.body.error).toBe("Please sign in first");
     });
     
-    test("Try to create a route with invalid data", async () => {
-        let res = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Leo",
-            "password": "Leopassword"
-        });
-        const { header } = res;
-        res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00',
-            "stopIds": [1, 9],
-            "available": 3,
-            "type": "GO",
-            "state": "PROCESSING"
-        });
-        expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe("You should include at least 1 intermediate stop");
-    });
+    // Already checked in frontend
+    // test("Try to create a route with invalid data", async () => {
+    //     let res = await request(app).post("/api/v1/auth/signin").send({
+    //         "userName": "Leo",
+    //         "password": "Leopassword"
+    //     });
+    //     const { header } = res;
+    //     res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
+    //         "startTime": '2021-06-01 11:00:00',
+    //         "stopIds": [1, 9],
+    //         "available": 3,
+    //         "type": "GO",
+    //         "state": "PROCESSING"
+    //     });
+    //     expect(res.statusCode).toBe(400);
+    //     expect(res.body.error).toBe("You should include at least 1 intermediate stop");
+    // });
 
     test("Create a route successfully", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
@@ -965,18 +966,44 @@ describe("Update favorite", () => {
     });
 });
 
-// // Please write your test cases above finishRoute
+describe("GET /api/v1/route/ifDriverOnRoute", () => {
+    test("Check if driver is on route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+        res = await request(app).get("/api/v1/route/ifDriverOnRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(true);
+    });
+});
 
-// describe("POST /api/v1/route/finishRoute", () => {
-//     test("Finish route", async () => {
-//         let res = await request(app).post("/api/v1/auth/signin").send({
-//             "userName": "Wei",
-//             "password": "Weipassword"
-//         });
-//         const { header } = res;
+describe("GET /api/v1/route/ifPassengerOnRoute", () => {
+    test("Check if passenger is on route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Leo",
+            "password": "Leopassword"
+        });
+        const { header } = res;
+        res = await request(app).get("/api/v1/route/ifPassengerOnRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(false);
+    });
+});
 
-//         res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body.message).toBe("Finish route successfully");
-//     });
-// });
+// Please write your test cases above finishRoute
+
+describe("POST /api/v1/route/finishRoute", () => {
+    test("Finish route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
+
+        res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Finish route successfully");
+    });
+});
