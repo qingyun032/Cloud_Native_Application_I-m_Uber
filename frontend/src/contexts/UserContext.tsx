@@ -13,6 +13,12 @@ interface UserContextType {
   setDriverStatus: (driverStatus: string) => void;
   boardingInfo: Boarding[];
   setBoardingInfo: (boarding: Boarding[]) => void;
+  isDeparture: boolean;
+  setIsDeparture: (isDeparture: boolean) => void;
+  isArrival: boolean;
+  setIsArrival: (isArrival: boolean) => void;
+  isRating: boolean;
+  setIsRating: (isRating: boolean) => void;
 }
 
 enum ProfileStatus {
@@ -29,9 +35,21 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [ profileStatus, setProfileStatus ] = useState<[string, string]>(["home", ""]);
   const [driverStatus, setDriverStatus] = useState<string>('start')
   const [ lastHome, setLastHome ] = useState<string>("/passengerHome");
+  const [isDeparture, setIsDeparture] = useState(true);
+  const [isArrival, setIsArrival] = useState(false);
+  const [isRating, setIsRating] = useState(false);
 
   return (
-    <UserContext.Provider value={{ user, setUser, profileStatus, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus, boardingInfo, setBoardingInfo }}>
+    <UserContext.Provider value={{ 
+      user, setUser, 
+      profileStatus, setProfileStatus, 
+      lastHome, setLastHome, 
+      driverStatus, setDriverStatus, 
+      boardingInfo, setBoardingInfo,
+      isDeparture, setIsDeparture,
+      isArrival, setIsArrival,
+      isRating, setIsRating
+    }}>
       {children}
     </UserContext.Provider>
   );

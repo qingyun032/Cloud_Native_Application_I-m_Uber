@@ -96,12 +96,6 @@ export const NavigationBar = () => {
       }else{
         myNav(lastHome);
       }
-      // console.log(lastHome);
-      // myNav(lastHome);
-      // if(user.mode === userMode.Driver)
-      //   myNav("/driverHome");
-      // else
-      //   myNav("/passengerHome");
     }
   }
 

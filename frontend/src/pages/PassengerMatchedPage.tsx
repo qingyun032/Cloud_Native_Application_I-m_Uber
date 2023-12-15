@@ -8,6 +8,7 @@ import Arrival from '../components/matching/Arrival';
 import Departure from '../components/matching/Departure';
 import MyRating from '../components/matching/Rating';
 import { NavigationBar } from '../components/navigation/NavigationBar';
+import { useUserContext } from '../contexts/UserContext';
 
 
 const theme = createTheme({
@@ -28,9 +29,10 @@ const theme = createTheme({
 
 function PassengerMatchedpage() {
 
-  const [isDeparture, setIsDeparture] = useState(true);
-  const [isArrival, setIsArrival] = useState(false);
-  const [isRating, setIsRating] = useState(false);
+  // const [isDeparture, setIsDeparture] = useState(true);
+  // const [isArrival, setIsArrival] = useState(false);
+  // const [isRating, setIsRating] = useState(false);
+  const { isDeparture, setIsDeparture, isArrival, setIsArrival, isRating, setIsRating } = useUserContext();
   
   return (
     <>
