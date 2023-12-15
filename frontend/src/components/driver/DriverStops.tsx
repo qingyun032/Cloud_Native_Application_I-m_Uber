@@ -18,8 +18,10 @@ import { Stop } from '../../models/stop.model';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
+import { useUserContext } from '../../contexts/UserContext';
 import { ItineraryData, DriverRoute, DriverFav, Boarding } from '../../models/journey.model';
 import { createRoute, updateDriverFav, showBoardingInfo } from '../../apis/driver.journey.api';
+import { getUserInfo } from '../../apis/user.api';
 
 type DriverStopsProps = {
   setDriverStatus: (status: string) => void;
@@ -31,7 +33,8 @@ type DriverStopsProps = {
 
 export const DriverStops = (props: DriverStopsProps) => {
   const { setDriverStatus, isGo, itineraryData, setBoardingInfo, stops } = props;
-  const [checked, setChecked] = useState<number[]>([0]);
+  const { setUser } = useUserContext();
+  const [checked, setChecked] = useState<number[]>(Array.from({ length: stops.length }, (_, index) => index));
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const [saveFavRoute, setSaveFavRoute] = useState<boolean>(false);
@@ -115,7 +118,6 @@ export const DriverStops = (props: DriverStopsProps) => {
       throw error;
     }
   }
-
   const updateDriverFavRoute = async () => {
     const formattedTimeString: string | null =
       itineraryData.time &&
@@ -134,9 +136,20 @@ export const DriverStops = (props: DriverStopsProps) => {
         stopIDs: isGo ? [] : selectedStopIDs,
       }
     }
-
     try {
       const response = await updateDriverFav(favData);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  const updateUserInfo = async () => {
+    try {
+      const response = await getUserInfo();
+      setUser(response);
       return response;
     }
     catch (error: any) {
@@ -162,6 +175,7 @@ export const DriverStops = (props: DriverStopsProps) => {
         const routeResponse = await createDriverRoute();
         if (saveFavRoute) {
           const facResponse = await updateDriverFavRoute();
+          const userInfoResponse = await updateUserInfo();
         }
         const boardingResponse = await getBoardingInfo();
         setDriverStatus('waitJourney')

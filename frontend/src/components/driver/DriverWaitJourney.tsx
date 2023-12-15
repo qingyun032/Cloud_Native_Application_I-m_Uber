@@ -44,10 +44,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
-  
-  // const toDriverHome = () => {
-  //   setDriverStatus('start')
-  // }
 
   const toDriverJourney = async () => {
     try {
@@ -143,20 +139,6 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 })}
               </ModalContent>
             </Modal>
-            {/* <Button            
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor : "secondary.main",
-                textTransform : "none",
-                mb: 2, mt: 5,
-                height: 40,
-              }}
-              disabled={boardingInfo.reduce((sum, stop) => sum + stop.passengers.length, 0)!== 0}
-              onClick={toDriverHome}
-            >
-              Cancel Journey if no passengers
-            </Button> */}
             <Button            
               variant="contained"
               fullWidth
