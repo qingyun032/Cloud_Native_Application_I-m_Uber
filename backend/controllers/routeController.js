@@ -276,9 +276,9 @@ const ifDriverOnRoute = async (req, res) => {
     )
     
     if (routeInfo.length === 0) {
-      res.status(200).json({message: "No active route"});
+      res.status(200).json(false);
     } else {
-      res.status(200).json({message: "Already in an active route"});
+      res.status(200).json(true);
     }
   } catch (error){
     console.error(error);
@@ -296,7 +296,7 @@ const ifPassengerOnRoute = async (req, res) => {
   try{
     const passengerInfo = await passengerService.getPassengerById(passengerId);
     if (!passengerInfo) {
-      res.status(200).json({message: "No active route"});
+      res.status(200).json(false);
       return;
     }
     // check if there is an active route of this user
@@ -306,7 +306,7 @@ const ifPassengerOnRoute = async (req, res) => {
       route.routeID === passengerInfo.routeID && route.state === "PROCESSING"
     )
     
-    res.status(200).json({message: "Already in an active route"});
+    res.status(200).json(true);
   } catch (error){
     console.error(error);
     res.status(500).json({ error: error.message });

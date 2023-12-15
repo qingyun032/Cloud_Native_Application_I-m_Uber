@@ -975,7 +975,7 @@ describe("GET /api/v1/route/ifDriverOnRoute", () => {
         const { header } = res;
         res = await request(app).get("/api/v1/route/ifDriverOnRoute").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
-        expect(res.body.message).toEqual("Already in an active route");
+        expect(res.body).toEqual(true);
     });
 });
 
@@ -988,7 +988,7 @@ describe("GET /api/v1/route/ifPassengerOnRoute", () => {
         const { header } = res;
         res = await request(app).get("/api/v1/route/ifPassengerOnRoute").set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
-        expect(res.body.message).toEqual("No active route");
+        expect(res.body).toEqual(false);
     });
 });
 
