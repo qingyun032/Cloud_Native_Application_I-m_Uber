@@ -18,8 +18,6 @@ import { Stop } from '../../models/stop.model';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import { ItineraryData, DriverRoute, DriverFav, Boarding } from '../../models/journey.model';
 import { createRoute, updateDriverFav, showBoardingInfo } from '../../apis/driver.journey.api';
 
@@ -37,7 +35,6 @@ export const DriverStops = (props: DriverStopsProps) => {
   const [modalAddress, setModalAddress] = useState<string>("")
   const [open, setOpen] = React.useState(false);
   const [saveFavRoute, setSaveFavRoute] = useState<boolean>(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleOpen = (idx: number) => {
     const [ stopID, Name, address ] = Object.values(stops[idx]);
     setModalAddress(String(address));
@@ -66,19 +63,7 @@ export const DriverStops = (props: DriverStopsProps) => {
     setSaveFavRoute((prevValue) => !prevValue);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-  
-  const showError = () => {
-    setSnackbarOpen(true);
-  };
-
   const getStopsIDs = () => {
-    if (checked.length === 0) {
-      showError();
-      throw new Error('No stop selected');
-    }
     const sortedStopIDs = stops.map(stop => {
       const stopID = Object.values(stop)[0];
       return typeof stopID === 'string' ? parseInt(stopID, 10) : stopID as number;
@@ -280,21 +265,11 @@ export const DriverStops = (props: DriverStopsProps) => {
                 mb: 2, mt: 1,
                 height: 40,
               }}
+              disabled={checked.length===0}
               onClick={toDriverWaitJourney}
             >
               Confirm and Start
             </Button>
-            <Box>
-              <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-              >
-                <Alert onClose={handleSnackbarClose} severity="error">
-                  No stop selected!
-                </Alert>
-              </Snackbar>
-            </Box>
           </Container>
         </Container>
     </>
