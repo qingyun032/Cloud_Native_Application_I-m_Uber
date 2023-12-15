@@ -4,21 +4,34 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import { sendRating } from '../../apis/passenger.api';
 
 type RatingProps = {
   setIsRating: (status: boolean) => void;
   setPassengerStatus: (status: string) => void;
+  driverId: number
 }
 
 function MyRating( props: RatingProps ) {
-  const { setIsRating, setPassengerStatus } = props;
+  const { setIsRating, setPassengerStatus, driverId } = props;
 
   const navigate = useNavigate();
   const [tripRating, setTripRating] = React.useState<number | null>(2);
 
-  const handleClick = () => {
-    setIsRating(false);
-    setPassengerStatus('home')
+  const handleClick = async () => {
+    const ratingData = {
+      driverID: driverId,
+      rating: tripRating,
+    }
+    try{
+      const response = sendRating(ratingData);
+      console.log(response)
+      setIsRating(false);
+      setPassengerStatus('home')
+    }
+    catch(error : any){
+      console.log(error)
+    }
   }
 
   return (

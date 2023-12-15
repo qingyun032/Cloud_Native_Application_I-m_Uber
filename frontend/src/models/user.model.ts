@@ -54,6 +54,8 @@ export type car = {
     electric: boolean
 };
 
+
+
 export enum userMode {
     Passenger = "passenger",
     Driver = "driver"

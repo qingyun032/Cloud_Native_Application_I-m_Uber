@@ -15,29 +15,67 @@ const theme = createTheme({
       secondary: {
         main: '#9C694C'
       }
+    },
+    typography: {
+      fontFamily: [
+        'Poppins',
+      ].join(',')
     }
 });
 
 export const PassengerPage = () => {
     const [passengerStatus, setPassengerStatus] = useState<string>('home')
     const [isGo, setIsGo] = useState<boolean>(true)
-    const [candidates, setCandidates] = useState<candidateInfo[]>([])
-    // const [stops, setStops] = useState<Stop[]>([])
-    const [passengerItineraryData, setPassengerItineraryData] = useState<itineraryData>({
-        start: "",
-        destination: "台積電",
-        passengerCount: "4",
-        date: dayjs(),
-        time: dayjs(),
-      });
+    // const [carAppearance, setCarAppearance] = useState(["AAA9999", "white"])
+    const [selectedDriverId, setSelectedDriverId] = useState(0)
+    const [candidates, setCandidates] = useState<candidateInfo[]>(
+      [
+        {
+            "routeID": 2,
+            "stopID": 201,
+            "stopAddress": "新竹縣新市路93號",
+            "stop_lat": 24.901,
+            "stop_lon": 120.98532,
+            "driverID": 2,
+            "driverName": "Chu",
+            "board_time": "2023-12-21 08:43:51",
+            "rating": 0,
+            "nRating": 0,
+            "price": 190,
+            "carPlate": "LOVE-9888",
+            "cartype": "Sedan",
+            "carbrand": 3,
+            "carColor": 4,
+            "carelectric": false
+        }, 
+        {
+          "routeID": 3,
+          "stopID": 201,
+          "stopAddress": "新竹縣新市路93號",
+          "stop_lat": 24.901,
+          "stop_lon": 120.98532,
+          "driverID": 2,
+          "driverName": "Leo",
+          "board_time": "2023-12-21 08:43:51",
+          "rating": 0,
+          "nRating": 0,
+          "price": 290,
+          "carPlate": "LOVE-9888",
+          "cartype": "Sedan",
+          "carbrand": 3,
+          "carColor": 4,
+          "carelectric": false
+        }
+      ]
+    )
 
     return (
-        <>
-          <ThemeProvider theme={theme}>
-              {passengerStatus === 'home' && <PassengerHome passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} passengerItineraryData={passengerItineraryData} setPassengerItineraryData={setPassengerItineraryData}/>}
-              {passengerStatus === 'candidate' && <PassengerCandidate passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} candidates={candidates} setCandidates={setCandidates}/>}
-              {passengerStatus === 'matched' && <PassengerMatched passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} />}
-          </ThemeProvider>
-        </>
+      <>
+        <ThemeProvider theme={theme}>
+          {passengerStatus === 'home' && <PassengerHome isGo={isGo} setIsGo={setIsGo} passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} candidates={candidates} setCandidates={setCandidates}/>}
+          {passengerStatus === 'candidate' && <PassengerCandidate isGo={isGo} setIsGo={setIsGo} passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} candidates={candidates} setCandidates={setCandidates} setSelectedDriverId={setSelectedDriverId}/>}
+          {passengerStatus === 'matched' && <PassengerMatched passengerStatus={passengerStatus} setPassengerStatus={setPassengerStatus} selectedDriverId={selectedDriverId}/>}
+        </ThemeProvider>
+      </>
     )
 }

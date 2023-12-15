@@ -15,41 +15,59 @@ import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { NavigationBar } from '../components/navigation/NavigationBar';
-import { itineraryData } from "../models/trip";
+import { candidateInfo, itineraryData } from "../models/trip";
 import { getCandidate } from '../apis/passenger.api';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 
-const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#313944'
-      },
-      secondary: {
-        main: '#9C694C'
-      }
-    },
-    typography: {
-      fontFamily: [
-        'Poppins',
-      ].join(',')
-    }
-});
 
 type PassengerHomeProps = {
+  isGo: boolean;
+  setIsGo: (isGo: boolean) => void;
   passengerStatus: string;
   setPassengerStatus: (status: string) => void;
-  passengerItineraryData: itineraryData;
-  setPassengerItineraryData: (status: itineraryData) => void;
+  candidates: candidateInfo[];
+  setCandidates: (candidates: candidateInfo[]) => void
+  // passengerItineraryData: itineraryData;
+  // setPassengerItineraryData: (status: itineraryData) => void;
 }
 
 export const PassengerHome = ( props: PassengerHomeProps ) => {
 
-  const { passengerStatus, setPassengerStatus, passengerItineraryData, setPassengerItineraryData } = props;
+  const { isGo, setIsGo, passengerStatus, setPassengerStatus, candidates, setCandidates } = props;
+  // const { isGo, setIsGo, passengerStatus, setPassengerStatus, passengerItineraryData, setPassengerItineraryData } = props;
   const navigate = useNavigate()
-  const toPassengerCandidatePage = async () => {
+  const searchPassengerCandidate = async () => {
     // add API to search candidate
-    const candidateList = await getCandidate(itineraryData);
-    setPassengerStatus('candidate')
+    const combinedDateTimeString: string | null =
+    passengerItineraryData.date &&
+    passengerItineraryData.time &&
+    passengerItineraryData.date
+      .year(passengerItineraryData.date.year())
+      .month(passengerItineraryData.date.month())
+      .date(passengerItineraryData.date.date())
+      .hour(passengerItineraryData.time.hour())
+      .minute(passengerItineraryData.time.minute())
+      .second(passengerItineraryData.time.second())
+      .millisecond(passengerItineraryData.time.millisecond())
+      .format('YYYY-MM-DD HH:mm:ss') || null;
+  
+    const queryData = {
+      Go: isGo,
+      address: isGo ? passengerItineraryData.start : passengerItineraryData.destination,
+      passengerCnt: +passengerItineraryData.passengerCount,
+      board_time: combinedDateTimeString,
+      // board_time: TODO
+  }
+    try{
+      const candidateList = await getCandidate(queryData);
+      console.log(candidateList)
+      setPassengerStatus('candidate')
+      // setCandidates(candidateList)
+    }
+    catch(error: any){
+      console.log(error)
+    }
   }
 
   const passengerFavRoute: itineraryData = {
@@ -60,7 +78,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     time: dayjs('15:00:00', "HH:mm:ss"),
   }
 
-  const [itineraryData, setItineraryData] = useState({
+  const [passengerItineraryData, setPassengerItineraryData] = useState({
     toTSMC: true,
     start: "",
     destination: "",
@@ -70,8 +88,8 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
   });
 
   const handleInputChange = (field: keyof itineraryData, value: string | number | Dayjs | null) => {
-    setItineraryData((prevItineraryData) => ({
-        ...prevItineraryData,
+    setPassengerItineraryData((prevPassengerItineraryData) => ({
+        ...prevPassengerItineraryData,
         [field]: value,
     }));
   };
@@ -85,10 +103,30 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     handleInputChange('time', passengerFavRoute.time);
   }
 
+  const toWork = () => {
+    setIsGo(true);
+    const updatedItineraryData = {
+        ...passengerItineraryData,
+        ["start"]: "",
+        ["destination"]: "台積電",
+    }
+    setPassengerItineraryData(updatedItineraryData);
+  }
+
+  const toHome = () => {
+    setIsGo(false);
+    const updatedItineraryData = {
+        ...passengerItineraryData,
+        ["start"]: "台積電",
+        ["destination"]: "",
+    }
+    setPassengerItineraryData(updatedItineraryData);
+  }
+
 
   return (
     <>
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
         <Container maxWidth="xs">
           <NavigationBar></NavigationBar>
           <Container sx={{ width: 0.8 }} >
@@ -103,6 +141,18 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                 <Typography variant="h4" fontWeight="bold">
                   Start journey 
                 </Typography>
+                <ButtonGroup 
+                    variant="outlined" 
+                    aria-label="outlined button group"
+                    size="small"
+                    sx={{
+                        color : "secondary",
+                        mt: 2,
+                    }}
+                >
+                    <Button onClick={toWork}>Go to Work</Button>
+                    <Button onClick={toHome}>Back Home</Button>
+                </ButtonGroup>
                 <Button variant="contained" 
                   sx={{
                     textTransform : "none",
@@ -119,7 +169,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                     label="Enter your start location"
                     size="small"
                     sx={{ mb: 1.5, mt: 1 }}
-                    value={itineraryData.start}
+                    value={passengerItineraryData.start}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('start', e.target.value)}
                   />
                   Destination
@@ -128,7 +178,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                     label="Enter your destination location"
                     size="small" 
                     sx={{ mb: 1.5, mt: 1 }}
-                    value={itineraryData.destination}
+                    value={passengerItineraryData.destination}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('destination', e.target.value)}
                   />
                   Passenger Count
@@ -136,7 +186,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                     fullWidth
                     size='small'
                     sx={{ mb: 1.5, mt: 1 }}
-                    value={itineraryData.passengerCount}
+                    value={passengerItineraryData.passengerCount}
                     onChange={(e: SelectChangeEvent) => handleInputChange('passengerCount', e.target.value)}
                   >
                     <MenuItem value={1}>1</MenuItem>
@@ -155,7 +205,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                           defaultValue={dayjs()} 
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
-                          value={itineraryData.date}
+                          value={passengerItineraryData.date}
                           onChange={(newDate) => handleInputChange('date', newDate)}
                         />
                       </Box>
@@ -165,13 +215,13 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                           defaultValue={dayjs()} 
                           slotProps={{ textField: {size: 'small'} }} 
                           sx={{ mt: 1 }}
-                          value={itineraryData.time}
+                          value={passengerItineraryData.time}
                           onChange={(newTime) => handleInputChange('time', newTime)}
                         />
                       </Box>
                     </LocalizationProvider>
                   </Box>
-                  <Button variant="contained" fullWidth onClick={toPassengerCandidatePage}
+                  <Button variant="contained" fullWidth onClick={searchPassengerCandidate}
                     sx={{
                       textTransform : "none",
                       backgroundColor : "secondary.main",
@@ -185,7 +235,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
             </Box>
           </Container>
         </Container>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   )
 } 
