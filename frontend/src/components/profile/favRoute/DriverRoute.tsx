@@ -80,9 +80,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
       }else{
         try{
-          // const response = await showStops({isGo: true, address: address});
-          // setGoStops(response.Stops);
-          setGoStops(stopList);
+          const response = await showStops({isGo: true, address: address});
+          setGoStops(response.Stops);
+          // setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -97,9 +97,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
-          // const response = await showStops({isGo: false, address: address});
-          // setBackStops(response.Stops);
-          setGoStops(stopList);
+          const response = await showStops({isGo: false, address: address});
+          setBackStops(response.Stops);
+          // setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -132,10 +132,10 @@ export const DriverRoute = (props: DriverRouteProps) => {
     if(edit){
       if(user !== null){
         console.log(goFav[1]);
-        const GOStopIDs = (goCheck.length === 0)? [] : goCheck.map((val) => {return goStops[val].stopID}).concat(111);
-        const GOStopNames = (goCheck.length === 0)? [] : goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
-        const BACKStopIDs = (backCheck.length === 0)? [] : [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
-        const BACKStopNames = (backCheck.length === 0)? [] : ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
+        const GOStopIDs = (goCheck.length === 0)? user.favRoute.driver.GO.stopIDs : goCheck.map((val) => {return goStops[val].stopID}).concat(111);
+        const GOStopNames = (goCheck.length === 0)? user.favRoute.driver.GO.stopNames : goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
+        const BACKStopIDs = (backCheck.length === 0)? user.favRoute.driver.BACK.stopIDs : [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
+        const BACKStopNames = (backCheck.length === 0)? user.favRoute.driver.BACK.stopNames : ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
         const newUser = {
           ...user,
           favRoute:{
@@ -160,6 +160,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
         try{
           const response = await updateDriverFav(newUser);
           setUser(newUser);
+          setGoCheck([]);
+          setBackCheck([]);
           setInfoBar({open: true, type: "success", message: response.message});
         }catch(error: any){
           setGoFav((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.time]);
