@@ -80,9 +80,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
       }else{
         try{
-          const response = await showStops({isGo: true, address: address});
-          setGoStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: true, address: address});
+          // setGoStops(response.Stops);
+          setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -97,9 +97,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
-          const response = await showStops({isGo: false, address: address});
-          setBackStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: false, address: address});
+          // setBackStops(response.Stops);
+          setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -131,23 +131,24 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID}).concat(111);
-        const GOStopNames = goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
-        const BACKStopIDs = [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
-        const BACKStopNames = ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
+        console.log(goFav[1]);
+        const GOStopIDs = (goCheck.length === 0)? [] : goCheck.map((val) => {return goStops[val].stopID}).concat(111);
+        const GOStopNames = (goCheck.length === 0)? [] : goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
+        const BACKStopIDs = (backCheck.length === 0)? [] : [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
+        const BACKStopNames = (backCheck.length === 0)? [] : ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
         const newUser = {
           ...user,
           favRoute:{
             driver: {
               GO: {
                 address: (goFav[0] === null)? user.favRoute.driver.GO.address : goFav[0],
-                time: (goFav[1] === null)? user.favRoute.driver.GO.time : goFav[1] + ":00",
+                time: (goFav[1] === null)? user.favRoute.driver.GO.time : goFav[1],
                 stopIDs: GOStopIDs,
                 stopNames: GOStopNames,
               },
               BACK: {
                 address: (backFav[0] === null)? user.favRoute.driver.BACK.address : backFav[0],
-                time: (backFav[1] === null)? user.favRoute.driver.BACK.time : backFav[1] + ":00",
+                time: (backFav[1] === null)? user.favRoute.driver.BACK.time : backFav[1],
                 stopIDs: BACKStopIDs,
                 stopNames: BACKStopNames,
               }
@@ -186,17 +187,22 @@ export const DriverRoute = (props: DriverRouteProps) => {
         label="Time"
         type="time"
         value={goFav[1]}
-        onChange={(e) => setGoFav([goFav[0], e.target.value])}
+        onChange={(e) => setGoFav([goFav[0], e.target.value + ":00"])}
         variant="standard"
         InputProps={inputProps}
       />
       <Autocomplete
         multiple
+        freeSolo
         id="stops"
+        // options={[]}
+        getOptionLabel={(op) => {return op;}}
         options={goStops.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
-        getOptionLabel={(option) => {return option}}
-        defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
-        value={goCheck.map((val) => {return goStops[val].Name})}
+        // defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
+        value={(goCheck.length === 0)?
+          (user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames
+          :
+          goCheck.map((val) => {const [ stopID, Name, address ] = Object.values(goStops[val]); return Name.toString();})}
         disabled={!edit}
         readOnly={true}
         onFocus={() => openStop(true)}
@@ -266,17 +272,21 @@ export const DriverRoute = (props: DriverRouteProps) => {
         label="Time"
         type="time"
         value={backFav[1]}
-        onChange={(e) => setBackFav([backFav[0], e.target.value])}
+        onChange={(e) => setBackFav([backFav[0], e.target.value + ":00"])}
         variant="standard"
         InputProps={inputProps}
       />
       <Autocomplete
         multiple
+        freeSolo
         id="stops"
         options={goStops.map((s) => {return s.Name})}
         getOptionLabel={(option) => {return option}}
-        defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
-        value={backCheck.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
+        // defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
+        value={(backCheck.length === 0)?
+          (user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames
+          :
+          backCheck.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
         disabled={!edit}
         readOnly={true}
         onFocus={() => openStop(false)}
