@@ -80,9 +80,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
       }else{
         try{
-          const response = await showStops({isGo: true, address: address});
-          setGoStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: true, address: address});
+          // setGoStops(response.Stops);
+          setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -97,9 +97,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
-          const response = await showStops({isGo: false, address: address});
-          setBackStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: false, address: address});
+          // setBackStops(response.Stops);
+          setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -131,12 +131,12 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID});
-        const GOStopNames = goCheck.map((val) => {return goStops[val].Name});
-        const GOStopAddress = goCheck.map((val) => {return goStops[val].address});
-        const BACKStopIDs = backCheck.map((val) => {return backStops[val].stopID});
-        const BACKStopNames = backCheck.map((val) => {return backStops[val].Name});
-        const BACKStopAddress = backCheck.map((val) => {return backStops[val].address});
+        const GOStopIDs = goCheck.map((val) => {const [ stopID, Name, address ] = Object.values(goStops[val]); return Number(stopID);});
+        const GOStopNames = goCheck.map((val) => {const [ stopID, Name, address ] = Object.values(goStops[val]); return Name.toString();});
+        const GOStopAddress = goCheck.map((val) => {const [ stopID, Name, address ] = Object.values(goStops[val]); return address.toString();});
+        const BACKStopIDs = backCheck.map((val) => {const [ stopID, Name, address ] = Object.values(backStops[val]); return Number(stopID);});
+        const BACKStopNames = backCheck.map((val) => {const [ stopID, Name, address ] = Object.values(backStops[val]); return Name.toString();});
+        const BACKStopAddress = backCheck.map((val) => {const [ stopID, Name, address ] = Object.values(backStops[val]); return address.toString();});
         const newUser = {
           ...user,
           favRoute:{
