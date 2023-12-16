@@ -37,7 +37,6 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
     const nearNstops = await stopService.getNearestNStops(address, 3, 2);
     const boardings = await boardingService.getAllBoardings();
     const filteredboardings = boardings.filter(boarding => nearNstops.some(nearStop => nearStop.stopID === boarding.stopID));
-
     for (const route of routes) {
       let find = 0;
       if(route.state == 'CONFIRMED') continue
@@ -47,7 +46,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
         if (
           find === 0 &&
           boarding.routeID === route.routeID &&
-          boarding.boardTime > p_board_time
+          ((boarding.boardTime > p_board_time && direction === true) || (boarding.boardTime < p_board_time && direction === false))
         ) {
           find = 1;
           const user = await userService.getUserById(route.driverID);
@@ -62,6 +61,13 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
             rating = user.ratingTotalScore / user.nRating;
           }
           const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
+          
+          // Find the time to the destination
+          const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);
+          const final_baording = sameRouteboardings.reduce((maxObject, currentObject) => {
+            return currentObject.boardTime > maxObject.boardTime ? currentObject : maxObject;
+          }, sameRouteboardings[0]);
+          
           const temp_dic = {
             routeID: route.routeID,
             stopID: stop.stopID,
@@ -71,6 +77,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
             driverID: user.userID,
             driverName: user.userName,
             board_time: boarding.boardTime,
+            destination_time: final_baording.boardTime,
             rating: rating,
             nRating: user.nRating,
             price: price,
