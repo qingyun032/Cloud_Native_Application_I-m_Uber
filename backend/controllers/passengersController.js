@@ -20,6 +20,7 @@ async function showCandidates(req, res) {
         const routes = await Routes_matching(reqData.address, parseInt(process.env.COMPANY_STOP_ID), reqData.Go, reqData.board_time, reqData.passenger_cnt);
         for (let route of routes){
             route.board_time = toCorrectString(route.board_time);
+            route.destination_time = toCorrectString(route.destination_time);
         }
         // sort by board_time
         routes.sort((a, b) => {
