@@ -3,9 +3,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { candidateInfo, itineraryData } from "../models/trip"
 import dayjs from 'dayjs';
-import { PassengerHome } from './PassengerHome';
-import PassengerCandidate from './PassengerCandidate';
-import PassengerMatched from './PassengerMatched';
+import { PassengerHome } from '../components/passenger/PassengerHome';
+import PassengerCandidate from '../components/passenger/PassengerCandidate';
+import PassengerMatched from '../components/passenger/PassengerMatched';
 
 const theme = createTheme({
     palette: {

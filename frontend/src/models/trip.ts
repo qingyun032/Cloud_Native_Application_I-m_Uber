@@ -37,12 +37,14 @@ export type candidateInfo = {
 }
 
 export type tripInfo = {
-  carPlate: string,
-  seat: number,
-  brand: number,
-  color: number,
-  type: string,
-  electure: boolean
+  CarInfo:{
+    carPlate: string,
+    seat: number,
+    brand: number,
+    color: number,
+    type: string,
+    electure: boolean  
+  }
   stop_arrival_time: string,
   dest_arrival_time: string,
 }

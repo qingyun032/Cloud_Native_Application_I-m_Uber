@@ -2,9 +2,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react'
-import { tripInfo } from '../../models/trip';
-import { getArrivalTime } from '../../apis/passenger.api';
-import { carColor } from '../../models/carColor';
+import { tripInfo } from '../../../models/trip';
+import { getArrivalTime } from '../../../apis/passenger.api';
+import { carColor } from '../../../models/carColor';
 
 type DepartureProps = {
   setIsDeparture: (status: boolean) => void;
@@ -16,8 +16,8 @@ function Departure( props: DepartureProps ) {
   const [trip, setTrip] = useState<tripInfo|null>(null)
 
   useEffect( () => {
-    // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
-    fetch('http://localhost:8000/CarInfo')
+    fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
+    // fetch('http://localhost:8000/CarInfo')
     .then(res => {
       return res.json();
     })
@@ -53,7 +53,7 @@ function Departure( props: DepartureProps ) {
         {/* require modification */}
         {trip && <Typography variant='h3' sx={{mb: 5}}>{trip.stop_arrival_time}</Typography>}
         <Typography variant='body1' sx={{mt: 5, mb: 2}}>Car Appearance</Typography>
-        {trip && <Typography variant='h5' sx={{mt: 5, mb: 2}}>{carColor[trip.color]}    {trip.type}</Typography>}
+        {trip && <Typography variant='h5' sx={{mt: 5, mb: 2}}>{carColor[trip.CarInfo.color]}    {trip.CarInfo.type}</Typography>}
         <Button 
           variant='contained' 
           fullWidth 

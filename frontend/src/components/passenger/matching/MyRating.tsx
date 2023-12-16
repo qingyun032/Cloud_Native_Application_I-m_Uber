@@ -4,7 +4,7 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { sendRating } from '../../apis/passenger.api';
+import { sendRating } from '../../../apis/passenger.api';
 
 type RatingProps = {
   setIsRating: (status: boolean) => void;

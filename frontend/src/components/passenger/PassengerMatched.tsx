@@ -2,12 +2,12 @@ import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import carImage from '../blue_car.png';
+import carImage from '../../blue_car.png';
 import React, { useState } from 'react'
-import Arrival from '../components/matching/Arrival';
-import Departure from '../components/matching/Departure';
-import MyRating from '../components/matching/MyRating';
-import { NavigationBar } from '../components/navigation/NavigationBar';
+import Arrival from './matching/Arrival';
+import Departure from './matching/Departure';
+import MyRating from './matching/MyRating';
+import { NavigationBar } from '../navigation/NavigationBar';
 
 
 type PassengerMatchedProps = {

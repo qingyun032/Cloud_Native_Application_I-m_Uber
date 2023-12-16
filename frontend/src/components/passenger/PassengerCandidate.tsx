@@ -5,25 +5,10 @@ import Container from '@mui/material/Container';
 import createTheme from '@mui/material/styles/createTheme';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import CandidateDetail from '../components/CandidateDetail';
-import { NavigationBar } from '../components/navigation/NavigationBar';
-import { candidateInfo } from '../models/trip';
+import CandidateDetail from './CandidateDetail';
+import { NavigationBar } from '../navigation/NavigationBar';
+import { candidateInfo } from '../../models/trip';
 
-// export interface Driver {
-//   name : string;
-//   rating : number;
-// }
-
-// export interface CandidateInfo {
-//   id : number;
-//   driver : Driver;
-//   stop : string;
-//   destination : string;
-//   car : string;
-//   money : number;
-//   departureTime : string;
-//   arrivalTime : string;
-// }
 
 type PassengerCandidateProps = {
   isGo: boolean;
@@ -54,11 +39,8 @@ function PassengerCandidate( props: PassengerCandidateProps) {
   //   {id: 3, driver: Drivers[3], stop: "g", destination: "h", car: "Toyota", money: 80, departureTime: "8:30 a.m.", arrivalTime: "10:00 a.m."},
   // ])
 
- 
-
   // setCandidates(mockcandidates); // remove after API
   
-
   const [shownCandidate, setShownCandidate] = useState<candidateInfo>(candidates[0]);
   
   const navigate = useNavigate()
@@ -66,7 +48,7 @@ function PassengerCandidate( props: PassengerCandidateProps) {
     setPassengerStatus('home')
   }
 
-  const showDriverDetail = (candidate: candidateInfo) => {
+  const showCandidateDetail = (candidate: candidateInfo) => {
     setDriverIsShown(current => !current);
     setShownCandidate(candidate);
   }
@@ -105,7 +87,7 @@ function PassengerCandidate( props: PassengerCandidateProps) {
                     textTransform : "none",
                     mb: 1, 
                   }}
-                  onClick={() => showDriverDetail(candidate)}
+                  onClick={() => showCandidateDetail(candidate)}
                 >
                   {candidate.driverName}
                 </Button>

@@ -15,11 +15,12 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import { NavigationBar } from '../components/navigation/NavigationBar';
-import { candidateInfo, itineraryData } from "../models/trip";
-import { getCandidate , updatePassengerFav } from '../apis/passenger.api';
-import { PassengerFav } from '../models/journey.model';
-import { getUserInfo } from '../apis/user.api';
+import { NavigationBar } from '../navigation/NavigationBar';
+import { candidateInfo, itineraryData } from "../../models/trip";
+import { getCandidate , updatePassengerFav } from '../../apis/passenger.api';
+import { PassengerFav } from '../../models/journey.model';
+import { getUserInfo } from '../../apis/user.api';
+import { infoBarType } from '../../models/user.model';
 
 
 
@@ -37,8 +38,23 @@ type PassengerHomeProps = {
 export const PassengerHome = ( props: PassengerHomeProps ) => {
 
   const { isGo, setIsGo, passengerStatus, setPassengerStatus, candidates, setCandidates } = props;
+  const [ infoBar, setInfoBar ] = useState<infoBarType>({open: false, type: "success", message: "success"});
+  const [passengerItineraryData, setPassengerItineraryData] = useState({
+    toTSMC: true,
+    start: "",
+    destination: "",
+    passengerCount: "1",
+    date: dayjs(),
+    time: dayjs(),
+  });
+
+  const currentDate = dayjs().startOf('day');
+  const currentTime = dayjs().startOf('minute');
+  const selectedDate = passengerItineraryData.date?.startOf('day');
+  const selectedTime = passengerItineraryData.time?.startOf('minute');
   // const { isGo, setIsGo, passengerStatus, setPassengerStatus, passengerItineraryData, setPassengerItineraryData } = props;
   const navigate = useNavigate()
+
   const searchPassengerCandidate = async () => {
     // add API to search candidate
     const combinedDateTimeString: string | null =
@@ -63,35 +79,30 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     try{
       const candidateList = await getCandidate(queryData);
       console.log(candidateList)
-      setPassengerStatus('candidate')
+      if (candidateList.length === 0){
+        setInfoBar({open: true, type: "error", message: "No drivers nearby, please try another boarding address..."});
+      }
+      else{
+        setPassengerStatus('candidate')
+      }
+    
+      // setInfoBar({open: true, type: "success", message: response.message});
       // setCandidates(candidateList)
     }
     catch(error: any){
+      // setInfoBar({open: true, type: "error", message: error.response.data.error});
       console.log(error)
     }
   }
 
-  const passengerFavRoute: itineraryData = {
-    start: '管二104',
-    destination: '德田101',
-    passengerCount : '2',
-    date: dayjs('2023-12-20'),
-    time: dayjs('15:00:00', "HH:mm:ss"),
-  }
+  // const passengerFavRoute: itineraryData = {
+  //   start: '管二104',
+  //   destination: '德田101',
+  //   passengerCount : '2',
+  //   date: dayjs('2023-12-20'),
+  //   time: dayjs('15:00:00', "HH:mm:ss"),
+  // }
 
-  const [passengerItineraryData, setPassengerItineraryData] = useState({
-    toTSMC: true,
-    start: "",
-    destination: "",
-    passengerCount: "1",
-    date: dayjs(),
-    time: dayjs(),
-  });
-
-  const currentDate = dayjs().startOf('day');
-  const currentTime = dayjs().startOf('minute');
-  const selectedDate = passengerItineraryData.date?.startOf('day');
-  const selectedTime = passengerItineraryData.time?.startOf('minute');
 
   const handleInputChange = (field: keyof itineraryData, value: string | number | Dayjs | null) => {
     setPassengerItineraryData((prevItineraryData) => ({
@@ -101,7 +112,6 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
   };
 
   const useFavoriteRoute = async () => {
-    // add API for favorite route
     try{
       const myInfo = await getUserInfo();
       const favoriteRoute = myInfo.favRoute.passenger;
@@ -200,7 +210,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                   }}
                   onClick={useFavoriteRoute}
                 >
-                  Use favorite route
+                  Use favorite route 
                 </Button>
                 <Button variant="contained" 
                   sx={{
@@ -209,7 +219,7 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                   }}
                   onClick={updatePassengerFavRoute}
                 >
-                  Set as Favorite
+                  Set as Favorite 
                 </Button>
                 <div>
                   Start

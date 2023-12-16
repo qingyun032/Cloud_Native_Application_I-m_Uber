@@ -5,9 +5,9 @@ import createTheme from '@mui/material/styles/createTheme';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { candidateInfo } from '../models/trip';
-import { brandList } from '../models/carBrand';
-import { selectCandidate } from '../apis/passenger.api';
+import { candidateInfo } from '../../models/trip';
+import { brandList } from '../../models/carBrand';
+import { selectCandidate } from '../../apis/passenger.api';
 
 
 type CandidateProps = {
@@ -27,7 +27,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
   }
 
   const navigate = useNavigate();
-  const toPassengerMatched = async () => {
+  const confirmCandidate = async () => {
     // send selectCandidate API
     const candidateDetail = {
       routeID: candidate.routeID,
@@ -37,12 +37,12 @@ const CandidateDetail = ( props: CandidateProps ) => {
     try{
       const response = await selectCandidate(candidateDetail);
       console.log(response)
+      setPassengerStatus('matched')
+      setSelectedDriverId(candidate.driverID)
     }
     catch(error : any){
       console.log(error)
     }
-    setPassengerStatus('matched')
-    setSelectedDriverId(candidate.driverID)
     // navigate('/passengerMatched')
   }
 
@@ -81,7 +81,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:1 }}>Driver Rating</Typography>
                   <Typography variant='h5'>
-                    {candidate.rating}
+                    {candidate.rating}   ({candidate.nRating})
                   </Typography>
                   <Divider/>
                 </Box>
@@ -144,7 +144,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                   backgroundColor: 'secondary.main',
                   mt: 2,
                 }}
-                onClick={toPassengerMatched}
+                onClick={confirmCandidate}
               >
                 Confirm and pay
               </Button>
