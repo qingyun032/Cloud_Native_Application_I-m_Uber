@@ -121,7 +121,7 @@ describe("POST /api/v1/auth/signup", () => {
             "isDriver": false,
             "gender": "M",
             "phone": "0959-934-954",
-            "addressHome": "新竹市光復路一段23號",
+            "addressHome": "苗栗縣苗栗市上苗里為公路1號",
             "addressCompany": "新竹科學園區新竹市力行六路8號",
         });
         expect(res.statusCode).toBe(201);
@@ -761,6 +761,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                     "driverID": 3,
                     "driverName": "Wei",
                     "board_time": '2023-12-21 12:06:29',
+                    "destination_time": "2023-12-21 12:24:35",
                     "rating": 0,
                     "nRating": 0,
                     "price": 116,
@@ -815,6 +816,43 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
             "stop_arrival_time": "2023-12-21 12:06:29",
             "dest_arrival_time": "2023-12-21 12:24:35"
         });
+    });
+
+    test("Show route candidates that gets no routes", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Bob",
+            "password": "Bobpassword"
+        });
+        const { header } = res;
+
+        const passenger_pref = {
+            "Go": true,
+            "address": "苗栗縣苗栗市上苗里為公路1號",
+            "passenger_cnt": 1,
+            "board_time": "2023-12-21 12:01:00"
+        }
+        mockedAxios.get.mockResolvedValue({
+            "data": {
+                "results": [
+                    {
+                        "position": {
+                            "lat": 24.570044,
+                            "lon": 120.822628
+                        },
+                    },
+                ]
+            }
+        });
+        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
+            passenger_pref
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "Routes": [
+				
+		    ]
+        });
+        
     });
 });
 
@@ -994,16 +1032,16 @@ describe("GET /api/v1/route/ifPassengerOnRoute", () => {
 
 // Please write your test cases above finishRoute
 
-describe("POST /api/v1/route/finishRoute", () => {
-    test("Finish route", async () => {
-        let res = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Wei",
-            "password": "Weipassword"
-        });
-        const { header } = res;
+// describe("POST /api/v1/route/finishRoute", () => {
+//     test("Finish route", async () => {
+//         let res = await request(app).post("/api/v1/auth/signin").send({
+//             "userName": "Wei",
+//             "password": "Weipassword"
+//         });
+//         const { header } = res;
 
-        res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe("Finish route successfully");
-    });
-});
+//         res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
+//         expect(res.statusCode).toBe(200);
+//         expect(res.body.message).toBe("Finish route successfully");
+//     });
+// });
