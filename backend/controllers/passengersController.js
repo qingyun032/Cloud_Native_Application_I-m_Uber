@@ -20,8 +20,9 @@ async function showCandidates(req, res) {
         const routes = await Routes_matching(reqData.address, parseInt(process.env.COMPANY_STOP_ID), reqData.Go, reqData.board_time, reqData.passenger_cnt);
         for (let route of routes){
             route.board_time = toCorrectString(route.board_time);
+            route.destination_time = toCorrectString(route.destination_time);
         }
-        // sort by boarding time
+        // sort by board_time
         routes.sort((a, b) => {
             return new Date(a.board_time) - new Date(b.board_time);
         });
@@ -106,9 +107,9 @@ async function getArrivalTime(req, res) {
         });
         // console.log(driverInfo.CarInfo.dataValues)
         let reutrnInfo = {
-            CarInfo:driverInfo.CarInfo.dataValues,
-            stop_arrival_time: toCorrectString(stopBoardings[0].boardTime),
-            dest_arrival_time: toCorrectString(destinationBoardings[0].boardTime)
+            "CarInfo":driverInfo.CarInfo.dataValues,
+            "stop_arrival_time": toCorrectString(stopBoardings[0].boardTime),
+            "dest_arrival_time": toCorrectString(destinationBoardings[0].boardTime)
         }
         // console.log(reutrnInfo)
         res.status(200).json(reutrnInfo);

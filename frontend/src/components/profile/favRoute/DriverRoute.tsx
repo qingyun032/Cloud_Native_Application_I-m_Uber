@@ -80,9 +80,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
       }else{
         try{
-          const response = await showStops({isGo: true, address: address});
-          setGoStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: true, address: address});
+          // setGoStops(response.Stops);
+          setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -97,9 +97,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
-          const response = await showStops({isGo: false, address: address});
-          setBackStops(response.Stops);
-          // setGoStops(stopList);
+          // const response = await showStops({isGo: false, address: address});
+          // setBackStops(response.Stops);
+          setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -131,11 +131,12 @@ export const DriverRoute = (props: DriverRouteProps) => {
   const editClick = async () => {
     if(edit){
       if(user !== null){
-        console.log(goFav[1]);
-        const GOStopIDs = (goCheck.length === 0)? user.favRoute.driver.GO.stopIDs : goCheck.map((val) => {return goStops[val].stopID}).concat(111);
-        const GOStopNames = (goCheck.length === 0)? user.favRoute.driver.GO.stopNames : goCheck.map((val) => {return goStops[val].Name}).concat("台積電");
-        const BACKStopIDs = (backCheck.length === 0)? user.favRoute.driver.BACK.stopIDs : [111].concat(backCheck.map((val) => {return backStops[val].stopID}));
-        const BACKStopNames = (backCheck.length === 0)? user.favRoute.driver.BACK.stopNames : ["台積電"].concat(backCheck.map((val) => {return backStops[val].Name}));
+        const GOStopIDs = goCheck.map((val) => {return goStops[val].stopID});
+        const GOStopNames = goCheck.map((val) => {return goStops[val].Name});
+        const GOStopAddress = goCheck.map((val) => {return goStops[val].address});
+        const BACKStopIDs = backCheck.map((val) => {return backStops[val].stopID});
+        const BACKStopNames = backCheck.map((val) => {return backStops[val].Name});
+        const BACKStopAddress = backCheck.map((val) => {return backStops[val].address});
         const newUser = {
           ...user,
           favRoute:{
@@ -145,12 +146,14 @@ export const DriverRoute = (props: DriverRouteProps) => {
                 time: (goFav[1] === null)? user.favRoute.driver.GO.time : goFav[1],
                 stopIDs: GOStopIDs,
                 stopNames: GOStopNames,
+                stopAddresses: GOStopAddress,
               },
               BACK: {
                 address: (backFav[0] === null)? user.favRoute.driver.BACK.address : backFav[0],
                 time: (backFav[1] === null)? user.favRoute.driver.BACK.time : backFav[1],
                 stopIDs: BACKStopIDs,
                 stopNames: BACKStopNames,
+                stopAddresses: BACKStopAddress,
               }
             },
             passenger: {...user.favRoute.passenger},
@@ -166,6 +169,8 @@ export const DriverRoute = (props: DriverRouteProps) => {
         }catch(error: any){
           setGoFav((user === null)? ["", ""] : [user.favRoute.driver.GO.address, user.favRoute.driver.GO.time]);
           setBackFav((user === null)? ["", ""] : [user.favRoute.driver.BACK.address, user.favRoute.driver.BACK.time]);
+          setGoCheck([]);
+          setBackCheck([]);
           setInfoBar({open: true, type: "error", message: error.response.data.error});
         }
       }
@@ -256,7 +261,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setGoStopOpen(false)}>Finish</Button>
+          <Button onClick={() => {setGoCheck([...goCheck, goStops.length-1]); setGoStopOpen(false);}}>Finish</Button>
         </DialogActions>
       </Dialog>
       <Divider color="#313944" sx={{marginBottom: "15px", marginTop: "10px", padding: "1px"}}/>
@@ -340,7 +345,7 @@ export const DriverRoute = (props: DriverRouteProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setBackStopOpen(false)}>Finish</Button>
+          <Button onClick={() => {setBackCheck([0, ...backCheck]); setBackStopOpen(false);}}>Finish</Button>
         </DialogActions>
       </Dialog>
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
