@@ -17,7 +17,9 @@ import { Dayjs } from 'dayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { NavigationBar } from '../components/navigation/NavigationBar';
 import { candidateInfo, itineraryData } from "../models/trip";
-import { getCandidate } from '../apis/passenger.api';
+import { getCandidate , updatePassengerFav } from '../apis/passenger.api';
+import { PassengerFav } from '../models/journey.model';
+import { getUserInfo } from '../apis/user.api';
 
 
 
@@ -55,9 +57,8 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     const queryData = {
       Go: isGo,
       address: isGo ? passengerItineraryData.start : passengerItineraryData.destination,
-      passengerCnt: +passengerItineraryData.passengerCount,
+      passenger_cnt: +passengerItineraryData.passengerCount,
       board_time: combinedDateTimeString,
-      // board_time: TODO
   }
     try{
       const candidateList = await getCandidate(queryData);
@@ -99,13 +100,21 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     }));
   };
 
-  const useFavoriteRoute = () => {
+  const useFavoriteRoute = async () => {
     // add API for favorite route
-    handleInputChange('start', passengerFavRoute.start);
-    handleInputChange('destination', passengerFavRoute.destination);
-    handleInputChange('passengerCount', passengerFavRoute.passengerCount);
-    handleInputChange('date', passengerFavRoute.date);
-    handleInputChange('time', passengerFavRoute.time);
+    try{
+      const myInfo = await getUserInfo();
+      const favoriteRoute = myInfo.favRoute.passenger;
+      console.log(myInfo);
+      handleInputChange('start', isGo? favoriteRoute.GO.address:"台積電");
+      handleInputChange('destination', isGo? "台積電":favoriteRoute.BACK.address);
+      handleInputChange('passengerCount', isGo? favoriteRoute.GO.passengerCnt:favoriteRoute.BACK.passengerCnt);
+      handleInputChange('date', dayjs());
+      handleInputChange('time', isGo? dayjs(favoriteRoute.GO.boardTime, "HH:mm:ss"):dayjs(favoriteRoute.BACK.boardTime, "HH:mm:ss"));
+      }
+    catch(error: any){
+      console.log(error)
+    }
   }
 
   const toWork = () => {
@@ -128,6 +137,32 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
     setPassengerItineraryData(updatedItineraryData);
   }
 
+  const updatePassengerFavRoute = async () => {
+    const formattedTimeString: string | null =
+      passengerItineraryData.time &&
+      passengerItineraryData.time.format('HH:mm:ss') || null;
+    
+    const favData: PassengerFav = {
+      GO: {
+        address: isGo ? passengerItineraryData.start : null,
+        passengerCnt: +passengerItineraryData.passengerCount,
+        boardTime: formattedTimeString
+      },
+      BACK: {
+        address: isGo ? null : passengerItineraryData.destination,
+        passengerCnt: +passengerItineraryData.passengerCount,
+        boardTime: formattedTimeString
+      }
+    }
+    try {
+      const response = await updatePassengerFav(favData);
+      return response;
+    }
+    catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
 
   return (
     <>
@@ -166,6 +201,15 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
                   onClick={useFavoriteRoute}
                 >
                   Use favorite route
+                </Button>
+                <Button variant="contained" 
+                  sx={{
+                    textTransform : "none",
+                    mb: 2,
+                  }}
+                  onClick={updatePassengerFavRoute}
+                >
+                  Set as Favorite
                 </Button>
                 <div>
                   Start

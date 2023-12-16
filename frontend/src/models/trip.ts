@@ -13,7 +13,7 @@ export type itineraryData = {
 export type itineraryQueryData = {
   Go: boolean,
   address: string, 
-  passengerCnt: number,
+  passenger_cnt: number,
   board_time: string|null,
 }
 

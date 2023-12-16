@@ -16,6 +16,19 @@ export type DriverRoute = {
     type: string
 }
 
+export type PassengerFav = {
+    GO: {
+        address: string | null,
+        passengerCnt: number | null,
+        boardTime: string | null,
+    },
+    BACK: {
+        address: string | null,
+        passengerCnt: number | null,
+        boardTime: string | null,
+    }
+}
+
 export type DriverFav = {
     GO: {
         address: string | null,

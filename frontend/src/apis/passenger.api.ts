@@ -3,16 +3,25 @@ import { path , testPath } from "./url.api";
 import { userInfo, userMode } from "../models/user.model";
 import { itineraryData , candidateInfo, itineraryQueryData } from "../models/trip";
 import { tripInfo } from "../models/trip";
+import { PassengerFav } from "../models/journey.model";
 
 export const getCandidate = async (tripData: itineraryQueryData): Promise<candidateInfo[]> => {
+  const testData : itineraryQueryData = {
+    "Go": true,
+    "address": "新竹縣竹東鎮光武街2號",
+    "passenger_cnt": 1,
+    "board_time": "2023-12-21 12:01:00"
+}
   const config: AxiosRequestConfig = {
     method: 'GET',
     url: path + "/api/v1/passengers/showCandidates",
     // url: testPath + "/candidates",
-    data: tripData,
+    data: testData,
   };
-  console.log(tripData);
+  console.log(testData);
   const response = await axios(config);
+  console.log('line 16')
+  console.log(response)
   return response.data;
 };
 
@@ -49,3 +58,14 @@ export const sendRating = async (ratingData: {driverID: number, rating: number|n
   const response = await axios(config);
   return response.data;
 };
+
+export const updatePassengerFav = async (route: PassengerFav): Promise<string> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/users/updatePassengerFavor",
+    data: route,
+  };
+  const response = await axios(config);
+  console.log(response)
+  return response.data;
+}
