@@ -82,7 +82,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
         try{
           const response = await showStops({isGo: true, address: address});
           setGoStops(response.Stops);
-          // setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -99,7 +98,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
         try{
           const response = await showStops({isGo: false, address: address});
           setBackStops(response.Stops);
-          // setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
@@ -205,7 +203,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
         // options={[]}
         getOptionLabel={(op) => {return op;}}
         options={goStops.map((stop) => {const [ stopID, Name, address ] = Object.values(stop); return Name.toString();})}
-        // defaultValue={(user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames}
         value={(goCheck.length === 0)?
           (user === null || user.favRoute.driver.GO.stopNames === null)? [] : user.favRoute.driver.GO.stopNames
           :
@@ -289,7 +286,6 @@ export const DriverRoute = (props: DriverRouteProps) => {
         id="stops"
         options={goStops.map((s) => {return s.Name})}
         getOptionLabel={(option) => {return option}}
-        // defaultValue={(user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames}
         value={(backCheck.length === 0)?
           (user === null || user.favRoute.driver.BACK.stopNames === null)? [] : user.favRoute.driver.BACK.stopNames
           :
