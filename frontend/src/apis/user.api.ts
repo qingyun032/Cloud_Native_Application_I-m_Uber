@@ -118,7 +118,16 @@ export const showStops = async (query: {isGo: boolean, address: string}): Promis
     url: path + "/api/v1/route/showStops",
     params: query,
   };
-  console.log(query)
+  const response = await axios(config);
+  return response.data;
+};
+
+export const cashTopUp = async (cash: number): Promise<{balance: number}> => {
+  const config: AxiosRequestConfig = {
+    method: 'PUT',
+    url: path + "/api/v1/wallet/topUp",
+    data: { "cash": cash }
+  };
   const response = await axios(config);
   return response.data;
 };
