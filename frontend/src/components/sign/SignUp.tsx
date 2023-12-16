@@ -77,10 +77,6 @@ export const SignUp = (props: SignUpProps) => {
         const phoneRegex = /^\d{10}$/;
         return phoneRegex.test(phoneNumber);
     }
-    const isValidAddress = (address: string) => {
-        const addressRegex = /^[a-zA-Z0-9\s,.'-]+$/;
-        return addressRegex.test(address);
-    }
     const isValidPassword = (password: string) => {
         const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         return passwordRegex.test(password);
@@ -107,14 +103,6 @@ export const SignUp = (props: SignUpProps) => {
         }
         if (!isValidPhoneNumber(userData.phone)) {
             setErrorMessage('Invalid Phone Number');
-            return;
-        }
-        if (!isValidAddress(userData.addressHome)) {
-            setErrorMessage('Invalid Home Address');
-            return;
-        }
-        if (!isValidAddress(userData.addressCompany)) {
-            setErrorMessage('Invalid Company Address');
             return;
         }
         if (userData.addressHome === userData.addressCompany) {
