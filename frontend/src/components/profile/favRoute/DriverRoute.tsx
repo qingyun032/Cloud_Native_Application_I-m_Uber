@@ -80,9 +80,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in start address first!"});
       }else{
         try{
-          // const response = await showStops({isGo: true, address: address});
-          // setGoStops(response.Stops);
-          setGoStops(stopList);
+          const response = await showStops({isGo: true, address: address});
+          setGoStops(response.Stops);
+          // setGoStops(stopList);
           setGoCheck([]);
           setGoStopOpen(true);
         }catch(error: any){
@@ -97,9 +97,9 @@ export const DriverRoute = (props: DriverRouteProps) => {
         setInfoBar({open: true, type: "error", message: "Please fill in destination address first!"});
       }else{
         try{
-          // const response = await showStops({isGo: false, address: address});
-          // setBackStops(response.Stops);
-          setGoStops(stopList);
+          const response = await showStops({isGo: false, address: address});
+          setBackStops(response.Stops);
+          // setGoStops(stopList);
           setBackCheck([]);
           setBackStopOpen(true);
         }catch(error: any){
