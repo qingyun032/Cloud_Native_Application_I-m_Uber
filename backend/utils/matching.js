@@ -11,43 +11,34 @@ const calculatePrice = require('./pricing');
  *
  * @param {string} address - The address of the current location.
  * @param {number} FixStopID - The ID of the fixed stop.
- * @param {string} direction - The direction of the route ('work' or 'home').
- * @param {Date} board_time - The boarding time filter.
- * @param {number} passenger_cnt - The amount of passenger of this order.
+ * @param {boolean} direction - The direction of the route ('work' or 'home').
+ * @param {Date} passengerBoardTime - The boarding time filter.
+ * @param {number} passengerCnt - The amount of passenger of this order.
  * @returns {Promise<Array<Object>>} - An array of matched routes with relevant information.
  */
-const Routes_matching = async(address, FixStopID, direction, board_time, passenger_cnt) => {
+const routesMatching = async(address, FixStopID, direction, passengerBoardTime, passengerCnt) => {
   try{
-    // console.log("In function")
-    // console.log(FixStopID)
-    const p_board_time = new Date(board_time)
     const Fixstop = await stopService.getStopById(FixStopID);
     let routes = await routesService.getAllRoutes();
     
-    if (direction === true) {
-      routes = routes.filter(route => route.type === "GO" && route.destination === FixStopID);
-    } else if (direction === false) {
-      routes = routes.filter(route => route.type === "BACK" && route.start === FixStopID);
+    if (direction == true) {
+      routes = routes.filter(route => route.type === "GO" && route.destination === FixStopID && route.state === 'PROCESSING' && route.available >= passengerCnt);
+    } else {
+      routes = routes.filter(route => route.type === "BACK" && route.start === FixStopID && route.state === 'PROCESSING' && route.available >= passengerCnt);
     }
-    // console.log(address)
-    // console.log(routes)
 
     let Routes = [];
-    // const return_routes = {"Routes": []};
-    // TODO
     const nearNstops = await stopService.getNearestNStops(address, 3, 2);
     const boardings = await boardingService.getAllBoardings();
     const filteredboardings = boardings.filter(boarding => nearNstops.some(nearStop => nearStop.stopID === boarding.stopID));
     for (const route of routes) {
       let find = 0;
-      if(route.state == 'CONFIRMED') continue
-      if(route.available - passenger_cnt < 0) continue
       for (const boarding of filteredboardings) {
         const stop = await stopService.getStopById(boarding.stopID);
         if (
           find === 0 &&
-          boarding.routeID === route.routeID &&
-          ((boarding.boardTime > p_board_time && direction === true) || (boarding.boardTime < p_board_time && direction === false))
+          boarding.routeID == route.routeID &&
+          ((boarding.boardTime > passengerBoardTime && direction == true) || (boarding.boardTime < passengerBoardTime && direction == false))
         ) {
           find = 1;
           const user = await userService.getUserById(route.driverID);
@@ -61,7 +52,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
           if(user.nRating !== 0){
             rating = user.ratingTotalScore / user.nRating;
           }
-          const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
+          const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
           
           // Find the time to the destination
           const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);
@@ -89,17 +80,13 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
             carelectric: user.CarInfo.electric
           };
           Routes.push(temp_dic);
-          // return_routes.Routes.push(temp_dic);
         }
       }
     }
-    // console.log(return_routes);
-    // return return_routes;
-    // console.log(Routes)
     return Routes;
   } catch(error) {
-    return null;
+    return error.message;
   }
 }
 
-module.exports = Routes_matching;
+module.exports = routesMatching;
