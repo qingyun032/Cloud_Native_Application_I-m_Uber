@@ -7,7 +7,7 @@
  * @param {number} isElectric - The car is electrical or not.
  * @returns {number} The calculated price if this journey.
  */
-const calculatePrice = async (distance, carBrand, type, rating, isElectric) => {
+const calculatePrice = (distance, carBrand, type, rating, isElectric) => {
     try{
       // Define impact factors for each variable
       const distanceFactor = 10;   // Adjust based on the actual impact on price

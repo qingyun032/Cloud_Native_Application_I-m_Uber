@@ -62,7 +62,7 @@ export const NavigationBar = () => {
   // console.log(location);
   const [open, setOpen] = useState(false);
   // const [lastHome, setLastHome] = useState<string>("");
-  const { user, setUser, setProfileStatus, lastHome, setLastHome, setDriverStatus, setBoardingInfo } = useUserContext();
+  const { user, setUser, setProfileStatus, lastHome, setLastHome, driverStatus, setDriverStatus, setBoardingInfo } = useUserContext();
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
@@ -82,7 +82,7 @@ export const NavigationBar = () => {
     setOpen(false);
     const response = await signOut();
     setLastHome("/passengerHome");
-    setDriverStatus('start');
+    // setDriverStatus('start');
     setProfileStatus(["home", ""]);
     myNav("/");
   }
@@ -91,12 +91,11 @@ export const NavigationBar = () => {
     if(location.pathname !== "/profile"){
       setOpen(false);
     }else if(user !== null){
-      console.log(lastHome);
-      myNav(lastHome);
-      // if(user.mode === userMode.Driver)
-      //   myNav("/driverHome");
-      // else
-      //   myNav("/passengerHome");
+      if(user.mode === userMode.Driver){
+        myNav("/driverHome");
+      }else{
+        myNav(lastHome);
+      }
     }
   }
 
@@ -202,7 +201,7 @@ export const NavigationBar = () => {
           <Divider />
         </div>
         <List sx={{ margin: "10px" }}>
-          <ListItem key="Switch" style={{display: (location.pathname === "/passengerMatched" || location.pathname === "/driverMatched")? "none" : "flex"}} disablePadding>
+          <ListItem key="Switch" style={{display: (location.pathname === "/passengerMatched" || (location.pathname === "/driverHome" && driverStatus !== "start"))? "none" : "flex"}} disablePadding>
             <ListItemButton
               sx={{ borderRadius: "5px" }}
               onClick={() => switchMode()}

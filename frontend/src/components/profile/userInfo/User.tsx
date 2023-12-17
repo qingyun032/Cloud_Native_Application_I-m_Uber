@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useUserContext } from '../../../contexts/UserContext';
 import { infoBarType } from '../../../models/user.model';
-import { updatePassengerInfo } from '../../../apis/user.api';
+import { updatePassengerInfo, cashTopUp } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -103,10 +103,19 @@ export const User = (props: UserProps) => {
     setEdit(!edit);
   }
 
-  const topUpClick = () => {
-    // TODO: call api
-    if(topUp)
+  const topUpClick = async () => {
+    if(topUp && user !== null){
       refs["wallet"].current?.getElementsByTagName("input")[0].focus();
+      const origin = (user?.wallet === undefined)? 0 : user?.wallet;
+      const cash = Number(refs["wallet"].current?.getElementsByTagName("input")[0].value) - origin;
+      try{
+        const response = await cashTopUp(cash);
+        setUser({...user, wallet: response.balance});
+        setInfoBar({open: true, type: "success", message: "Topup successfully."});
+      }catch(error: any){
+        setInfoBar({open: true, type: "error", message: error.response.data.error});
+      }
+    }
     setTopUp(!topUp);
   }
 

@@ -3,7 +3,7 @@ const passengersService = require('../services/passengerService');
 const userService = require('../services/userService');
 const boardingService = require('../services/boardingService');
 
-const Routes_matching = require('../utils/matching');
+const routesMatching = require('../utils/matching');
 const toCorrectString = require('../utils/toCorrectString');
 // const transformAddr = require('../utils/transformAddr');
 
@@ -13,11 +13,22 @@ async function showCandidates(req, res) {
         res.status(401).json({ error: "Wrong sign in information"})
         return;
     }
-    const reqData = req.body; 
+    // Must remember: query is string, params is number
+    const Go = req.query.Go;
+    const curAddr = req.query.address;
+    const passengerBoardTime = req.query.board_time; 
+    const passengerCnt = req.query.passenger_cnt;
+
     const RouteData = {"Routes":[]};
     try {
         // return a list of viable routes
-        const routes = await Routes_matching(reqData.address, parseInt(process.env.COMPANY_STOP_ID), reqData.Go, reqData.board_time, reqData.passenger_cnt);
+        const routes = await routesMatching(
+            curAddr, 
+            parseInt(process.env.COMPANY_STOP_ID), 
+            Boolean(Go), 
+            new Date(passengerBoardTime), 
+            parseInt(passengerCnt)
+        );
         for (let route of routes){
             route.board_time = toCorrectString(route.board_time);
             route.destination_time = toCorrectString(route.destination_time);
@@ -27,7 +38,7 @@ async function showCandidates(req, res) {
             return new Date(a.board_time) - new Date(b.board_time);
         });
         RouteData.Routes = routes;
-        req.session.passengerCnt = reqData.passenger_cnt;
+        req.session.passengerCnt = parseInt(passengerCnt);
         res.status(200).json(RouteData);
     } catch (error) {
         console.error(error);

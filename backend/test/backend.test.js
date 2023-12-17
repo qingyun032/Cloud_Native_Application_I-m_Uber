@@ -746,9 +746,9 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                 ]
             }
         });
-        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
+        res = await request(app).get("/api/v1/passengers/showCandidates").query(
             passenger_pref
-        );
+        ).set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "Routes": [
@@ -794,30 +794,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
             }
         );
     });
-
-    test("getArrivalTime", async () => {
-        let res = await request(app).post("/api/v1/auth/signin").send({
-            "userName": "Alice",
-            "password": "Alicepassword"
-        });
-        const { header } = res;
-        
-        res = await request(app).get("/api/v1/passengers/getArrivalTime").set("Cookie", [...header["set-cookie"]]);
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            "CarInfo": {
-                "carPlate": "BBC-1221",
-                "seat": 4,
-                "brand": 1,
-                "color": 2,
-                "type": "SUV",
-                "electric": false
-            },
-            "stop_arrival_time": "2023-12-21 12:06:29",
-            "dest_arrival_time": "2023-12-21 12:24:35"
-        });
-    });
-
+    
     test("Show route candidates that gets no routes", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Bob",
@@ -843,7 +820,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                 ]
             }
         });
-        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
+        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).query(
             passenger_pref
         );
         expect(res.statusCode).toBe(200);
@@ -853,6 +830,29 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
 		    ]
         });
         
+    });
+
+    test("getArrivalTime", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Alice",
+            "password": "Alicepassword"
+        });
+        const { header } = res;
+        
+        res = await request(app).get("/api/v1/passengers/getArrivalTime").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "CarInfo": {
+                "carPlate": "BBC-1221",
+                "seat": 4,
+                "brand": 1,
+                "color": 2,
+                "type": "SUV",
+                "electric": false
+            },
+            "stop_arrival_time": "2023-12-21 12:06:29",
+            "dest_arrival_time": "2023-12-21 12:24:35"
+        });
     });
 });
 

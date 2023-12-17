@@ -16,13 +16,12 @@ export const getCandidate = async (tripData: itineraryQueryData): Promise<candid
     method: 'GET',
     url: path + "/api/v1/passengers/showCandidates",
     // url: testPath + "/candidates",
-    params: testData,
+    params: tripData,
   };
-  console.log(testData);
+  console.log(tripData);
   const response = await axios(config);
-  console.log('line 16')
   console.log(response)
-  return response.data;
+  return response.data.Routes;
 };
 
 export const selectCandidate = async (candidateData : {routeID: number, stopID: number, price: number}): Promise<string> => {

@@ -8,6 +8,11 @@ import Arrival from './matching/Arrival';
 import Departure from './matching/Departure';
 import MyRating from './matching/MyRating';
 import { NavigationBar } from '../navigation/NavigationBar';
+// import Arrival from '../components/matching/Arrival';
+// import Departure from '../components/matching/Departure';
+// import MyRating from '../components/matching/Rating';
+// import { NavigationBar } from '../components/navigation/NavigationBar';
+import { useUserContext } from '../../contexts/UserContext';
 
 
 type PassengerMatchedProps = {
@@ -20,9 +25,10 @@ function PassengerMatched( props: PassengerMatchedProps ) {
 
   const { passengerStatus, setPassengerStatus, selectedDriverId } = props;
 
-  const [isDeparture, setIsDeparture] = useState(true);
-  const [isArrival, setIsArrival] = useState(false);
-  const [isRating, setIsRating] = useState(false);
+  // const [isDeparture, setIsDeparture] = useState(true);
+  // const [isArrival, setIsArrival] = useState(false);
+  // const [isRating, setIsRating] = useState(false);
+  const { isDeparture, setIsDeparture, isArrival, setIsArrival, isRating, setIsRating } = useUserContext();
   
   return (
     <>
