@@ -61,7 +61,7 @@ const Routes_matching = async(address, FixStopID, direction, board_time, passeng
           if(user.nRating !== 0){
             rating = user.ratingTotalScore / user.nRating;
           }
-          const price = await calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
+          const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
           
           // Find the time to the destination
           const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);
