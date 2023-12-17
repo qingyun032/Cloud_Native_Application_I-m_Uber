@@ -37,7 +37,8 @@ async function showCandidates(req, res) {
             return new Date(a.board_time) - new Date(b.board_time);
         });
         RouteData.Routes = routes;
-        req.session.passengerCnt = reqData.passenger_cnt;
+        console.log("this is true", RouteData);
+        req.session.passengerCnt = passengerCnt;
         res.status(200).json(RouteData);
     } catch (error) {
         console.error(error);
