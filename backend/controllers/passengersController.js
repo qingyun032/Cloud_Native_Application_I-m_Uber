@@ -13,11 +13,21 @@ async function showCandidates(req, res) {
         res.status(401).json({ error: "Wrong sign in information"})
         return;
     }
-    const reqData = req.body; 
+    const Go = req.query.Go;
+    const curAddr = req.query.address;
+    const passengerBoardTime = req.query.board_time; 
+    const passengerCnt = req.query.passenger_cnt;
+    console.log("this is true", Go, curAddr, passengerBoardTime, passengerCnt);
     const RouteData = {"Routes":[]};
     try {
         // return a list of viable routes
-        const routes = await Routes_matching(reqData.address, parseInt(process.env.COMPANY_STOP_ID), reqData.Go, reqData.board_time, reqData.passenger_cnt);
+        const routes = await Routes_matching(
+            curAddr, 
+            parseInt(process.env.COMPANY_STOP_ID), 
+            Go, 
+            passengerBoardTime, 
+            passengerCnt
+        );
         for (let route of routes){
             route.board_time = toCorrectString(route.board_time);
             route.destination_time = toCorrectString(route.destination_time);

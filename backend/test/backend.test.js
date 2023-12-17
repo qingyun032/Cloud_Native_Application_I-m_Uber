@@ -746,9 +746,9 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                 ]
             }
         });
-        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).send(
+        res = await request(app).get("/api/v1/passengers/showCandidates").query(
             passenger_pref
-        );
+        ).set("Cookie", [...header["set-cookie"]]);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             "Routes": [
