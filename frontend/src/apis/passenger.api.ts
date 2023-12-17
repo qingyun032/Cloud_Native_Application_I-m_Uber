@@ -16,7 +16,7 @@ export const getCandidate = async (tripData: itineraryQueryData): Promise<candid
     method: 'GET',
     url: path + "/api/v1/passengers/showCandidates",
     // url: testPath + "/candidates",
-    data: testData,
+    params: testData,
   };
   console.log(testData);
   const response = await axios(config);
