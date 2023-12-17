@@ -81,7 +81,7 @@ const createRoute = async (req, res) => {
           const nextStopId = await stopService.getStopById(routeData.stopIds[i + 1]);
           const distance = await distanceCalculator(stop.latitude, stop.longitude, nextStopId.latitude, nextStopId.longitude);
           total_distance += distance;
-          var intervalTime = new Date((distance / 40) * 60 * 60 * 1000); // 40 km/h
+          var intervalTime = new Date((distance / 20) * 60 * 60 * 1000); // 20 km/h
 
           arriveTime = new Date(arriveTime.getTime() + intervalTime.getTime());
         }
