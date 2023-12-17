@@ -83,11 +83,11 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
         setInfoBar({open: true, type: "error", message: "No drivers nearby, please try another boarding address..."});
       }
       else{
+        setCandidates(candidateList)        
         setPassengerStatus('candidate')
       }
     
       // setInfoBar({open: true, type: "success", message: response.message});
-      // setCandidates(candidateList)
     }
     catch(error: any){
       // setInfoBar({open: true, type: "error", message: error.response.data.error});
