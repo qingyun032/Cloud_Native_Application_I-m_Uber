@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { candidateInfo } from '../../models/trip';
 import { brandList } from '../../models/carBrand';
 import { selectCandidate } from '../../apis/passenger.api';
+import { stopList } from '../../models/stopName';
 
 
 type CandidateProps = {
@@ -108,7 +109,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:2 }}>Arrival Time</Typography>
                   <Typography variant='h5'>
-                    Not described in shownCandidate API
+                    {candidate.destination_time}
                     {/* {candidate.arrivalTime} */}
                   </Typography>
                   <Divider/>
@@ -116,13 +117,13 @@ const CandidateDetail = ( props: CandidateProps ) => {
               </Box>
               <Typography sx={{ mt:2 }}>Departure Stop</Typography>
               <Typography variant='h5'>
-                {isGo? candidate.stopID : "台積電"}
+                {isGo? stopList[candidate.stopID-1] : "台積電"}
                 {/* {candidate.stopAddress} */}
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Destination</Typography>
               <Typography variant='h5'>
-                {isGo? "台積電" : candidate.stopID}
+                {isGo? "台積電" : stopList[candidate.stopID-1]}
                 {/* {candidate.destination} */}
               </Typography>
               <Divider/>

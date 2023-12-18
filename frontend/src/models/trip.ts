@@ -26,6 +26,7 @@ export type candidateInfo = {
   driverID: number,
   driverName: string,
   board_time: string,
+  destination_time: string,
   rating: number,
   nRating: number,
   price: number,

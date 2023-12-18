@@ -32,7 +32,6 @@ function PassengerMatched( props: PassengerMatchedProps ) {
   
   return (
     <>
-      {/* <ThemeProvider theme={theme}> */}
         <Container maxWidth="xs">
           <NavigationBar></NavigationBar>
           <Container 
@@ -40,19 +39,16 @@ function PassengerMatched( props: PassengerMatchedProps ) {
               width: 0.8,
               display: "flex",
               flexDirection: "column",
-              // justifyContent: "center",
-              // alignItems: "center",
             }}
           >
             <img src={carImage}/>
-            {isDeparture === true && <Departure setIsArrival={setIsArrival} setIsDeparture={setIsDeparture}/>}
-            {isArrival === true && <Arrival setIsArrival={setIsArrival} setIsRating={setIsRating}/>}
+            {isDeparture === true && <Departure isDeparture={isDeparture} setIsArrival={setIsArrival} setIsDeparture={setIsDeparture}/>}
+            {isArrival === true && <Arrival isArrival={isArrival} setIsArrival={setIsArrival} setIsRating={setIsRating}/>}
             {isRating === true && <MyRating setIsRating={setIsRating} setPassengerStatus={setPassengerStatus} driverId={selectedDriverId}/>}
 
             {/* <Button variant='contained' fullWidth sx={{backgroundColor: 'secondary.main', textTransform: 'none'}}>I'm in the Car</Button> */}
           </Container>
         </Container>
-      {/* </ThemeProvider> */}
     </>
   )
 }

@@ -2,27 +2,39 @@ import { Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { useEffect, useState } from 'react'
 import { tripInfo } from '../../../models/trip';
+import { getArrivalTime } from '../../../apis/passenger.api';
 
 type ArrivalProps = {
+  isArrival: boolean
   setIsArrival: (status: boolean) => void;
   setIsRating: (status: boolean) => void;
 }
 
 function Arrival( props: ArrivalProps ) {
-  const { setIsArrival, setIsRating } = props;
+  const { isArrival, setIsArrival, setIsRating } = props;
 
   const [trip, setTrip] = useState<tripInfo|null>(null)
 
   useEffect( () => {
-    fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
-    // fetch('http://localhost:8000/CarInfo')
-    .then(res => {
-      return res.json();
-    })
-    .then(data => {
-      console.log(data)
-      setTrip(data);
-    });
+    async function fetchTime() {
+      try{
+        const response = await getArrivalTime();
+        console.log(response)
+        setTrip(response)
+      }
+      catch(error : any){
+        console.log(error)
+      }
+    }
+    fetchTime();
+    // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
+    // .then(res => {
+    //   return res.json();
+    // })
+    // .then(data => {
+    //   console.log(data)
+    //   // setTrip(data);
+    // });
     // try{
     //   const response = getArrivalTime()
     //   setTrip(response)

@@ -7,24 +7,35 @@ import { getArrivalTime } from '../../../apis/passenger.api';
 import { carColor } from '../../../models/carColor';
 
 type DepartureProps = {
+  isDeparture: boolean;
   setIsDeparture: (status: boolean) => void;
   setIsArrival: (status: boolean) => void;
 }
 
 function Departure( props: DepartureProps ) {
-  const { setIsArrival, setIsDeparture } = props;
+  const { isDeparture, setIsArrival, setIsDeparture } = props;
   const [trip, setTrip] = useState<tripInfo|null>(null)
 
   useEffect( () => {
-    fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
-    // fetch('http://localhost:8000/CarInfo')
-    .then(res => {
-      return res.json();
-    })
-    .then(data => {
-      console.log(data)
-      setTrip(data);
-    });
+    async function fetchTime() {
+      try{
+        const response = await getArrivalTime();
+        console.log(response)
+        setTrip(response)
+      }
+      catch(error : any){
+        console.log(error)
+      }
+    }
+    fetchTime();
+    // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
+    // .then(res => {
+    //   return res.json();
+    // })
+    // .then(data => {
+    //   console.log(data)
+    //   // setTrip(data);
+    // });
     // try{
     //   const response = getArrivalTime()
     //   setTrip(response)
@@ -32,7 +43,7 @@ function Departure( props: DepartureProps ) {
     // catch(error: any){
     //   console.log(error)
     // }
-  }, [])
+  }, [isDeparture])
 
   const handleClick = () => {
     setIsDeparture(false);
