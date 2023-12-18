@@ -36,6 +36,8 @@ export const DriverStart = (props: driverStartProps) => {
     const currentTime = dayjs().startOf('minute');
     const selectedDate = itineraryData.date?.startOf('day');
     const selectedTime = itineraryData.time?.startOf('minute');
+    const maxPassengerCount = user?.car?.seat ?? 4;
+    const passengerOptions = Array.from({ length: maxPassengerCount || 0 }, (_, index) => index + 1);
     const toDriverStopsPage = async () => {
         if (favUsed) {
             setDriverStatus('stops');
@@ -234,10 +236,11 @@ export const DriverStart = (props: driverStartProps) => {
                     value={itineraryData.passengerCount}
                     onChange={(e: SelectChangeEvent) => handleInputChange('passengerCount', e.target.value)}
                   >
-                    <MenuItem value={1}>1</MenuItem>
-                    <MenuItem value={2}>2</MenuItem>
-                    <MenuItem value={3}>3</MenuItem>
-                    <MenuItem value={4}>4</MenuItem>
+                    {passengerOptions.map((count) => (
+                      <MenuItem key={count} value={count}>
+                        {count}
+                      </MenuItem>
+                    ))}
                   </Select>
                   <Box
                     display="flex"

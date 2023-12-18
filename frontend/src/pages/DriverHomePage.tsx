@@ -24,14 +24,15 @@ const theme = createTheme({
 export const DriverHomePage = () => {
     const [isGo, setIsGo] = useState<boolean>(true)
     const [stops, setStops] = useState<Stop[]>([])
+    const { driverStatus, setDriverStatus, boardingInfo, setBoardingInfo, user } = useUserContext();
+    const maxPassengerCount = user?.car?.seat !== null ? user?.car.seat ?? 4 : 4;
     const [itineraryData, setItineraryData] = useState<ItineraryData>({
         start: "",
         destination: "台積電",
-        passengerCount: "4",
+        passengerCount: maxPassengerCount.toString(),
         date: dayjs(),
         time: dayjs().add(1, 'hour'),
     });
-    const { driverStatus, setDriverStatus, boardingInfo, setBoardingInfo } = useUserContext();
 
     return (
         <>
