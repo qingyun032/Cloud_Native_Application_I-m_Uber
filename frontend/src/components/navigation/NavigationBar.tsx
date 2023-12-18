@@ -84,6 +84,7 @@ export const NavigationBar = () => {
     setLastHome("/passengerHome");
     // setDriverStatus('start');
     setProfileStatus(["home", ""]);
+    localStorage.removeItem("uberUser");
     myNav("/");
   }
 
