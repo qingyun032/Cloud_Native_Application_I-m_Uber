@@ -54,7 +54,7 @@ export const updateDriverInfo = async (user: userInfo): Promise<any> => {
       "addressHome": user.home,
       "addressCompany": user.company,
       "carPlate": user.car.carPlate,
-      "color": 0, //user.car.color,
+      "color": user.car.color,
       "brand": user.car.brand,
       "type": user.car.type,
       "electric": false, //user.car.electric,

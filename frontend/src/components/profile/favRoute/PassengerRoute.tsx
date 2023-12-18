@@ -117,7 +117,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         defaultValue={(user === null)? null : user.favRoute.passenger.GO.passengerCnt}
         ref={goRefs["people"]}
         variant="standard"
-        InputProps={inputProps}
+        InputProps={{...inputProps, inputProps: {min: 0, max: 6}}}
       />
       <Divider color="#313944" sx={{marginBottom: "15px", marginTop: "10px", padding: "1px"}}/>
       <div style={{fontWeight: "bold"}}>Back to home</div>
@@ -145,7 +145,7 @@ export const PassengerRoute = (props: PassengerRouteProps) => {
         defaultValue={(user === null)? null : user.favRoute.passenger.BACK.passengerCnt}
         ref={backRefs["people"]}
         variant="standard"
-        InputProps={inputProps}
+        InputProps={{...inputProps, inputProps: {min: 0, max: 6}}}
       />
       <MidButton variant="contained" onClick={() => editClick()} style={editStyle}>{(edit)? "Update" : "Edit"}</MidButton>
       <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
