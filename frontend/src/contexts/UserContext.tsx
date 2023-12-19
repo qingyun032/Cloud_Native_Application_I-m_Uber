@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { userInfo } from '../models/user.model';
 import { Boarding } from '../models/journey.model';
 
@@ -38,6 +38,20 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isDeparture, setIsDeparture] = useState(true);
   const [isArrival, setIsArrival] = useState(false);
   const [isRating, setIsRating] = useState(false);
+
+  useEffect(() => {
+    const storeUser = localStorage.getItem("uberUser");
+    if(storeUser !== null){
+      setUser(JSON.parse(storeUser));
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("uberUser", JSON.stringify(user));
+  }, [user])
+
+
+
 
   return (
     <UserContext.Provider value={{ 

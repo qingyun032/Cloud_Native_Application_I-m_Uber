@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 import { brandList } from '../../../models/carBrand';
+import { carColor } from '../../../models/carColor';
 import { useUserContext } from '../../../contexts/UserContext';
 import { infoBarType } from '../../../models/user.model';
 import { updateCarInfo, updateDriverInfo } from '../../../apis/user.api';
@@ -31,12 +32,14 @@ export const Car = (props: CarProps) => {
     type: useRef<HTMLDivElement>(null),
     seat: useRef<HTMLDivElement>(null),
     license: useRef<HTMLDivElement>(null),
+    color: useRef<HTMLDivElement>(null)
   }
   const textMap = [
     {id: "brand", label: "Brand", user: (user === null || user.car === null)? null : user.car.brand},
     {id: "type", label: "Type", user: (user === null || user.car === null)? null : user.car.type},
     {id: "seat", label: "Number of seats", user: (user === null || user.car === null)? null : user.car.seat},
     {id: "license", label: "License plate", user: (user === null || user.car === null)? null : user.car.carPlate},
+    {id: "color", label: "Color", user: (user == null || user.car === null)? null : user.car.color}
   ]
 
   const Text = styled(TextField)({
@@ -78,8 +81,9 @@ export const Car = (props: CarProps) => {
       const type = refs["type"].current?.getElementsByTagName("input")[0].value;
       const seat = refs["seat"].current?.getElementsByTagName("input")[0].value;
       const license = refs["license"].current?.getElementsByTagName("input")[0].value;
-      if(brand === "" && type === "" && seat === "" && license === ""){
-      }else if(brand !== "" && type !== "" && seat !== "" && license !== ""){
+      const color = refs["color"].current?.getElementsByTagName("input")[0].value;
+      if(brand === "" && type === "" && seat === "" && license === "" && color === ""){
+      }else if(brand !== "" && type !== "" && seat !== "" && license !== "" && color != ""){
         if(user === null){
           setInfoBar({open: true, type: "error", message: "Please sign in first."});
         }else{
@@ -92,6 +96,7 @@ export const Car = (props: CarProps) => {
               type: type ?? user.car.type,
               seat: Number(seat) ?? user.car.seat,
               carPlate: license ?? user.car.carPlate,
+              color: carColor.findIndex((i) => i === color) ?? user.car.color
             }
           }
           try{
@@ -147,11 +152,40 @@ export const Car = (props: CarProps) => {
           <MenuItem key={"Sedan"} value={"Sedan"}>Sedan</MenuItem>
         </Text>
         :
+        (id === "color")?
+        <Text
+          select
+          id={id}
+          label={label}
+          defaultValue={(user === null)? null : carColor[Number(user)]}
+          ref={refs[id]}
+          variant="standard"
+          InputProps={inputProps}
+        >
+          {carColor.map((option, i) => (
+            <MenuItem id={i.toString()} key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Text>
+        :
+        (id === "seat")?
         <Text
           key={id}
           id={id}
           label={label}
-          type={(id === "seat")? "number" : "text"}
+          type="number"
+          defaultValue={user}
+          ref={refs[id]}
+          variant="standard"
+          InputProps={{...inputProps, inputProps: {min: 0, max: 6}}}
+        />
+        :
+        <Text
+          key={id}
+          id={id}
+          label={label}
+          type="text"
           defaultValue={user}
           ref={refs[id]}
           variant="standard"

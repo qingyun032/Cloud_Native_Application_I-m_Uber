@@ -1032,16 +1032,16 @@ describe("GET /api/v1/route/ifPassengerOnRoute", () => {
 
 // Please write your test cases above finishRoute
 
-// describe("POST /api/v1/route/finishRoute", () => {
-//     test("Finish route", async () => {
-//         let res = await request(app).post("/api/v1/auth/signin").send({
-//             "userName": "Wei",
-//             "password": "Weipassword"
-//         });
-//         const { header } = res;
+describe("POST /api/v1/route/finishRoute", () => {
+    test("Finish route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Wei",
+            "password": "Weipassword"
+        });
+        const { header } = res;
 
-//         res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body.message).toBe("Finish route successfully");
-//     });
-// });
+        res = await request(app).post("/api/v1/route/finishRoute").set("Cookie", [...header["set-cookie"]]);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Finish route successfully");
+    });
+});

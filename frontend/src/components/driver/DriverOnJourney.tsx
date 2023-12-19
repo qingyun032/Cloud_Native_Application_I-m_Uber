@@ -68,6 +68,7 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', mt: 9 }}>
               <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {boardingInfo.map((stop, idx) => {
+                  const totalCount: number = stop.passengers.reduce((total, passenger) => total + passenger.count, 0);
                   return (
                     <ListItem key={idx} onClick={()=>handleOpen(idx)}>
                       <ListItemAvatar>
@@ -76,7 +77,7 @@ export const DriverOnJourney = (props: DriverOnJourneyProps) => {
                         </Avatar>
                         <p>{stop.boardTime.split(' ')[1].slice(0, stop.boardTime.split(' ')[1].indexOf(':', stop.boardTime.split(' ')[1].indexOf(':') + 1))}</p>
                       </ListItemAvatar>
-                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "people" : "person"}`}
+                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "groups" : "group"} (${totalCount} ${totalCount > 1 ? "people" : "person"} in total)`}
  />
                     </ListItem>
                   )})

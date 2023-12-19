@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { sendRating } from '../../../apis/passenger.api';
+import { getUserInfo } from '../../../apis/user.api';
+import { useUserContext } from '../../../contexts/UserContext';
 
 type RatingProps = {
   setIsRating: (status: boolean) => void;
@@ -14,9 +16,10 @@ type RatingProps = {
 
 function MyRating( props: RatingProps ) {
   const { setIsRating, setPassengerStatus, driverId } = props;
+  const { setUser } = useUserContext();
 
   const navigate = useNavigate();
-  const [tripRating, setTripRating] = React.useState<number | null>(2);
+  const [tripRating, setTripRating] = React.useState<number | null>(5);
 
   const handleClick = async () => {
     const ratingData = {
@@ -24,12 +27,21 @@ function MyRating( props: RatingProps ) {
       rating: tripRating,
     }
     try{
-      const response = sendRating(ratingData);
+      const response = await sendRating(ratingData);
       console.log(response)
       setIsRating(false);
       setPassengerStatus('home')
     }
     catch(error : any){
+      console.log(error)
+    }
+
+    try{
+      const response = await getUserInfo();
+      console.log(response);
+      setUser(response);
+    }
+    catch(error:any){
       console.log(error)
     }
   }
