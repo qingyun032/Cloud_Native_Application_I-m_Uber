@@ -4,19 +4,6 @@
 
 We are group 11, working on the project "I'm Uber" for solving the problem: Carpooling Issues of TSMC employees.
 
-## Note from chihung (11/07)
-
-Since we have nothing currently, I just directly push the initial code to the main branch.
-I think we should add dev branch for deveplopment. And every time we try to write code, we should do the following things. For example, if I am going to develop the sign in job, I should create the `feature/{your_branch_name}` from `dev`
-
-```
-git checkout -b feature/sign_in dev
-```
-
-After finishing the sign in job, I can just push it to the `feature/signIn` branch. Then I can start a pull request(for others to review code?), and merge the feature branch into dev branch.
-
-Just let us know if you have any ideas. I haven't read the 12 factors yet. Not sure if we need to do other things like create test-feature branch for testing?
-
 ## Getting Started
 
 ## Frontend
