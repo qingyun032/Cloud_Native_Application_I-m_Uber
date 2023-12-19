@@ -1,6 +1,8 @@
 const Wallet = require('../db/models/Wallet'); 
 
-
+const getWalletByUserID = async (userID) => {
+    return Wallet.findByPk(userID);
+};
 
 const createWallet = async (walletData) => {
     return Wallet.create(walletData);
@@ -22,5 +24,6 @@ const deleteWallet = async (id) => {
 module.exports = {
     createWallet,
     topUp,
-    deleteWallet
+    deleteWallet,
+    getWalletByUserID
 };

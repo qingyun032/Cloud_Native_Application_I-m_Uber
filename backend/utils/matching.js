@@ -30,7 +30,6 @@ const routesMatching = async(address, FixStopID, direction, passengerBoardTime, 
     let Routes = [];
     const nearNstops = await stopService.getNearestNStops(address, 3, 2);
     const boardings = await boardingService.getAllBoardings();
-    console.log('line 39')
     const filteredboardings = boardings.filter(boarding => nearNstops.some(nearStop => nearStop.stopID === boarding.stopID));
     for (const route of routes) {
       let find = 0;
