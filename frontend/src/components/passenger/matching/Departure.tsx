@@ -63,8 +63,10 @@ function Departure( props: DepartureProps ) {
         <Typography variant='body1' sx={{mt: 5, mb: 2}}>Estimated Departure Time</Typography>
         {/* require modification */}
         {trip && <Typography variant='h3' sx={{mb: 5}}>{trip.stop_arrival_time}</Typography>}
-        <Typography variant='body1' sx={{mt: 5, mb: 2}}>Car Appearance</Typography>
-        {trip && <Typography variant='h5' sx={{mt: 5, mb: 2}}>{carColor[trip.CarInfo.color]}    {trip.CarInfo.type}</Typography>}
+        <Typography variant='body1' sx={{mt: 2, mb: 2}}>Car Appearance</Typography>
+        {trip && <Typography variant='h5' sx={{mt:2, mb: 2}}>{carColor[trip.CarInfo.color]}    {trip.CarInfo.type}</Typography>}
+        <Typography variant='body1' sx={{mt: 2, mb: 2}}>License Plate</Typography>
+        {trip && <Typography variant='h5' sx={{mt: 2, mb: 2}}>{trip.CarInfo.carPlate}</Typography>}
         <Button 
           variant='contained' 
           fullWidth 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { candidateInfo, itineraryData } from "../models/trip"
@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { PassengerHome } from '../components/passenger/PassengerHome';
 import PassengerCandidate from '../components/passenger/PassengerCandidate';
 import PassengerMatched from '../components/passenger/PassengerMatched';
+import { checkIfPassengerOnRoute } from '../apis/passenger.api';
 
 const theme = createTheme({
     palette: {
@@ -70,6 +71,35 @@ export const PassengerPage = () => {
         }
       ]
     )
+
+    useEffect( () => {
+      async function checkPassengerStatus() {
+        try{
+          const response = await checkIfPassengerOnRoute();
+          console.log('passenger on route status : ', response)
+          response? setPassengerStatus('matched'):setPassengerStatus('home')
+        }
+        catch(error : any){
+          console.log(error)
+        }
+      }
+      checkPassengerStatus();
+      // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
+      // .then(res => {
+      //   return res.json();
+      // })
+      // .then(data => {
+      //   console.log(data)
+      //   // setTrip(data);
+      // });
+      // try{
+      //   const response = getArrivalTime()
+      //   setTrip(response)
+      // }
+      // catch(error: any){
+      //   console.log(error)
+      // }
+    }, [])
 
     return (
       <>
