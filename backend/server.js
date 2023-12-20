@@ -18,8 +18,8 @@ const Grid = require('./db/models/Routes');
 const app = express()
 
 app.use(cors({
-    // origin: 'http://localhost:3000',
-    origin: ['https://tsmc-myuber.azurewebsites.net', "tsmc-myuber.azurewebsites.net"],
+    origin: 'http://localhost:3000',
+    // origin: ['https://tsmc-myuber.azurewebsites.net', "tsmc-myuber.azurewebsites.net"],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
 }))
