@@ -31,7 +31,7 @@ export const DriverEndJourney = (props: DriverEndJourneyProps) => {
               }}
             >
               <img src={carImage} style={{width: 250, marginTop: 100}}/>
-              <Typography variant='subtitle1' sx={{mt: 2, mb: 2}}>You have finish your journey!</Typography>
+              <Typography variant='subtitle1' sx={{mt: 2, mb: 2}}>You have finished your journey!</Typography>
               <Button 
                 variant='contained' 
                 fullWidth 

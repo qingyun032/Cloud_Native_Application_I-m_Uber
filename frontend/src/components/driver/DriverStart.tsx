@@ -112,12 +112,18 @@ export const DriverStart = (props: driverStartProps) => {
                 setStops(favStopsToWork)
                 setFavUsed(true);
             }
+            else {
+              alert("Favorite route is not yet set")
+            }
         }
         else {
             if (user?.favRoute.driver.BACK.address) {
                 setItineraryData(driverFavRouteToHome);
                 setStops(favStopsToHome)
                 setFavUsed(true);
+            }
+            else {
+              alert("Favorite route is not yet set")
             }
         }
     }
