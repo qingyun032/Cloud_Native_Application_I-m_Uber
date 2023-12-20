@@ -35,15 +35,6 @@ function MyRating( props: RatingProps ) {
     catch(error : any){
       console.log(error)
     }
-
-    // try{
-    //   const response = await getUserInfo();
-    //   console.log(response);
-    //   setUser(response);
-    // }
-    // catch(error:any){
-    //   console.log(error)
-    // }
   }
 
   return (

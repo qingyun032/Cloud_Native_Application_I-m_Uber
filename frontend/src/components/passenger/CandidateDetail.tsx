@@ -36,26 +36,29 @@ const CandidateDetail = ( props: CandidateProps ) => {
       stopID: candidate.stopID,
       price: candidate.price
     }
-    checkWallet : try{
-      try{ // get wallet money
-        const userResponse = await getUserInfo();
-        if(userResponse.wallet<candidateDetail.price){
-          alert('Wallet needs top up!');
-          break checkWallet;
-        }
+    checkWallet : try{  // get wallet money
+      const userResponse = await getUserInfo();
+      if(userResponse.wallet<candidateDetail.price){
+        alert('Wallet needs top up!');
+        break checkWallet;
+        // return;
+      }
+      try{
         const response = await selectCandidate(candidateDetail);
         console.log(response)
+        setPassengerStatus('matched')
+        setSelectedDriverId(candidate.driverID)
       }
       catch(error: any){
         console.log(error)
-      }
-      setPassengerStatus('matched')
-      setSelectedDriverId(candidate.driverID)
+        alert('Oops! Seems like someone has chosen the driver before you. Maybe choose another driver?')
+        closeDriverDetail()
+      }    
     }
-    catch(error : any){
+    catch(error: any){
       console.log(error)
     }
-    // navigate('/passengerMatched')
+
   }
 
   return (
@@ -93,7 +96,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:1 }}>Driver Rating</Typography>
                   <Typography variant='h5'>
-                    {candidate.rating}   ({candidate.nRating})
+                    {candidate.rating.toFixed(2)}   ({candidate.nRating})
                   </Typography>
                   <Divider/>
                 </Box>

@@ -55,6 +55,7 @@ export const sendRating = async (ratingData: {driverID: number, rating: number|n
     // url: testPath,
     data: ratingData
   };
+  console.log(ratingData)
   const response = await axios(config);
   return response.data;
 };
