@@ -113,7 +113,7 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                         </Avatar>
                         <p>{stop.boardTime.split(' ')[1].slice(0, stop.boardTime.split(' ')[1].indexOf(':', stop.boardTime.split(' ')[1].indexOf(':') + 1))}</p>
                       </ListItemAvatar>
-                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "groups" : "group"} (${totalCount} ${totalCount > 1 ? "people" : "person"} in total)`}
+                      <ListItemText primary={`${stop.name}`} secondary={`${stop.passengers.length} ${stop.passengers.length > 1 ? "groups" : "group"}`}
  />
                     </ListItem>
                   )})
@@ -134,7 +134,7 @@ export const DriverWaitJourney = (props: DriverWaitJourneyProps) => {
                 {passengers.map((passenger, idx) => {
                   return (
                     <Typography key={idx}>
-                      {passenger.name}: {passenger.count} {passenger.count > 1 ? "people" : "person"}
+                      {passenger.count} {passenger.count > 1 ? "people" : "person"}
                     </Typography>
                   )
                 })}
