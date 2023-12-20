@@ -7,6 +7,7 @@ const transformAddr = require('../utils/transformAddr');
 const gridService = require('../services/gridService');
 const passengerService = require('../services/passengerService');
 const toCorrectString = require('../utils/toCorrectString');
+const walletService = require('../services/walletService');
 
 const getAllRoutes = async (req, res) => {
   try {
@@ -249,9 +250,19 @@ const finishRoute = async (req, res) => {
       route.driverID === driverId
     );
 
-    routeInfo = routeInfo[0];
-    const routeId = routeInfo.routeID;
-    await routeService.deleteRoute(routeId);
+    for (let route of routeInfo) {
+      let passengers = await passengerService.getAllPassengers();
+      passengers = passengers.filter(
+        passenger =>
+        passenger.routeID === route.routeID
+      );
+      // Payment
+      for (let passenger of passengers) {
+        await walletService.topUp(passenger.userID, -passenger.price);
+      }
+
+      await routeService.deleteRoute(route.routeID);
+    }
     
     res.status(200).send({message: "Finish route successfully"})
   } catch (error){

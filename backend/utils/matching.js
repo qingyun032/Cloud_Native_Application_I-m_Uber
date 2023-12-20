@@ -30,8 +30,8 @@ const routesMatching = async(address, FixStopID, direction, passengerBoardTime, 
     let Routes = [];
     const nearNstops = await stopService.getNearestNStops(address, 3, 2);
     const boardings = await boardingService.getAllBoardings();
-    console.log('line 39')
     const filteredboardings = boardings.filter(boarding => nearNstops.some(nearStop => nearStop.stopID === boarding.stopID));
+    
     for (const route of routes) {
       let find = 0;
       for (const boarding of filteredboardings) {
@@ -53,7 +53,7 @@ const routesMatching = async(address, FixStopID, direction, passengerBoardTime, 
           if(user.nRating !== 0){
             rating = user.ratingTotalScore / user.nRating;
           }
-          const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric);
+          const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric, passengerCnt);
           
           // Find the time to the destination
           const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);

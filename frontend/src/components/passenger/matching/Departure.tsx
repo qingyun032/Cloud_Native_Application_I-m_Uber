@@ -28,21 +28,6 @@ function Departure( props: DepartureProps ) {
       }
     }
     fetchTime();
-    // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
-    // .then(res => {
-    //   return res.json();
-    // })
-    // .then(data => {
-    //   console.log(data)
-    //   // setTrip(data);
-    // });
-    // try{
-    //   const response = getArrivalTime()
-    //   setTrip(response)
-    // }
-    // catch(error: any){
-    //   console.log(error)
-    // }
   }, [isDeparture])
 
   const handleClick = () => {
@@ -53,7 +38,6 @@ function Departure( props: DepartureProps ) {
   return (
     <>
       <Box
-        // minHeight= "70vh"
         sx={{
           display: 'flex', 
           flexDirection: 'column',
@@ -61,10 +45,29 @@ function Departure( props: DepartureProps ) {
         }}
       >
         <Typography variant='body1' sx={{mt: 5, mb: 2}}>Estimated Departure Time</Typography>
-        {/* require modification */}
-        {trip && <Typography variant='h3' sx={{mb: 5}}>{trip.stop_arrival_time}</Typography>}
-        <Typography variant='body1' sx={{mt: 5, mb: 2}}>Car Appearance</Typography>
-        {trip && <Typography variant='h5' sx={{mt: 5, mb: 2}}>{carColor[trip.CarInfo.color]}    {trip.CarInfo.type}</Typography>}
+        {trip && <Typography variant='h3' sx={{mb: 5}}>{trip.stop_arrival_time.slice(11,16)}</Typography>}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+          >
+            <Typography variant='body1' sx={{mt: 2, mr : 1}}>Car Appearance</Typography>
+            {trip && <Typography variant='h5' sx={{mt:2, mb: 2}}>{carColor[trip.CarInfo.color]}    {trip.CarInfo.type}</Typography>}
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+          >
+            <Typography variant='body1' sx={{mt: 2, ml : 1}}>License Plate</Typography>
+            {trip && <Typography variant='h5' sx={{mt: 2, mb: 2}}>{trip.CarInfo.carPlate}</Typography>}
+          </Box>
+        </Box>
         <Button 
           variant='contained' 
           fullWidth 

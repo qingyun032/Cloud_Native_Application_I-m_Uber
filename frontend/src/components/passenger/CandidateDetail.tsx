@@ -9,6 +9,7 @@ import { candidateInfo } from '../../models/trip';
 import { brandList } from '../../models/carBrand';
 import { selectCandidate } from '../../apis/passenger.api';
 import { stopList } from '../../models/stopName';
+import { getUserInfo } from '../../apis/user.api';
 
 
 type CandidateProps = {
@@ -35,9 +36,19 @@ const CandidateDetail = ( props: CandidateProps ) => {
       stopID: candidate.stopID,
       price: candidate.price
     }
-    try{
-      const response = await selectCandidate(candidateDetail);
-      console.log(response)
+    checkWallet : try{
+      try{ // get wallet money
+        const userResponse = await getUserInfo();
+        if(userResponse.wallet<candidateDetail.price){
+          alert('Wallet needs top up!');
+          break checkWallet;
+        }
+        const response = await selectCandidate(candidateDetail);
+        console.log(response)
+      }
+      catch(error: any){
+        console.log(error)
+      }
       setPassengerStatus('matched')
       setSelectedDriverId(candidate.driverID)
     }
@@ -98,7 +109,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:2 }}>Departure Time</Typography>
                   <Typography variant='h5'>
-                    {candidate.board_time}
+                    {candidate.board_time.slice(11,16)}
                   </Typography>
                   <Divider/>
                 </Box>
@@ -109,7 +120,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:2 }}>Arrival Time</Typography>
                   <Typography variant='h5'>
-                    {candidate.destination_time}
+                    {candidate.destination_time.slice(11,16)}
                     {/* {candidate.arrivalTime} */}
                   </Typography>
                   <Divider/>
@@ -124,18 +135,16 @@ const CandidateDetail = ( props: CandidateProps ) => {
               <Typography sx={{ mt:2 }}>Destination</Typography>
               <Typography variant='h5'>
                 {isGo? "台積電" : stopList[candidate.stopID-1]}
-                {/* {candidate.destination} */}
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Car Model</Typography>
               <Typography variant='h5'>
-                {/* need to map to string */}
                 {brandList[candidate.carbrand]} 
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Cost</Typography>
               <Typography variant='h5'>
-                {candidate.price}
+                NTD {candidate.price}
               </Typography>
               <Divider/>
               <Button 

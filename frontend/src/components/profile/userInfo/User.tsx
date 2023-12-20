@@ -1,4 +1,4 @@
-import { useState, useRef, RefObject } from 'react';
+import { useState, useRef, RefObject, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import { useUserContext } from '../../../contexts/UserContext';
 import { infoBarType } from '../../../models/user.model';
-import { updatePassengerInfo, cashTopUp } from '../../../apis/user.api';
+import { updatePassengerInfo, cashTopUp, getUserInfo } from '../../../apis/user.api';
 
 const MidButton = styled(Button)({
   textTransform: 'none',
@@ -78,6 +78,20 @@ export const User = (props: UserProps) => {
       fontSize: "14px",
     },
   }
+
+  useEffect( () => {
+    async function updateUserInfo() {
+      try{
+        const response = await getUserInfo();
+        console.log(response)
+        setUser(response)
+      }
+      catch(error : any){
+        console.log(error)
+      }
+    }
+    updateUserInfo();
+  }, [])
 
   const editClick = async () => {
     if(edit){

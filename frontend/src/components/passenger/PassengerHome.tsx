@@ -80,29 +80,17 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
       const candidateList = await getCandidate(queryData);
       console.log(candidateList)
       if (candidateList.length === 0){
-        setInfoBar({open: true, type: "error", message: "No drivers nearby, please try another boarding address..."});
+        alert('There is no driver near you at this moment. Maybe change time or date of the schedule.')
       }
       else{
         setCandidates(candidateList)        
         setPassengerStatus('candidate')
       }
-    
-      // setInfoBar({open: true, type: "success", message: response.message});
     }
     catch(error: any){
-      // setInfoBar({open: true, type: "error", message: error.response.data.error});
       console.log(error)
     }
   }
-
-  // const passengerFavRoute: itineraryData = {
-  //   start: '管二104',
-  //   destination: '德田101',
-  //   passengerCount : '2',
-  //   date: dayjs('2023-12-20'),
-  //   time: dayjs('15:00:00', "HH:mm:ss"),
-  // }
-
 
   const handleInputChange = (field: keyof itineraryData, value: string | number | Dayjs | null) => {
     setPassengerItineraryData((prevItineraryData) => ({
@@ -112,10 +100,21 @@ export const PassengerHome = ( props: PassengerHomeProps ) => {
   };
 
   const useFavoriteRoute = async () => {
-    try{
+    myLabel : try{
       const myInfo = await getUserInfo();
       const favoriteRoute = myInfo.favRoute.passenger;
       console.log(myInfo);
+      if (isGo) {
+        if (favoriteRoute.GO.address === null){
+          alert('Favorite route is not yet set')
+          break myLabel;
+        }
+      } else {
+        if (favoriteRoute.BACK.address === null){
+          alert('Favorite route is not yet set')
+          break myLabel;
+        }
+      }
       handleInputChange('start', isGo? favoriteRoute.GO.address:"台積電");
       handleInputChange('destination', isGo? "台積電":favoriteRoute.BACK.address);
       handleInputChange('passengerCount', isGo? favoriteRoute.GO.passengerCnt:favoriteRoute.BACK.passengerCnt);

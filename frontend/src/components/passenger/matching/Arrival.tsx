@@ -27,22 +27,7 @@ function Arrival( props: ArrivalProps ) {
       }
     }
     fetchTime();
-    // fetch('http://localhost:4000/api/v1/passengers/getArrivalTime')
-    // .then(res => {
-    //   return res.json();
-    // })
-    // .then(data => {
-    //   console.log(data)
-    //   // setTrip(data);
-    // });
-    // try{
-    //   const response = getArrivalTime()
-    //   setTrip(response)
-    // }
-    // catch(error: any){
-    //   console.log(error)
-    // }
-  }, [])
+  }, [isArrival])
 
   const handleClick = () => {
     setIsArrival(false);
@@ -59,7 +44,7 @@ function Arrival( props: ArrivalProps ) {
         }}
       >
         <Typography variant='body1' sx={{mt: 5, mb: 2}}>Estimated Arrival Time</Typography>
-        <Typography variant='h3' sx={{mb: 5}}>{trip?.dest_arrival_time}</Typography>
+        <Typography variant='h3' sx={{mb: 5}}>{trip?.dest_arrival_time.slice(11,16)}</Typography>
         <Button 
           variant='contained' 
           fullWidth 

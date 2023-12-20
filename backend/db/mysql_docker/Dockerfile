@@ -5,9 +5,9 @@ EXPOSE 3306
 
 RUN chown -R mysql:root /var/lib/mysql/
 
-ENV MYSQL_ALLOW_EMPTY_PASSWORD yes
+ENV LANG=C.UTF-8
 
-ENV MYSQL_CHARSET utf8mb4
-ENV MYSQL_COLLATION utf8mb4_unicode_ci
+ENV MYSQL_ALLOW_EMPTY_PASSWORD yes
+# ENV MYSQL_ROOT_PASSWORD=1234
 
 COPY ./init.sql /docker-entrypoint-initdb.d/
