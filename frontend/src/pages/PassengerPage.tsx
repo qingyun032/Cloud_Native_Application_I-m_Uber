@@ -43,6 +43,11 @@ export const PassengerPage = () => {
         }
       }
       checkPassengerStatus();
+      const storeDriverID = localStorage.getItem("selectedDriverID");
+      // console.log(storeDriverID);
+      if(storeDriverID !== null){
+        setSelectedDriverId(Number(storeDriverID));
+      }
     }, [])
 
     return (

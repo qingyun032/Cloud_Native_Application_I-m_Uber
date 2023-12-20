@@ -31,6 +31,7 @@ function MyRating( props: RatingProps ) {
       console.log(response)
       setIsRating(false);
       setPassengerStatus('home')
+      localStorage.removeItem("selectedDriverID");
     }
     catch(error : any){
       console.log(error)

@@ -48,6 +48,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
         console.log(response)
         setPassengerStatus('matched')
         setSelectedDriverId(candidate.driverID)
+        localStorage.setItem("selectedDriverID", candidate.driverID.toString());
       }
       catch(error: any){
         console.log(error)
