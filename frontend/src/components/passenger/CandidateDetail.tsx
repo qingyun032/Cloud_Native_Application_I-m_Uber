@@ -9,6 +9,7 @@ import { candidateInfo } from '../../models/trip';
 import { brandList } from '../../models/carBrand';
 import { selectCandidate } from '../../apis/passenger.api';
 import { stopList } from '../../models/stopName';
+import { getUserInfo } from '../../apis/user.api';
 
 
 type CandidateProps = {
@@ -35,9 +36,19 @@ const CandidateDetail = ( props: CandidateProps ) => {
       stopID: candidate.stopID,
       price: candidate.price
     }
-    try{
-      const response = await selectCandidate(candidateDetail);
-      console.log(response)
+    checkWallet : try{
+      try{ // get wallet money
+        const userResponse = await getUserInfo();
+        if(userResponse.wallet<candidateDetail.price){
+          alert('Wallet needs top up!');
+          break checkWallet;
+        }
+        const response = await selectCandidate(candidateDetail);
+        console.log(response)
+      }
+      catch(error: any){
+        console.log(error)
+      }
       setPassengerStatus('matched')
       setSelectedDriverId(candidate.driverID)
     }
