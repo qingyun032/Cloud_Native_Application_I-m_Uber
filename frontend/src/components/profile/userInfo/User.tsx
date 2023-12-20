@@ -3,6 +3,9 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
 import { useUserContext } from '../../../contexts/UserContext';
 import { infoBarType } from '../../../models/user.model';
 import { updatePassengerInfo, cashTopUp, getUserInfo } from '../../../apis/user.api';
@@ -76,13 +79,6 @@ export const User = (props: UserProps) => {
     },
   }
 
-  const walletProps = {
-    disabled: !topUp,
-    style: {
-      fontSize: "14px"
-    }
-  }
-
   useEffect( () => {
     async function updateUserInfo() {
       try{
@@ -119,13 +115,11 @@ export const User = (props: UserProps) => {
 
   const topUpClick = async () => {
     if(topUp && user !== null){
-      refs["wallet"].current?.getElementsByTagName("input")[0].focus();
-      const origin = (user?.wallet === undefined)? 0 : user?.wallet;
-      const cash = Number(refs["wallet"].current?.getElementsByTagName("input")[0].value) - origin;
+      const cash = Number(refs["wallet"].current?.getElementsByTagName("input")[0].value);
       try{
         const response = await cashTopUp(cash);
         setUser({...user, wallet: response.balance});
-        setInfoBar({open: true, type: "success", message: "Topup successfully."});
+        setInfoBar({open: true, type: "success", message: "Top up successfully."});
       }catch(error: any){
         setInfoBar({open: true, type: "error", message: error.response.data.error});
       }
@@ -143,9 +137,9 @@ export const User = (props: UserProps) => {
           label={label}
           type="number"
           defaultValue={user}
-          ref={refs[id]}
           variant="standard"
-          InputProps={{...walletProps, startAdornment: <InputAdornment position="start">$</InputAdornment>}}
+          disabled={true}
+          InputProps={{...inputProps, startAdornment: <InputAdornment position="start">$</InputAdornment>}}
         />
         :
         <Text
@@ -159,9 +153,28 @@ export const User = (props: UserProps) => {
           InputProps={inputProps}
         />
       ))}
+      <Dialog open={topUp} onClose={() => setTopUp(false)}>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="topUpWallet"
+            label="Money"
+            helperText="Enter money you want to top up to your wallet"
+            type="number"
+            ref={refs["wallet"]}
+            fullWidth
+            variant="standard"
+            InputLabelProps={{sx: {fontWeight: "bold"}}}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button style={{textTransform: "none"}} onClick={() => topUpClick()}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
       <div style={{ width: "275px", display: 'flex', justifyContent: 'space-between', marginTop: '10px', marginBottom: '5px' }}>
         <HalfButton variant="contained" onClick={() => editClick()}>{(edit)? "Update" : "Edit"}</HalfButton>
-        <HalfButton variant="contained" onClick={() => topUpClick()}>{(topUp)? "Comfirm" : "Top up"}</HalfButton>
+        <HalfButton variant="contained" onClick={() => topUpClick()}>Top up</HalfButton>
       </div>
       <MidButton variant="contained" onClick={() => setProfileStatus(["home", ""])}>Back</MidButton>
     </>
