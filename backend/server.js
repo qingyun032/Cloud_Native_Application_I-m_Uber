@@ -30,10 +30,10 @@ app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        httpOnly: false,
-        sameSite: 'none'
-    }
+    // cookie: {
+    //     httpOnly: false,
+    //     sameSite: 'none'
+    // }
 }));
 
 // Set Router
