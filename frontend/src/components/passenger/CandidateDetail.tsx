@@ -98,7 +98,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:2 }}>Departure Time</Typography>
                   <Typography variant='h5'>
-                    {candidate.board_time}
+                    {candidate.board_time.slice(11,16)}
                   </Typography>
                   <Divider/>
                 </Box>
@@ -109,7 +109,7 @@ const CandidateDetail = ( props: CandidateProps ) => {
                 >
                   <Typography sx={{ mt:2 }}>Arrival Time</Typography>
                   <Typography variant='h5'>
-                    {candidate.destination_time}
+                    {candidate.destination_time.slice(11,16)}
                     {/* {candidate.arrivalTime} */}
                   </Typography>
                   <Divider/>
@@ -124,18 +124,16 @@ const CandidateDetail = ( props: CandidateProps ) => {
               <Typography sx={{ mt:2 }}>Destination</Typography>
               <Typography variant='h5'>
                 {isGo? "台積電" : stopList[candidate.stopID-1]}
-                {/* {candidate.destination} */}
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Car Model</Typography>
               <Typography variant='h5'>
-                {/* need to map to string */}
                 {brandList[candidate.carbrand]} 
               </Typography>
               <Divider/>
               <Typography sx={{ mt:2 }}>Cost</Typography>
               <Typography variant='h5'>
-                {candidate.price}
+                NTD {candidate.price}
               </Typography>
               <Divider/>
               <Button 
