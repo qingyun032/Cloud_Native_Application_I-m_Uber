@@ -22,10 +22,15 @@ async function showCandidates(req, res) {
     const RouteData = {"Routes":[]};
     try {
         // return a list of viable routes
+        let direction_go = true;
+        if (Go === "false") {
+            direction_go = false;
+        } 
+
         const routes = await routesMatching(
             curAddr, 
             parseInt(process.env.COMPANY_STOP_ID), 
-            Boolean(Go), 
+            direction_go, 
             new Date(passengerBoardTime), 
             parseInt(passengerCnt)
         );

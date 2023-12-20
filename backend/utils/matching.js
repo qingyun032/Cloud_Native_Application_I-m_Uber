@@ -34,53 +34,98 @@ const routesMatching = async(address, FixStopID, direction, passengerBoardTime, 
     
     for (const route of routes) {
       let find = 0;
-      for (const boarding of filteredboardings) {
-        const stop = await stopService.getStopById(boarding.stopID);
-        if (
-          find === 0 &&
-          boarding.routeID == route.routeID &&
-          ((boarding.boardTime > passengerBoardTime && direction == true) || (boarding.boardTime < passengerBoardTime && direction == false))
-        ) {
-          find = 1;
-          const user = await userService.getUserById(route.driverID);
-          const distance = await calculateDistance(
-            stop.latitude,
-            stop.longitude,
-            Fixstop.latitude,
-            Fixstop.longitude
-          );
-          let rating = 0;
-          if(user.nRating !== 0){
-            rating = user.ratingTotalScore / user.nRating;
+      // Back
+      if (direction == false) { 
+        if (route.startTime >= passengerBoardTime && filteredboardings.length > 0) {
+          for (let boarding of filteredboardings) {
+            const stop = await stopService.getStopById(boarding.stopID);
+            if (
+              find === 0 && boarding.routeID == route.routeID
+            ) {
+              find = 1;
+              const user = await userService.getUserById(route.driverID);
+              const distance = await calculateDistance(
+                stop.latitude,
+                stop.longitude,
+                Fixstop.latitude,
+                Fixstop.longitude
+              );
+              let rating = 0;
+              if(user.nRating !== 0){
+                rating = user.ratingTotalScore / user.nRating;
+              }
+              const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric, passengerCnt);
+              
+              const temp_dic = {
+                routeID: route.routeID,
+                stopID: stop.stopID,
+                stopAddress: stop.address,
+                stop_lat: parseFloat(stop.latitude),
+                stop_lon: parseFloat(stop.longitude),
+                driverID: user.userID,
+                driverName: user.userName,
+                board_time: route.startTime,
+                destination_time: boarding.boardTime,
+                rating: rating,
+                nRating: user.nRating,
+                price: price,
+                carPlate: user.CarInfo.carPlate,
+                cartype: user.CarInfo.type,
+                carbrand: user.CarInfo.brand,
+                carColor: user.CarInfo.color,
+                carelectric: user.CarInfo.electric
+              };
+              Routes.push(temp_dic);
+            }
           }
-          const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric, passengerCnt);
-          
-          // Find the time to the destination
-          const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);
-          const final_baording = sameRouteboardings.reduce((maxObject, currentObject) => {
-            return currentObject.boardTime > maxObject.boardTime ? currentObject : maxObject;
-          }, sameRouteboardings[0]);
-          
-          const temp_dic = {
-            routeID: route.routeID,
-            stopID: stop.stopID,
-            stopAddress: stop.address,
-            stop_lat: parseFloat(stop.latitude),
-            stop_lon: parseFloat(stop.longitude),
-            driverID: user.userID,
-            driverName: user.userName,
-            board_time: boarding.boardTime,
-            destination_time: final_baording.boardTime,
-            rating: rating,
-            nRating: user.nRating,
-            price: price,
-            carPlate: user.CarInfo.carPlate,
-            cartype: user.CarInfo.type,
-            carbrand: user.CarInfo.brand,
-            carColor: user.CarInfo.color,
-            carelectric: user.CarInfo.electric
-          };
-          Routes.push(temp_dic);
+        }
+      } else { // Go
+        for (const boarding of filteredboardings) {
+          const stop = await stopService.getStopById(boarding.stopID);
+          if (
+            find === 0 && boarding.routeID == route.routeID && (boarding.boardTime >= passengerBoardTime)
+          ) {
+            find = 1;
+            const user = await userService.getUserById(route.driverID);
+            const distance = await calculateDistance(
+              stop.latitude,
+              stop.longitude,
+              Fixstop.latitude,
+              Fixstop.longitude
+            );
+            let rating = 0;
+            if(user.nRating !== 0){
+              rating = user.ratingTotalScore / user.nRating;
+            }
+            const price = calculatePrice(distance, user.CarInfo.brand, user.CarInfo.type, rating, user.CarInfo.electric, passengerCnt);
+            
+            // Find the time to the destination
+            const sameRouteboardings = boardings.filter(boarding => route.routeID === boarding.routeID);
+            const final_boarding = sameRouteboardings.reduce((maxObject, currentObject) => {
+              return currentObject.boardTime > maxObject.boardTime ? currentObject : maxObject;
+            }, sameRouteboardings[0]);
+            
+            const temp_dic = {
+              routeID: route.routeID,
+              stopID: stop.stopID,
+              stopAddress: stop.address,
+              stop_lat: parseFloat(stop.latitude),
+              stop_lon: parseFloat(stop.longitude),
+              driverID: user.userID,
+              driverName: user.userName,
+              board_time: boarding.boardTime,
+              destination_time: final_boarding.boardTime,
+              rating: rating,
+              nRating: user.nRating,
+              price: price,
+              carPlate: user.CarInfo.carPlate,
+              cartype: user.CarInfo.type,
+              carbrand: user.CarInfo.brand,
+              carColor: user.CarInfo.color,
+              carelectric: user.CarInfo.electric
+            };
+            Routes.push(temp_dic);
+          }
         }
       }
     }

@@ -621,22 +621,20 @@ describe("POST /api/v1/route/createRoute", () => {
         expect(res.body.error).toBe("Please sign in first");
     });
     
-    // Already checked in frontend
-    // test("Try to create a route with invalid data", async () => {
+    // test("Try to create another route by Chu", async () => {
     //     let res = await request(app).post("/api/v1/auth/signin").send({
-    //         "userName": "Leo",
-    //         "password": "Leopassword"
+    //         "userName": "Chu",
+    //         "password": "Chupassword"
     //     });
     //     const { header } = res;
     //     res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-    //         "startTime": '2021-06-01 11:00:00',
+    //         "startTime": '2021-12-21 17:00:00',
     //         "stopIds": [1, 9],
     //         "available": 3,
     //         "type": "GO",
     //         "state": "PROCESSING"
     //     });
-    //     expect(res.statusCode).toBe(400);
-    //     expect(res.body.error).toBe("You should include at least 1 intermediate stop");
+    //     expect(res.statusCode).toBe()
     // });
 
     test("Create a route successfully", async () => {
@@ -646,8 +644,8 @@ describe("POST /api/v1/route/createRoute", () => {
         });
         const { header } = res;
         res = await request(app).post("/api/v1/route/createRoute").set("Cookie", [...header["set-cookie"]]).send({
-            "startTime": '2021-06-01 11:00:00',
-            "stopIds": [111, 2, 3, 4, 5, 6, 7, 9],
+            "startTime": '2023-12-21 17:00:00',
+            "stopIds": [111, 2, 3, 4, 5, 6, 23, 7, 9],
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -658,7 +656,7 @@ describe("POST /api/v1/route/createRoute", () => {
             "driverID": 1,
             "start": 111,
             "destination": 9,
-            "startTime": "2021-06-01 11:00:00",
+            "startTime": "2023-12-21 17:00:00",
             "available": 3,
             "type": "BACK",
             "state": "PROCESSING"
@@ -764,7 +762,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
                     "destination_time": "2023-12-21 12:24:35",
                     "rating": 0,
                     "nRating": 0,
-                    "price": 116,
+                    "price": 58,
                     "carPlate": "BBC-1221",
                     "cartype": "SUV",
                     "carbrand": 1,
@@ -795,7 +793,7 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
         );
     });
     
-    test("Show route candidates that gets no routes", async () => {
+    test("Show route candidates when going back", async () => {
         let res = await request(app).post("/api/v1/auth/signin").send({
             "userName": "Bob",
             "password": "Bobpassword"
@@ -803,7 +801,62 @@ describe("GET /api/v1/passengers/showCandidates & POST /api/v1/passengers/select
         const { header } = res;
 
         const passenger_pref = {
-            "Go": true,
+            "Go": false,
+            "address": "新竹縣竹東鎮光武街2號",
+            "passenger_cnt": 1,
+            "board_time": "2023-12-21 16:55:00"
+        }
+        mockedAxios.get.mockResolvedValue({
+            "data": {
+                "results": [
+                    {
+                        "position": {
+                            "lat": 24.7237,
+                            "lon": 121.09501
+                        },
+                    },
+                ]
+            }
+        });
+        res = await request(app).get("/api/v1/passengers/showCandidates").set("Cookie", [...header["set-cookie"]]).query(
+            passenger_pref
+        );
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({
+            "Routes": [
+				{
+                    "board_time": "2023-12-21 17:00:00",
+                    "carColor": 1,
+                    "carPlate": "LK99-8917",
+                    "carbrand": 1,
+                    "carelectric": true,
+                    "cartype": "SUV",
+                    "destination_time": "2023-12-21 18:03:17",
+                    "driverID": 1,
+                    "driverName": "Leo",
+                    "nRating": 3,
+                    "price": 63,
+                    "rating": 3,
+                    "routeID": 1,
+                    "stopAddress": "新竹縣東寧路一段1號(北側)",
+                    "stopID": 23,
+                    "stop_lat": 24.72273,
+                    "stop_lon": 121.09597,
+                }
+		    ]
+        });
+        
+    });
+
+    test("Show route candidates get no route", async () => {
+        let res = await request(app).post("/api/v1/auth/signin").send({
+            "userName": "Bob",
+            "password": "Bobpassword"
+        });
+        const { header } = res;
+
+        const passenger_pref = {
+            "Go": false,
             "address": "苗栗縣苗栗市上苗里為公路1號",
             "passenger_cnt": 1,
             "board_time": "2023-12-21 12:01:00"

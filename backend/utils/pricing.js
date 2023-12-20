@@ -26,7 +26,7 @@ const calculatePrice = (distance, carBrand, type, rating, isElectric, passengerC
         price +=5;
       }
       // Return the calculated price
-      return Math.round( price );
+      return Math.round( price / 2 );
     } catch(error){
       return null;
     }
